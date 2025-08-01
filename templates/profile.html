@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}Business Profile - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-user-tie text-primary me-2"></i>Business Profile</h2>
+                <p class="text-muted">Manage your business information and preferences</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Profile Overview</h5>
+            </div>
+            <div class="card-body text-center">
+                <div class="profile-avatar mb-3">
+                    <i class="fas fa-building fa-4x text-primary"></i>
+                </div>
+                <h4>{{ business.business_name if business else 'Your Business Name' }}</h4>
+                <p class="text-muted">{{ business.industry.title() if business and business.industry else 'Industry not specified' }}</p>
+                
+                <div class="profile-stats mt-4">
+                    <div class="row text-center">
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h5 class="text-primary mb-0">12</h5>
+                                <small class="text-muted">Tools Used</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h5 class="text-success mb-0">25</h5>
+                                <small class="text-muted">Projects</small>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <div class="stat-item">
+                                <h5 class="text-info mb-0">8</h5>
+                                <small class="text-muted">Reports</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Account Status</h6>
+            </div>
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Account Type:</span>
+                    <span class="badge bg-primary">Free Trial</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>Member Since:</span>
+                    <span class="text-muted">{{ business.created_at.strftime('%B %Y') if business and business.created_at else 'Recently' }}</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span>Last Updated:</span>
+                    <span class="text-muted">{{ business.updated_at.strftime('%b %d, %Y') if business and business.updated_at else 'Never' }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Business Information</h5>
+                <button class="btn btn-outline-primary btn-sm" id="editProfileBtn">
+                    <i class="fas fa-edit me-1"></i>Edit Profile
+                </button>
+            </div>
+            <div class="card-body">
+                <form id="profileForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="businessName" class="form-label">Business Name</label>
+                            <input type="text" class="form-control" id="businessName" 
+                                   value="{{ business.business_name if business else '' }}" readonly>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="industry" class="form-label">Industry</label>
+                            <select class="form-select" id="industry" disabled>
+                                <option value="">Select Industry</option>
+                                <option value="retail" {{ 'selected' if business and business.industry == 'retail' else '' }}>Retail</option>
+                                <option value="food_beverage" {{ 'selected' if business and business.industry == 'food_beverage' else '' }}>Food & Beverage</option>
+                                <option value="healthcare" {{ 'selected' if business and business.industry == 'healthcare' else '' }}>Healthcare</option>
+                                <option value="technology" {{ 'selected' if business and business.industry == 'technology' else '' }}>Technology</option>
+                                <option value="consulting" {{ 'selected' if business and business.industry == 'consulting' else '' }}>Consulting</option>
+                                <option value="manufacturing" {{ 'selected' if business and business.industry == 'manufacturing' else '' }}>Manufacturing</option>
+                                <option value="construction" {{ 'selected' if business and business.industry == 'construction' else '' }}>Construction</option>
+                                <option value="education" {{ 'selected' if business and business.industry == 'education' else '' }}>Education</option>
+                                <option value="real_estate" {{ 'selected' if business and business.industry == 'real_estate' else '' }}>Real Estate</option>
+                                <option value="other" {{ 'selected' if business and business.industry == 'other' else '' }}>Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Business Description</label>
+                        <textarea class="form-control" id="description" rows="3" readonly>{{ business.description if business else '' }}</textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="targetAudience" class="form-label">Target Audience</label>
+                        <input type="text" class="form-control" id="targetAudience" 
+                               value="{{ business.target_audience if business else '' }}" readonly>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Business Goals</label>
+                        <div class="form-text mb-2">{{ business.goals if business else 'No goals specified' }}</div>
+                    </div>
+                    
+                    <div class="form-actions" style="display: none;">
+                        <button type="button" class="btn btn-success" id="saveProfileBtn">
+                            <i class="fas fa-save me-1"></i>Save Changes
+                        </button>
+                        <button type="button" class="btn btn-secondary ms-2" id="cancelEditBtn">
+                            <i class="fas fa-times me-1"></i>Cancel
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">AI Tool Preferences</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                            <label class="form-check-label" for="emailNotifications">
+                                Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="autoSaveResults" checked>
+                            <label class="form-check-label" for="autoSaveResults">
+                                Auto-save Results
+                            </label>
+                        </div>
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="advancedAnalytics">
+                            <label class="form-check-label" for="advancedAnalytics">
+                                Advanced Analytics
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <label for="defaultTone" class="form-label">Default Email Tone</label>
+                            <select class="form-select" id="defaultTone">
+                                <option value="professional">Professional</option>
+                                <option value="friendly">Friendly</option>
+                                <option value="casual">Casual</option>
+                                <option value="formal">Formal</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="defaultColorScheme" class="form-label">Default Color Scheme</label>
+                            <select class="form-select" id="defaultColorScheme">
+                                <option value="professional">Professional</option>
+                                <option value="modern">Modern</option>
+                                <option value="warm">Warm</option>
+                                <option value="nature">Nature</option>
+                                <option value="creative">Creative</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary">
+                    <i class="fas fa-save me-1"></i>Save Preferences
+                </button>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h5 class="mb-0">Usage Statistics</h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-3">
+                        <div class="usage-stat">
+                            <i class="fas fa-globe fa-2x text-primary mb-2"></i>
+                            <h4 class="mb-1">3</h4>
+                            <p class="text-muted mb-0">Websites Created</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="usage-stat">
+                            <i class="fas fa-envelope fa-2x text-info mb-2"></i>
+                            <h4 class="mb-1">25</h4>
+                            <p class="text-muted mb-0">Emails Drafted</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="usage-stat">
+                            <i class="fas fa-chart-line fa-2x text-success mb-2"></i>
+                            <h4 class="mb-1">8</h4>
+                            <p class="text-muted mb-0">Reports Generated</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="usage-stat">
+                            <i class="fas fa-image fa-2x text-warning mb-2"></i>
+                            <h4 class="mb-1">12</h4>
+                            <p class="text-muted mb-0">Posters Made</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const editBtn = document.getElementById('editProfileBtn');
+    const saveBtn = document.getElementById('saveProfileBtn');
+    const cancelBtn = document.getElementById('cancelEditBtn');
+    const formActions = document.querySelector('.form-actions');
+    const formInputs = document.querySelectorAll('#profileForm input, #profileForm textarea, #profileForm select');
+    
+    let originalValues = {};
+    
+    // Store original values
+    formInputs.forEach(input => {
+        originalValues[input.id] = input.value;
+    });
+    
+    editBtn.addEventListener('click', function() {
+        // Enable form inputs
+        formInputs.forEach(input => {
+            input.removeAttribute('readonly');
+            input.removeAttribute('disabled');
+        });
+        
+        // Show form actions, hide edit button
+        formActions.style.display = 'block';
+        editBtn.style.display = 'none';
+    });
+    
+    cancelBtn.addEventListener('click', function() {
+        // Restore original values
+        formInputs.forEach(input => {
+            input.value = originalValues[input.id];
+            input.setAttribute('readonly', true);
+            if (input.tagName === 'SELECT') {
+                input.setAttribute('disabled', true);
+            }
+        });
+        
+        // Hide form actions, show edit button
+        formActions.style.display = 'none';
+        editBtn.style.display = 'inline-block';
+    });
+    
+    saveBtn.addEventListener('click', function() {
+        // Simulate save operation
+        saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+        saveBtn.disabled = true;
+        
+        setTimeout(() => {
+            // Disable form inputs again
+            formInputs.forEach(input => {
+                input.setAttribute('readonly', true);
+                if (input.tagName === 'SELECT') {
+                    input.setAttribute('disabled', true);
+                }
+            });
+            
+            // Update original values
+            formInputs.forEach(input => {
+                originalValues[input.id] = input.value;
+            });
+            
+            // Hide form actions, show edit button
+            formActions.style.display = 'none';
+            editBtn.style.display = 'inline-block';
+            
+            // Reset save button
+            saveBtn.innerHTML = '<i class="fas fa-save me-1"></i>Save Changes';
+            saveBtn.disabled = false;
+            
+            // Show success message
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-success alert-dismissible fade show';
+            alert.innerHTML = `
+                Profile updated successfully!
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            document.querySelector('.card-body').insertBefore(alert, document.getElementById('profileForm'));
+            
+            // Auto dismiss after 3 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 3000);
+            
+        }, 1500);
+    });
+});
+</script>
+
+<style>
+.profile-avatar {
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar i {
+    color: white;
+}
+
+.stat-item {
+    padding: 10px 0;
+}
+
+.usage-stat {
+    padding: 20px 10px;
+    border-radius: 8px;
+    transition: transform 0.2s ease;
+}
+
+.usage-stat:hover {
+    transform: translateY(-2px);
+}
+
+.form-actions {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+</style>
+{% endblock %}

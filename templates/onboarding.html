@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}Business Setup - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="card shadow">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <i class="fas fa-building fa-3x text-primary mb-3"></i>
+                    <h2 class="h4">Tell Us About Your Business</h2>
+                    <p class="text-muted">Help us customize AI tools for your specific needs</p>
+                </div>
+                
+                <form method="POST">
+                    <div class="mb-4">
+                        <label for="business_name" class="form-label">Business Name</label>
+                        <input type="text" class="form-control" id="business_name" name="business_name" required>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="industry" class="form-label">Industry</label>
+                        <select class="form-select" id="industry" name="industry" required>
+                            <option value="">Select your industry</option>
+                            <option value="retail">Retail</option>
+                            <option value="food_beverage">Food & Beverage</option>
+                            <option value="healthcare">Healthcare</option>
+                            <option value="technology">Technology</option>
+                            <option value="consulting">Consulting</option>
+                            <option value="manufacturing">Manufacturing</option>
+                            <option value="construction">Construction</option>
+                            <option value="education">Education</option>
+                            <option value="real_estate">Real Estate</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Business Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" 
+                                  placeholder="Briefly describe what your business does..."></textarea>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="target_audience" class="form-label">Target Audience</label>
+                        <input type="text" class="form-control" id="target_audience" name="target_audience" 
+                               placeholder="e.g., Small business owners, Young professionals, Families">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="goals" class="form-label">Primary Business Goals</label>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="goals" value="increase_sales" id="goal1">
+                            <label class="form-check-label" for="goal1">Increase Sales</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="goals" value="improve_marketing" id="goal2">
+                            <label class="form-check-label" for="goal2">Improve Marketing</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="goals" value="customer_service" id="goal3">
+                            <label class="form-check-label" for="goal3">Better Customer Service</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="goals" value="online_presence" id="goal4">
+                            <label class="form-check-label" for="goal4">Stronger Online Presence</label>
+                        </div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="goals" value="efficiency" id="goal5">
+                            <label class="form-check-label" for="goal5">Operational Efficiency</label>
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-primary btn-lg">Complete Setup</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

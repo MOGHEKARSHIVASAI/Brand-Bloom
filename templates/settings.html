@@ -1,0 +1,759 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-cog text-primary me-2"></i>Settings</h2>
+                <p class="text-muted">Configure your account and application preferences</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="list-group" id="settingsNav">
+            <a class="list-group-item list-group-item-action active" data-target="account">
+                <i class="fas fa-user me-2"></i>Account Settings
+            </a>
+            <a class="list-group-item list-group-item-action" data-target="notifications">
+                <i class="fas fa-bell me-2"></i>Notifications
+            </a>
+            <a class="list-group-item list-group-item-action" data-target="ai-preferences">
+                <i class="fas fa-robot me-2"></i>AI Preferences
+            </a>
+            <a class="list-group-item list-group-item-action" data-target="data-export">
+                <i class="fas fa-download me-2"></i>Data & Export
+            </a>
+            <a class="list-group-item list-group-item-action" data-target="billing">
+                <i class="fas fa-credit-card me-2"></i>Billing
+            </a>
+            <a class="list-group-item list-group-item-action" data-target="security">
+                <i class="fas fa-shield-alt me-2"></i>Security
+            </a>
+        </div>
+    </div>
+    
+    <div class="col-md-9">
+        <!-- Account Settings -->
+        <div class="settings-panel active" id="account">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Account Information</h5>
+                </div>
+                <div class="card-body">
+                    <form>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="fullName" class="form-label">Full Name</label>
+                                <input type="text" class="form-control" id="fullName" value="John Doe">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="email" class="form-label">Email Address</label>
+                                <input type="email" class="form-control" id="email" value="john@example.com">
+                                <div class="form-text">This email is used for login and notifications</div>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="phone" class="form-label">Phone Number</label>
+                                <input type="tel" class="form-control" id="phone" placeholder="+1 (555) 123-4567">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="timezone" class="form-label">Timezone</label>
+                                <select class="form-select" id="timezone">
+                                    <option>Eastern Time (ET)</option>
+                                    <option>Central Time (CT)</option>
+                                    <option>Mountain Time (MT)</option>
+                                    <option>Pacific Time (PT)</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="card mt-3">
+                <div class="card-header">
+                    <h5 class="mb-0">Change Password</h5>
+                </div>
+                <div class="card-body">
+                    <form id="passwordForm">
+                        <div class="mb-3">
+                            <label for="currentPassword" class="form-label">Current Password</label>
+                            <input type="password" class="form-control" id="currentPassword" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="newPassword" class="form-label">New Password</label>
+                            <input type="password" class="form-control" id="newPassword" required>
+                            <div class="form-text">Password must be at least 8 characters long</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="confirmPassword" class="form-label">Confirm New Password</label>
+                            <input type="password" class="form-control" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-warning">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Notifications -->
+        <div class="settings-panel" id="notifications">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Notification Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Email Notifications</h6>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="emailReports" checked>
+                                <label class="form-check-label" for="emailReports">
+                                    Weekly reports
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="emailTips" checked>
+                                <label class="form-check-label" for="emailTips">
+                                    Tips and recommendations
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="emailUpdates">
+                                <label class="form-check-label" for="emailUpdates">
+                                    Product updates
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="emailMarketing">
+                                <label class="form-check-label" for="emailMarketing">
+                                    Marketing communications
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>In-App Notifications</h6>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="appAnalysis" checked>
+                                <label class="form-check-label" for="appAnalysis">
+                                    Analysis completed
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="appErrors" checked>
+                                <label class="form-check-label" for="appErrors">
+                                    Error notifications
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="appTips" checked>
+                                <label class="form-check-label" for="appTips">
+                                    Usage tips
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3">
+                        <h6>Notification Frequency</h6>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="frequency" id="immediate" checked>
+                            <label class="form-check-label" for="immediate">
+                                Immediate
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="frequency" id="daily">
+                            <label class="form-check-label" for="daily">
+                                Daily digest
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="frequency" id="weekly">
+                            <label class="form-check-label" for="weekly">
+                                Weekly summary
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary mt-3">Save Notification Settings</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- AI Preferences -->
+        <div class="settings-panel" id="ai-preferences">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">AI Tool Preferences</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="defaultTone" class="form-label">Default Email Tone</label>
+                                <select class="form-select" id="defaultTone">
+                                    <option value="professional" selected>Professional</option>
+                                    <option value="friendly">Friendly</option>
+                                    <option value="casual">Casual</option>
+                                    <option value="formal">Formal</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="defaultColorScheme" class="form-label">Default Design Color Scheme</label>
+                                <select class="form-select" id="defaultColorScheme">
+                                    <option value="professional" selected>Professional</option>
+                                    <option value="modern">Modern</option>
+                                    <option value="warm">Warm</option>
+                                    <option value="nature">Nature</option>
+                                    <option value="creative">Creative</option>
+                                    <option value="minimalist">Minimalist</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="analysisDepth" class="form-label">Analysis Depth</label>
+                                <select class="form-select" id="analysisDepth">
+                                    <option value="basic">Basic</option>
+                                    <option value="standard" selected>Standard</option>
+                                    <option value="detailed">Detailed</option>
+                                    <option value="comprehensive">Comprehensive</option>
+                                </select>
+                                <div class="form-text">Higher depth provides more insights but takes longer</div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>AI Behavior Settings</h6>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="autoSave" checked>
+                                <label class="form-check-label" for="autoSave">
+                                    Auto-save generated content
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="smartSuggestions" checked>
+                                <label class="form-check-label" for="smartSuggestions">
+                                    Smart suggestions based on history
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="contextLearning">
+                                <label class="form-check-label" for="contextLearning">
+                                    Learn from my preferences
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="advancedFeatures">
+                                <label class="form-check-label" for="advancedFeatures">
+                                    Enable experimental features
+                                </label>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="maxFileSize" class="form-label">Max Upload File Size</label>
+                                <select class="form-select" id="maxFileSize">
+                                    <option value="5">5 MB</option>
+                                    <option value="10" selected>10 MB</option>
+                                    <option value="25">25 MB</option>
+                                    <option value="50">50 MB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-primary">Save AI Preferences</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data & Export -->
+        <div class="settings-panel" id="data-export">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Data Management</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Export Your Data</h6>
+                            <p class="text-muted">Download all your generated content and analysis results.</p>
+                            
+                            <div class="mb-3">
+                                <label for="exportFormat" class="form-label">Export Format</label>
+                                <select class="form-select" id="exportFormat">
+                                    <option value="json">JSON</option>
+                                    <option value="csv">CSV</option>
+                                    <option value="pdf">PDF</option>
+                                    <option value="zip">ZIP Archive</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="dateRange" class="form-label">Date Range</label>
+                                <select class="form-select" id="dateRange">
+                                    <option value="all">All time</option>
+                                    <option value="30">Last 30 days</option>
+                                    <option value="90">Last 90 days</option>
+                                    <option value="365">Last year</option>
+                                </select>
+                            </div>
+                            
+                            <button class="btn btn-info">
+                                <i class="fas fa-download me-1"></i>Request Export
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Data Retention</h6>
+                            <p class="text-muted">Control how long we keep your data.</p>
+                            
+                            <div class="mb-3">
+                                <label for="retentionPeriod" class="form-label">Auto-delete after</label>
+                                <select class="form-select" id="retentionPeriod">
+                                    <option value="never">Never (Keep forever)</option>
+                                    <option value="365" selected>1 year</option>
+                                    <option value="730">2 years</option>
+                                    <option value="1095">3 years</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="dataMinimization" checked>
+                                <label class="form-check-label" for="dataMinimization">
+                                    Enable data minimization
+                                </label>
+                                <div class="form-text">Automatically remove unnecessary data</div>
+                            </div>
+                            
+                            <button class="btn btn-warning">
+                                <i class="fas fa-save me-1"></i>Update Retention Settings
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="row">
+                        <div class="col-12">
+                            <h6 class="text-danger">Danger Zone</h6>
+                            <div class="alert alert-danger">
+                                <h6 class="alert-heading">Delete All Data</h6>
+                                <p class="mb-2">Permanently delete all your data including generated content, analysis results, and account information.</p>
+                                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteDataModal">
+                                    <i class="fas fa-trash me-1"></i>Delete All Data
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Billing -->
+        <div class="settings-panel" id="billing">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Billing & Subscription</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Current Plan</h6>
+                            <div class="plan-info p-3 bg-light rounded mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1">Free Trial</h5>
+                                        <p class="text-muted mb-0">14 days remaining</p>
+                                    </div>
+                                    <span class="badge bg-success fs-6">Active</span>
+                                </div>
+                            </div>
+                            
+                            <h6>Usage This Month</h6>
+                            <div class="usage-bars">
+                                <div class="usage-item mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>AI Tools Used</span>
+                                        <span>12/100</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar" style="width: 12%"></div>
+                                    </div>
+                                </div>
+                                <div class="usage-item mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>Storage Used</span>
+                                        <span>245MB/1GB</span>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar bg-info" style="width: 24%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Upgrade Plan</h6>
+                            <div class="plan-option p-3 border rounded mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Pro Plan</strong>
+                                        <div class="text-muted">$29/month</div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm">Upgrade</button>
+                                </div>
+                            </div>
+                            <div class="plan-option p-3 border rounded mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Business Plan</strong>
+                                        <div class="text-muted">$79/month</div>
+                                    </div>
+                                    <button class="btn btn-primary btn-sm">Upgrade</button>
+                                </div>
+                            </div>
+                            
+                            <h6>Payment Method</h6>
+                            <div class="payment-method p-3 bg-light rounded">
+                                <div class="text-muted">No payment method added</div>
+                                <button class="btn btn-outline-primary btn-sm mt-2">
+                                    <i class="fas fa-plus me-1"></i>Add Payment Method
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Security -->
+        <div class="settings-panel" id="security">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Security Settings</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Two-Factor Authentication</h6>
+                            <p class="text-muted">Add an extra layer of security to your account.</p>
+                            
+                            <div class="security-option p-3 border rounded mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>SMS Authentication</strong>
+                                        <div class="text-muted">Not enabled</div>
+                                    </div>
+                                    <button class="btn btn-outline-primary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                            
+                            <div class="security-option p-3 border rounded mb-3">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <strong>Authenticator App</strong>
+                                        <div class="text-muted">Not enabled</div>
+                                    </div>
+                                    <button class="btn btn-outline-primary btn-sm">Enable</button>
+                                </div>
+                            </div>
+                            
+                            <h6>Login Sessions</h6>
+                            <div class="session-item p-2 border-bottom">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <strong>Current Session</strong>
+                                        <div class="text-muted small">Chrome on Windows • Your location</div>
+                                    </div>
+                                    <span class="badge bg-success">Active</span>
+                                </div>
+                            </div>
+                            <div class="session-item p-2">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <strong>Mobile App</strong>
+                                        <div class="text-muted small">iOS • Last active 2 days ago</div>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm">Revoke</button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h6>Privacy Settings</h6>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="dataCollection" checked>
+                                <label class="form-check-label" for="dataCollection">
+                                    Allow usage analytics
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-2">
+                                <input class="form-check-input" type="checkbox" id="improveAI" checked>
+                                <label class="form-check-label" for="improveAI">
+                                    Help improve AI models
+                                </label>
+                            </div>
+                            <div class="form-check form-switch mb-3">
+                                <input class="form-check-input" type="checkbox" id="shareInsights">
+                                <label class="form-check-label" for="shareInsights">
+                                    Share anonymized insights
+                                </label>
+                            </div>
+                            
+                            <h6>Data Processing Location</h6>
+                            <select class="form-select mb-3">
+                                <option value="us" selected>United States</option>
+                                <option value="eu">European Union</option>
+                                <option value="auto">Auto (Nearest)</option>
+                            </select>
+                            
+                            <h6>Account Deletion</h6>
+                            <p class="text-muted">Request permanent deletion of your account and all associated data.</p>
+                            <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                                <i class="fas fa-user-times me-1"></i>Delete Account
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Data Modal -->
+<div class="modal fade" id="deleteDataModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete All Data</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> This action cannot be undone!
+                </div>
+                <p>This will permanently delete:</p>
+                <ul>
+                    <li>All generated content (websites, emails, posters)</li>
+                    <li>Analysis results and reports</li>
+                    <li>Business information and preferences</li>
+                    <li>Usage history and statistics</li>
+                </ul>
+                <p class="mb-0">Type <strong>DELETE</strong> to confirm:</p>
+                <input type="text" class="form-control mt-2" id="deleteConfirmation" placeholder="Type DELETE here">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteData" disabled>
+                    <i class="fas fa-trash me-1"></i>Delete All Data
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Account Modal -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Delete Account</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Warning:</strong> Account deletion is permanent and cannot be undone!
+                </div>
+                <p>Before deleting your account, please note:</p>
+                <ul>
+                    <li>You will lose access to all generated content</li>
+                    <li>All data will be permanently deleted</li>
+                    <li>Any active subscriptions will be cancelled</li>
+                    <li>This action cannot be reversed</li>
+                </ul>
+                <div class="mb-3">
+                    <label for="deleteReason" class="form-label">Reason for deletion (optional):</label>
+                    <select class="form-select" id="deleteReason">
+                        <option value="">Please select...</option>
+                        <option value="not_useful">Not useful for my needs</option>
+                        <option value="too_expensive">Too expensive</option>
+                        <option value="privacy_concerns">Privacy concerns</option>
+                        <option value="switching_service">Switching to another service</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <p class="mb-0">Type your email address to confirm:</p>
+                <input type="email" class="form-control mt-2" id="emailConfirmation" placeholder="your@email.com">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteAccount" disabled>
+                    <i class="fas fa-user-times me-1"></i>Delete Account
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Settings navigation
+    const navItems = document.querySelectorAll('#settingsNav .list-group-item');
+    const panels = document.querySelectorAll('.settings-panel');
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Remove active class from all nav items and panels
+            navItems.forEach(nav => nav.classList.remove('active'));
+            panels.forEach(panel => panel.classList.remove('active'));
+            
+            // Add active class to clicked nav item
+            this.classList.add('active');
+            
+            // Show corresponding panel
+            const target = this.getAttribute('data-target');
+            document.getElementById(target).classList.add('active');
+        });
+    });
+    
+    // Password form validation
+    const passwordForm = document.getElementById('passwordForm');
+    const newPassword = document.getElementById('newPassword');
+    const confirmPassword = document.getElementById('confirmPassword');
+    
+    function validatePasswords() {
+        if (newPassword.value !== confirmPassword.value) {
+            confirmPassword.setCustomValidity('Passwords do not match');
+        } else {
+            confirmPassword.setCustomValidity('');
+        }
+    }
+    
+    newPassword.addEventListener('input', validatePasswords);
+    confirmPassword.addEventListener('input', validatePasswords);
+    
+    // Delete data confirmation
+    const deleteConfirmation = document.getElementById('deleteConfirmation');
+    const confirmDeleteData = document.getElementById('confirmDeleteData');
+    
+    deleteConfirmation.addEventListener('input', function() {
+        confirmDeleteData.disabled = this.value !== 'DELETE';
+    });
+    
+    // Delete account confirmation
+    const emailConfirmation = document.getElementById('emailConfirmation');
+    const confirmDeleteAccount = document.getElementById('confirmDeleteAccount');
+    
+    emailConfirmation.addEventListener('input', function() {
+        // In a real app, you'd check against the actual user email
+        confirmDeleteAccount.disabled = this.value !== 'john@example.com';
+    });
+    
+    // Save settings with loading states
+    const saveButtons = document.querySelectorAll('.btn-primary, .btn-warning, .btn-info');
+    
+    saveButtons.forEach(button => {
+        if (button.textContent.includes('Save') || button.textContent.includes('Update') || button.textContent.includes('Request')) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Saving...';
+                this.disabled = true;
+                
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                    
+                    // Show success message
+                    const alert = document.createElement('div');
+                    alert.className = 'alert alert-success alert-dismissible fade show mt-3';
+                    alert.innerHTML = `
+                        Settings saved successfully!
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    this.parentNode.appendChild(alert);
+                    
+                    // Auto dismiss
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.remove();
+                        }
+                    }, 3000);
+                }, 1500);
+            });
+        }
+    });
+});
+</script>
+
+<style>
+.settings-panel {
+    display: none;
+}
+
+.settings-panel.active {
+    display: block;
+}
+
+.list-group-item {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px !important;
+    margin-bottom: 2px;
+}
+
+.list-group-item:hover {
+    background-color: #f8f9fa;
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-color: transparent;
+}
+
+.plan-info {
+    border-left: 4px solid #28a745;
+}
+
+.usage-bars .progress {
+    height: 8px;
+    border-radius: 4px;
+}
+
+.plan-option:hover {
+    background-color: #f8f9fa;
+}
+
+.security-option:hover {
+    background-color: #f8f9fa;
+}
+
+.session-item:last-child {
+    border-bottom: none !important;
+}
+</style>
+{% endblock %}

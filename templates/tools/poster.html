@@ -1,0 +1,537 @@
+{% extends "base.html" %}
+
+{% block title %}Poster Maker - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-image text-warning me-2"></i>Poster Maker</h2>
+                <p class="text-muted">Create eye-catching posters and marketing materials for your business</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Poster Configuration</h5>
+            </div>
+            <div class="card-body">
+                <form id="posterForm">
+                    <div class="mb-3">
+                        <label for="posterType" class="form-label">Poster Type</label>
+                        <select class="form-select" id="posterType" required>
+                            <option value="">Select type</option>
+                            <option value="promotional">Promotional</option>
+                            <option value="event">Event</option>
+                            <option value="product">Product</option>
+                            <option value="service">Service</option>
+                            <option value="announcement">Announcement</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="posterTitle" class="form-label">Main Title</label>
+                        <input type="text" class="form-control" id="posterTitle" 
+                               placeholder="e.g., Grand Opening Sale" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="posterSubtitle" class="form-label">Subtitle (Optional)</label>
+                        <input type="text" class="form-control" id="posterSubtitle" 
+                               placeholder="e.g., Up to 50% Off Everything">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="posterDescription" class="form-label">Description</label>
+                        <textarea class="form-control" id="posterDescription" rows="3" 
+                                  placeholder="Brief description or key details..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="businessName" class="form-label">Business Name</label>
+                        <input type="text" class="form-control" id="businessName" 
+                               value="Your Business" placeholder="Your business name">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="colorScheme" class="form-label">Color Scheme</label>
+                        <select class="form-select" id="colorScheme">
+                            <option value="modern">Modern (Blue/Gray)</option>
+                            <option value="vibrant">Vibrant (Red/Orange)</option>
+                            <option value="professional">Professional (Navy/White)</option>
+                            <option value="nature">Nature (Green/Brown)</option>
+                            <option value="creative">Creative (Purple/Pink)</option>
+                            <option value="minimalist">Minimalist (Black/White)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="posterSize" class="form-label">Size</label>
+                        <select class="form-select" id="posterSize">
+                            <option value="medium">Medium (600x800px)</option>
+                            <option value="large">Large (800x1200px)</option>
+                            <option value="a4">A4 Print</option>
+                            <option value="social_media">Social Media (1080x1080px)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-warning" id="generateBtn">
+                            <i class="fas fa-magic me-1"></i>Create Poster
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Quick Templates</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-6">
+                        <button class="btn btn-outline-primary btn-sm w-100" onclick="loadTemplate('sale')">
+                            Sale Event
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-success btn-sm w-100" onclick="loadTemplate('opening')">
+                            Grand Opening
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-info btn-sm w-100" onclick="loadTemplate('workshop')">
+                            Workshop
+                        </button>
+                    </div>
+                    <div class="col-6">
+                        <button class="btn btn-outline-warning btn-sm w-100" onclick="loadTemplate('product')">
+                            Product Launch
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Recent Posters</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">Summer Sale</div>
+                                <small class="text-muted">Promotional • Vibrant</small>
+                            </div>
+                            <small class="text-muted">1h ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">Workshop Event</div>
+                                <small class="text-muted">Event • Professional</small>
+                            </div>
+                            <small class="text-muted">2d ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Poster Preview</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary" id="downloadPNGBtn" style="display: none;">
+                        <i class="fas fa-download me-1"></i>PNG
+                    </button>
+                    <button class="btn btn-sm btn-outline-success" id="downloadPDFBtn" style="display: none;">
+                        <i class="fas fa-file-pdf me-1"></i>PDF
+                    </button>
+                </div>
+            </div>
+            <div class="card-body p-0">
+                <div id="posterPreview" class="d-flex align-items-center justify-content-center" 
+                     style="min-height: 500px; background: #f8f9fa;">
+                    <div class="text-center text-muted">
+                        <i class="fas fa-image fa-4x mb-3"></i>
+                        <h5>Poster Preview</h5>
+                        <p>Configure your poster and click "Create Poster" to see your design here.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Design Tips</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-primary">Visual Hierarchy</h6>
+                        <ul class="small">
+                            <li>Make your title the largest element</li>
+                            <li>Use contrasting colors for important text</li>
+                            <li>Keep plenty of white space</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-success">Typography</h6>
+                        <ul class="small">
+                            <li>Use no more than 2-3 font styles</li>
+                            <li>Ensure text is readable from distance</li>
+                            <li>Bold fonts for headlines work best</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-warning">Colors</h6>
+                        <ul class="small">
+                            <li>Stick to 3-4 colors maximum</li>
+                            <li>Use brand colors when possible</li>
+                            <li>Ensure good contrast for readability</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const posterForm = document.getElementById('posterForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const downloadPNGBtn = document.getElementById('downloadPNGBtn');
+    const downloadPDFBtn = document.getElementById('downloadPDFBtn');
+    
+    posterForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            posterType: document.getElementById('posterType').value,
+            title: document.getElementById('posterTitle').value,
+            subtitle: document.getElementById('posterSubtitle').value,
+            description: document.getElementById('posterDescription').value,
+            businessName: document.getElementById('businessName').value,
+            colorScheme: document.getElementById('colorScheme').value,
+            size: document.getElementById('posterSize').value
+        };
+        
+        if (!formData.title || !formData.posterType) {
+            alert('Please fill in the required fields');
+            return;
+        }
+        
+        // Show loading state
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Creating...';
+        generateBtn.disabled = true;
+        
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2500));
+            
+            // Generate poster
+            generatePoster(formData);
+            
+            // Show download buttons
+            downloadPNGBtn.style.display = 'inline-block';
+            downloadPDFBtn.style.display = 'inline-block';
+            
+        } catch (error) {
+            console.error('Error generating poster:', error);
+            alert('Failed to generate poster');
+        } finally {
+            generateBtn.innerHTML = '<i class="fas fa-magic me-1"></i>Create Poster';
+            generateBtn.disabled = false;
+        }
+    });
+    
+    downloadPNGBtn.addEventListener('click', function() {
+        // Simulate download
+        alert('PNG download would start here');
+    });
+    
+    downloadPDFBtn.addEventListener('click', function() {
+        // Simulate download
+        alert('PDF download would start here');
+    });
+});
+
+function loadTemplate(type) {
+    const templates = {
+        sale: {
+            type: 'promotional',
+            title: 'MEGA SALE',
+            subtitle: 'Up to 50% Off Everything',
+            description: 'Don\'t miss out on our biggest sale of the year! Limited time offer.',
+            colorScheme: 'vibrant'
+        },
+        opening: {
+            type: 'event',
+            title: 'GRAND OPENING',
+            subtitle: 'Join Us for Our Special Day',
+            description: 'Celebrate with us as we open our doors to serve the community.',
+            colorScheme: 'professional'
+        },
+        workshop: {
+            type: 'event',
+            title: 'Professional Workshop',
+            subtitle: 'Learn From Industry Experts',
+            description: 'Join our comprehensive workshop to enhance your skills and knowledge.',
+            colorScheme: 'modern'
+        },
+        product: {
+            type: 'product',
+            title: 'NEW PRODUCT LAUNCH',
+            subtitle: 'Innovation Meets Excellence',
+            description: 'Introducing our latest product designed for your success.',
+            colorScheme: 'creative'
+        }
+    };
+    
+    const template = templates[type];
+    if (template) {
+        document.getElementById('posterType').value = template.type;
+        document.getElementById('posterTitle').value = template.title;
+        document.getElementById('posterSubtitle').value = template.subtitle;
+        document.getElementById('posterDescription').value = template.description;
+        document.getElementById('colorScheme').value = template.colorScheme;
+    }
+}
+
+function generatePoster(data) {
+    const colors = getColorScheme(data.colorScheme);
+    const dimensions = getSizeDimensions(data.size);
+    
+    const posterHTML = `
+        <div class="poster-container" style="
+            width: ${dimensions.width}; 
+            height: ${dimensions.height}; 
+            background: linear-gradient(135deg, ${colors.primary}, ${colors.secondary});
+            color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        ">
+            <!-- Background Pattern -->
+            <div style="
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(255,255,255,0.1) 2px, transparent 2px);
+                background-size: 30px 30px;
+                opacity: 0.3;
+            "></div>
+            
+            <!-- Header -->
+            <div style="text-align: center; z-index: 2;">
+                <h1 style="
+                    font-size: 3.5em;
+                    font-weight: bold;
+                    margin: 0 0 15px 0;
+                    text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+                    letter-spacing: 2px;
+                ">${data.title.toUpperCase()}</h1>
+                
+                ${data.subtitle ? `<h2 style="
+                    font-size: 1.8em;
+                    margin: 0 0 30px 0;
+                    opacity: 0.9;
+                    font-weight: normal;
+                ">${data.subtitle}</h2>` : ''}
+            </div>
+            
+            <!-- Main Content -->
+            <div style="
+                background: rgba(255,255,255,0.15);
+                padding: 30px;
+                border-radius: 15px;
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255,255,255,0.2);
+                text-align: center;
+                margin: 20px 0;
+                z-index: 2;
+            ">
+                ${data.description ? `<p style="
+                    font-size: 1.3em;
+                    line-height: 1.6;
+                    margin: 0 0 25px 0;
+                ">${data.description}</p>` : ''}
+                
+                ${generatePosterFeatures(data.posterType)}
+                
+                <div style="
+                    background: ${colors.accent};
+                    color: white;
+                    padding: 15px 40px;
+                    border-radius: 30px;
+                    font-size: 1.2em;
+                    font-weight: bold;
+                    display: inline-block;
+                    margin-top: 20px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                ">${getCallToAction(data.posterType)}</div>
+            </div>
+            
+            <!-- Footer -->
+            <div style="text-align: center; z-index: 2;">
+                <h3 style="
+                    font-size: 2em;
+                    margin: 20px 0 10px 0;
+                    font-weight: bold;
+                ">${data.businessName}</h3>
+                
+                <div style="
+                    font-size: 1.1em;
+                    opacity: 0.9;
+                    display: flex;
+                    justify-content: center;
+                    gap: 30px;
+                    flex-wrap: wrap;
+                ">
+                    <div><i class="fas fa-phone"></i> (555) 123-4567</div>
+                    <div><i class="fas fa-envelope"></i> info@${data.businessName.toLowerCase().replace(/\s+/g, '')}.com</div>
+                    <div><i class="fas fa-globe"></i> www.${data.businessName.toLowerCase().replace(/\s+/g, '')}.com</div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('posterPreview').innerHTML = posterHTML;
+}
+
+function getColorScheme(scheme) {
+    const schemes = {
+        modern: {
+            primary: '#2563eb',
+            secondary: '#1e40af',
+            accent: '#f59e0b'
+        },
+        vibrant: {
+            primary: '#dc2626',
+            secondary: '#ea580c',
+            accent: '#fbbf24'
+        },
+        professional: {
+            primary: '#1e293b',
+            secondary: '#334155',
+            accent: '#3b82f6'
+        },
+        nature: {
+            primary: '#059669',
+            secondary: '#047857',
+            accent: '#84cc16'
+        },
+        creative: {
+            primary: '#7c3aed',
+            secondary: '#5b21b6',
+            accent: '#ec4899'
+        },
+        minimalist: {
+            primary: '#000000',
+            secondary: '#374151',
+            accent: '#6b7280'
+        }
+    };
+    
+    return schemes[scheme] || schemes.modern;
+}
+
+function getSizeDimensions(size) {
+    const sizes = {
+        medium: { width: '400px', height: '600px' },
+        large: { width: '500px', height: '750px' },
+        a4: { width: '420px', height: '594px' },
+        social_media: { width: '400px', height: '400px' }
+    };
+    
+    return sizes[size] || sizes.medium;
+}
+
+function generatePosterFeatures(type) {
+    const features = {
+        promotional: `
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0;">
+                <div>✓ Special Discounts</div>
+                <div>✓ Limited Time Only</div>
+                <div>✓ Premium Quality</div>
+                <div>✓ Customer Satisfaction</div>
+            </div>
+        `,
+        event: `
+            <div style="background: rgba(255,255,255,0.2); padding: 20px; border-radius: 10px; margin: 20px 0;">
+                <div><strong>📅 Date:</strong> Coming Soon</div>
+                <div><strong>🕐 Time:</strong> TBA</div>
+                <div><strong>📍 Location:</strong> To Be Announced</div>
+            </div>
+        `,
+        product: `
+            <div style="margin: 20px 0;">
+                <div style="font-size: 1.1em; margin-bottom: 15px;">
+                    <strong>Key Features:</strong>
+                </div>
+                <div>🚀 Innovative Design • 💎 Premium Quality • ⚡ Fast Performance</div>
+            </div>
+        `,
+        service: `
+            <div style="margin: 20px 0;">
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap;">
+                    <div>🔧 Professional</div>
+                    <div>⭐ Quality</div>
+                    <div>🚀 Fast</div>
+                    <div>💼 Expert</div>
+                </div>
+            </div>
+        `,
+        announcement: `
+            <div style="margin: 20px 0; font-size: 1.2em;">
+                <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 8px;">
+                    Important updates and improvements for our valued customers
+                </div>
+            </div>
+        `
+    };
+    
+    return features[type] || features.promotional;
+}
+
+function getCallToAction(type) {
+    const ctas = {
+        promotional: 'Shop Now',
+        event: 'Register Today',
+        product: 'Learn More',
+        service: 'Contact Us',
+        announcement: 'Get Details'
+    };
+    
+    return ctas[type] || 'Get Started';
+}
+</script>
+{% endblock %}

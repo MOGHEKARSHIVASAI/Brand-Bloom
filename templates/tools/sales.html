@@ -1,0 +1,827 @@
+{% extends "base.html" %}
+
+{% block title %}Sales Insights - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-chart-line text-danger me-2"></i>Sales Insights</h2>
+                <p class="text-muted">Upload your sales data and get detailed analytics and insights</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Upload Sales Data</h5>
+            </div>
+            <div class="card-body">
+                <form id="salesUploadForm" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="salesFile" class="form-label">CSV File</label>
+                        <input type="file" class="form-control" id="salesFile" accept=".csv" required>
+                        <div class="form-text">Upload a CSV file with your sales data</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Expected Columns:</label>
+                        <ul class="small text-muted">
+                            <li>Date (required)</li>
+                            <li>Product/Item</li>
+                            <li>Quantity</li>
+                            <li>Price/Amount</li>
+                            <li>Customer (optional)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-danger" id="uploadBtn">
+                            <i class="fas fa-upload me-1"></i>Upload & Analyze
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Sample Data Format</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>CSV Example:</strong><br>
+                    Date,Product,Quantity,Price,Customer<br>
+                    2024-01-01,Widget A,2,29.99,John Doe<br>
+                    2024-01-02,Widget B,1,39.99,Jane Smith<br>
+                    ...
+                </small>
+                
+                <button class="btn btn-outline-primary btn-sm mt-2 w-100" id="downloadSample">
+                    <i class="fas fa-download me-1"></i>Download Sample CSV
+                </button>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Recent Analyses</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">Q4 Sales Data</div>
+                                <small class="text-muted">1,247 records</small>
+                            </div>
+                            <small class="text-muted">2h ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">November Data</div>
+                                <small class="text-muted">892 records</small>
+                            </div>
+                            <small class="text-muted">1d ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div id="noDataState" class="card">
+            <div class="card-body text-center py-5">
+                <i class="fas fa-chart-bar fa-4x text-muted mb-3"></i>
+                <h5>Sales Analytics Dashboard</h5>
+                <p class="text-muted">Upload your sales data CSV file to get started with detailed analytics and insights.</p>
+            </div>
+        </div>
+        
+        <div id="analyticsContainer" style="display: none;">
+            <!-- Summary Cards -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card bg-primary text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Total Sales</h6>
+                                    <h2 class="mb-0" id="totalSales">$0</h2>
+                                </div>
+                                <i class="fas fa-dollar-sign fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-success text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Transactions</h6>
+                                    <h2 class="mb-0" id="totalTransactions">0</h2>
+                                </div>
+                                <i class="fas fa-shopping-cart fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-info text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Avg. Order</h6>
+                                    <h2 class="mb-0" id="avgOrder">$0</h2>
+                                </div>
+                                <i class="fas fa-receipt fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card bg-warning text-white">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 class="card-title">Growth Rate</h6>
+                                    <h2 class="mb-0" id="growthRate">0%</h2>
+                                </div>
+                                <i class="fas fa-trending-up fa-2x opacity-75"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts Row -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Daily Sales Trend</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="salesChart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Top Products</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="topProducts">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Product A</span>
+                                    <span class="fw-bold">$1,250</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" style="width: 85%"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Product B</span>
+                                    <span class="fw-bold">$950</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 65%"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Product C</span>
+                                    <span class="fw-bold">$750</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: 50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insights and Recommendations -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Key Insights</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="keyInsights">
+                                <div class="alert alert-success py-2 mb-2">
+                                    <small><i class="fas fa-arrow-up me-1"></i><strong>Positive Trend:</strong> Sales increased 15% this month</small>
+                                </div>
+                                <div class="alert alert-info py-2 mb-2">
+                                    <small><i class="fas fa-calendar me-1"></i><strong>Best Day:</strong> Fridays show highest sales</small>
+                                </div>
+                                <div class="alert alert-warning py-2">
+                                    <small><i class="fas fa-exclamation-triangle me-1"></i><strong>Opportunity:</strong> Weekends have potential for growth</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Recommendations</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="recommendations">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2">
+                                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                                        <small>Focus marketing efforts on top-performing products</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-target text-primary me-2"></i>
+                                        <small>Consider weekend promotions to boost sales</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-users text-success me-2"></i>
+                                        <small>Implement customer retention strategies</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detailed Analytics -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Sales by Day of Week</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="dayOfWeekChart" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Customer Analysis</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h4 class="text-primary" id="totalCustomers">0</h4>
+                                    <small class="text-muted">Total Customers</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-success" id="repeatCustomers">0%</h4>
+                                    <small class="text-muted">Repeat Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-info" id="avgCustomerValue">$0</h4>
+                                    <small class="text-muted">Avg. Value</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('salesUploadForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const downloadSampleBtn = document.getElementById('downloadSample');
+    
+    uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const fileInput = document.getElementById('salesFile');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert('Please select a CSV file');
+            return;
+        }
+        
+        // Show loading state
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        uploadBtn.disabled = true;
+        
+        try {
+            // Simulate file upload and analysis
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // Generate mock analytics
+            const mockData = generateMockAnalytics();
+            displayAnalytics(mockData);
+            
+            // Hide no data state and show analytics
+            document.getElementById('noDataState').style.display = 'none';
+            document.getElementById('analyticsContainer').style.display = 'block';
+            
+        } catch (error) {
+            console.error('Analysis failed:', error);
+            alert('Failed to analyze sales data');
+        } finally {
+            uploadBtn.innerHTML = '<i class="fas fa-upload me-1"></i>Upload & Analyze';
+            uploadBtn.disabled = false;
+        }
+    });
+    
+    downloadSampleBtn.addEventListener('click', function() {
+        const csvContent = `Date,Product,Quantity,Price,Customer
+2024-01-01,Widget A,2,29.99,John Doe
+2024-01-02,Widget B,1,39.99,Jane Smith
+2024-01-03,Widget A,3,29.99,Bob Johnson
+2024-01-04,Widget C,1,49.99,Alice Brown
+2024-01-05,Widget B,2,39.99,Charlie Wilson`;
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sample_sales_data.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+});
+
+function generateMockAnalytics() {
+    return {
+        summary: {
+            totalSales: 25750.50,
+            totalTransactions: 142,
+            avgOrder: 181.34,
+            growthRate: 12.5,
+            totalCustomers: 89,
+            repeatRate: 34.8,
+            avgCustomerValue: 289.33
+        },
+        dailySales: [
+            { date: '2024-01-01', sales: 850 },
+            { date: '2024-01-02', sales: 920 },
+            { date: '2024-01-03', sales: 1150 },
+            { date: '2024-01-04', sales: 980 },
+            { date: '2024-01-05', sales: 1200 },
+            { date: '2024-01-06', sales: 1350 },
+            { date: '2024-01-07', sales: 1100 }
+        ],
+        topProducts: [
+            { name: 'Premium Widget', sales: 8500 },
+            { name: 'Standard Widget', sales: 6200 },
+            { name: 'Deluxe Package', sales: 4800 },
+            { name: 'Basic Package', sales: 3900 },
+            { name: 'Accessories', sales: 2350 }
+        ],
+        dayOfWeek: [
+            { day: 'Monday', avgSales: 950 },
+            { day: 'Tuesday', avgSales: 1100 },
+            { day: 'Wednesday', avgSales: 1200 },
+            { day: 'Thursday', avgSales: 1350 },
+            { day: 'Friday', avgSales: 1450 },
+            { day: 'Saturday', avgSales: 800 },
+            { day: 'Sunday', avgSales: 650 }
+        ]
+    };
+}
+
+function displayAnalytics(data) {
+    // Update summary cards
+    document.getElementById('totalSales').textContent = `${data.summary.totalSales.toLocaleString()}`;
+    document.getElementById('totalTransactions').textContent = data.summary.totalTransactions.toLocaleString();
+    document.getElementById('avgOrder').textContent = `${data.summary.avgOrder.toFixed(2)}`;
+    document.getElementById('growthRate').textContent = `${data.summary.growthRate}%`;
+    document.getElementById('totalCustomers').textContent = data.summary.totalCustomers;
+    document.getElementById('repeatCustomers').textContent = `${data.summary.repeatRate}%`;
+    document.getElementById('avgCustomerValue').textContent = `${data.summary.avgCustomerValue.toFixed(0)}`;
+    
+    // Create daily sales chart
+    createDailySalesChart(data.dailySales);
+    
+    // Create day of week chart
+    createDayOfWeekChart(data.dayOfWeek);
+    
+    // Update top products
+    updateTopProducts(data.topProducts);
+}
+
+function createDailySalesChart(data) {
+    // Simple chart implementation using CSS
+    const chartContainer = document.getElementById('salesChart');
+    const maxSales = Math.max(...data.map(d => d.sales));
+    
+    let chartHTML = '<div style="display: flex; align-items: end; height: 250px; gap: 10px;">';
+    
+    data.forEach(item => {
+        const height = (item.sales / maxSales) * 200;
+        const date = new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        chartHTML += `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                <div style="
+                    background: linear-gradient(to top, #3b82f6, #60a5fa);
+                    width: 100%;
+                    height: ${height}px;
+                    border-radius: 4px 4px 0 0;
+                    position: relative;
+                    transition: all 0.3s ease;
+                " title="${item.sales}"></div>
+                <small class="mt-2">${date}</small>
+            </div>
+        `;
+    });
+    
+    chartHTML += '</div>';
+    chartContainer.innerHTML = chartHTML;
+}
+
+function createDayOfWeekChart(data) {
+    const chartContainer = document.getElementById('dayOfWeekChart');
+    const maxSales = Math.max(...data.map(d => d.avgSales));
+    
+    let chartHTML = '<div style="display: flex; flex-direction: column; gap: 15px; height: 250px; justify-content: space-around;">';
+    
+    data.forEach(item => {
+        const width = (item.avgSales / maxSales) * 100;
+        
+        chartHTML += `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 80px; text-align: right; font-size: 0.9em;">${item.day.slice(0, 3)}</div>
+                <div style="flex: 1; background: #e5e7eb; height: 25px; border-radius: 12px; overflow: hidden;">
+                    <div style="
+                        background: linear-gradient(to right, #10b981, #34d399);
+                        height: 100%;
+                        width: ${width}%;
+                        border-radius: 12px;
+                        transition: width 0.5s ease;
+                    "></div>
+                </div>
+                <div style="width: 60px; font-size: 0.9em; font-weight: bold;">${item.avgSales}</div>
+            </div>
+        `;
+    });
+    
+    chartHTML += '</div>';
+    chartContainer.innerHTML = chartHTML;
+}
+
+function updateTopProducts(products) {
+    const container = document.getElementById('topProducts');
+    const maxSales = Math.max(...products.map(p => p.sales));
+    
+    let html = '';
+    const colors = ['primary', 'success', 'info', 'warning', 'secondary'];
+    
+    products.slice(0, 5).forEach((product, index) => {
+        const percentage = (product.sales / maxSales) * 100;
+        const color = colors[index] || 'secondary';
+        
+        html += `
+            <div class="d-flex justify-content-between mb-2">
+                <span style="font-size: 0.9em;">${product.name}</span>
+                <span class="fw-bold">${product.sales.toLocaleString()}</span>
+            </div>
+            <div class="progress mb-3" style="height: 6px;">
+                <div class="progress-bar bg-${color}" style="width: ${percentage}%"></div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+</script>
+{% endblock %} mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-success" style="width: 65%"></div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span>Product C</span>
+                                    <span class="fw-bold">$750</span>
+                                </div>
+                                <div class="progress mb-3" style="height: 6px;">
+                                    <div class="progress-bar bg-info" style="width: 50%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Insights and Recommendations -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Key Insights</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="keyInsights">
+                                <div class="alert alert-success py-2 mb-2">
+                                    <small><i class="fas fa-arrow-up me-1"></i><strong>Positive Trend:</strong> Sales increased 15% this month</small>
+                                </div>
+                                <div class="alert alert-info py-2 mb-2">
+                                    <small><i class="fas fa-calendar me-1"></i><strong>Best Day:</strong> Fridays show highest sales</small>
+                                </div>
+                                <div class="alert alert-warning py-2">
+                                    <small><i class="fas fa-exclamation-triangle me-1"></i><strong>Opportunity:</strong> Weekends have potential for growth</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Recommendations</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="recommendations">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="mb-2">
+                                        <i class="fas fa-lightbulb text-warning me-2"></i>
+                                        <small>Focus marketing efforts on top-performing products</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-target text-primary me-2"></i>
+                                        <small>Consider weekend promotions to boost sales</small>
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-users text-success me-2"></i>
+                                        <small>Implement customer retention strategies</small>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Detailed Analytics -->
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Sales by Day of Week</h6>
+                        </div>
+                        <div class="card-body">
+                            <div id="dayOfWeekChart" style="height: 250px;"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h6 class="mb-0">Customer Analysis</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <h4 class="text-primary" id="totalCustomers">0</h4>
+                                    <small class="text-muted">Total Customers</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-success" id="repeatCustomers">0%</h4>
+                                    <small class="text-muted">Repeat Rate</small>
+                                </div>
+                                <div class="col-4">
+                                    <h4 class="text-info" id="avgCustomerValue">$0</h4>
+                                    <small class="text-muted">Avg. Value</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const uploadForm = document.getElementById('salesUploadForm');
+    const uploadBtn = document.getElementById('uploadBtn');
+    const downloadSampleBtn = document.getElementById('downloadSample');
+    
+    uploadForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const fileInput = document.getElementById('salesFile');
+        const file = fileInput.files[0];
+        
+        if (!file) {
+            alert('Please select a CSV file');
+            return;
+        }
+        
+        // Show loading state
+        uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        uploadBtn.disabled = true;
+        
+        try {
+            // Simulate file upload and analysis
+            await new Promise(resolve => setTimeout(resolve, 3000));
+            
+            // Generate mock analytics
+            const mockData = generateMockAnalytics();
+            displayAnalytics(mockData);
+            
+            // Hide no data state and show analytics
+            document.getElementById('noDataState').style.display = 'none';
+            document.getElementById('analyticsContainer').style.display = 'block';
+            
+        } catch (error) {
+            console.error('Analysis failed:', error);
+            alert('Failed to analyze sales data');
+        } finally {
+            uploadBtn.innerHTML = '<i class="fas fa-upload me-1"></i>Upload & Analyze';
+            uploadBtn.disabled = false;
+        }
+    });
+    
+    downloadSampleBtn.addEventListener('click', function() {
+        const csvContent = `Date,Product,Quantity,Price,Customer
+2024-01-01,Widget A,2,29.99,John Doe
+2024-01-02,Widget B,1,39.99,Jane Smith
+2024-01-03,Widget A,3,29.99,Bob Johnson
+2024-01-04,Widget C,1,49.99,Alice Brown
+2024-01-05,Widget B,2,39.99,Charlie Wilson`;
+        
+        const blob = new Blob([csvContent], { type: 'text/csv' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'sample_sales_data.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+});
+
+function generateMockAnalytics() {
+    return {
+        summary: {
+            totalSales: 25750.50,
+            totalTransactions: 142,
+            avgOrder: 181.34,
+            growthRate: 12.5,
+            totalCustomers: 89,
+            repeatRate: 34.8,
+            avgCustomerValue: 289.33
+        },
+        dailySales: [
+            { date: '2024-01-01', sales: 850 },
+            { date: '2024-01-02', sales: 920 },
+            { date: '2024-01-03', sales: 1150 },
+            { date: '2024-01-04', sales: 980 },
+            { date: '2024-01-05', sales: 1200 },
+            { date: '2024-01-06', sales: 1350 },
+            { date: '2024-01-07', sales: 1100 }
+        ],
+        topProducts: [
+            { name: 'Premium Widget', sales: 8500 },
+            { name: 'Standard Widget', sales: 6200 },
+            { name: 'Deluxe Package', sales: 4800 },
+            { name: 'Basic Package', sales: 3900 },
+            { name: 'Accessories', sales: 2350 }
+        ],
+        dayOfWeek: [
+            { day: 'Monday', avgSales: 950 },
+            { day: 'Tuesday', avgSales: 1100 },
+            { day: 'Wednesday', avgSales: 1200 },
+            { day: 'Thursday', avgSales: 1350 },
+            { day: 'Friday', avgSales: 1450 },
+            { day: 'Saturday', avgSales: 800 },
+            { day: 'Sunday', avgSales: 650 }
+        ]
+    };
+}
+
+function displayAnalytics(data) {
+    // Update summary cards
+    document.getElementById('totalSales').textContent = `${data.summary.totalSales.toLocaleString()}`;
+    document.getElementById('totalTransactions').textContent = data.summary.totalTransactions.toLocaleString();
+    document.getElementById('avgOrder').textContent = `${data.summary.avgOrder.toFixed(2)}`;
+    document.getElementById('growthRate').textContent = `${data.summary.growthRate}%`;
+    document.getElementById('totalCustomers').textContent = data.summary.totalCustomers;
+    document.getElementById('repeatCustomers').textContent = `${data.summary.repeatRate}%`;
+    document.getElementById('avgCustomerValue').textContent = `${data.summary.avgCustomerValue.toFixed(0)}`;
+    
+    // Create daily sales chart
+    createDailySalesChart(data.dailySales);
+    
+    // Create day of week chart
+    createDayOfWeekChart(data.dayOfWeek);
+    
+    // Update top products
+    updateTopProducts(data.topProducts);
+}
+
+function createDailySalesChart(data) {
+    // Simple chart implementation using CSS
+    const chartContainer = document.getElementById('salesChart');
+    const maxSales = Math.max(...data.map(d => d.sales));
+    
+    let chartHTML = '<div style="display: flex; align-items: end; height: 250px; gap: 10px;">';
+    
+    data.forEach(item => {
+        const height = (item.sales / maxSales) * 200;
+        const date = new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        
+        chartHTML += `
+            <div style="flex: 1; display: flex; flex-direction: column; align-items: center;">
+                <div style="
+                    background: linear-gradient(to top, #3b82f6, #60a5fa);
+                    width: 100%;
+                    height: ${height}px;
+                    border-radius: 4px 4px 0 0;
+                    position: relative;
+                    transition: all 0.3s ease;
+                " title="${item.sales}"></div>
+                <small class="mt-2">${date}</small>
+            </div>
+        `;
+    });
+    
+    chartHTML += '</div>';
+    chartContainer.innerHTML = chartHTML;
+}
+
+function createDayOfWeekChart(data) {
+    const chartContainer = document.getElementById('dayOfWeekChart');
+    const maxSales = Math.max(...data.map(d => d.avgSales));
+    
+    let chartHTML = '<div style="display: flex; flex-direction: column; gap: 15px; height: 250px; justify-content: space-around;">';
+    
+    data.forEach(item => {
+        const width = (item.avgSales / maxSales) * 100;
+        
+        chartHTML += `
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 80px; text-align: right; font-size: 0.9em;">${item.day.slice(0, 3)}</div>
+                <div style="flex: 1; background: #e5e7eb; height: 25px; border-radius: 12px; overflow: hidden;">
+                    <div style="
+                        background: linear-gradient(to right, #10b981, #34d399);
+                        height: 100%;
+                        width: ${width}%;
+                        border-radius: 12px;
+                        transition: width 0.5s ease;
+                    "></div>
+                </div>
+                <div style="width: 60px; font-size: 0.9em; font-weight: bold;">${item.avgSales}</div>
+            </div>
+        `;
+    });
+    
+    chartHTML += '</div>';
+    chartContainer.innerHTML = chartHTML;
+}
+
+function updateTopProducts(products) {
+    const container = document.getElementById('topProducts');
+    const maxSales = Math.max(...products.map(p => p.sales));
+    
+    let html = '';
+    const colors = ['primary', 'success', 'info', 'warning', 'secondary'];
+    
+    products.slice(0, 5).forEach((product, index) => {
+        const percentage = (product.sales / maxSales) * 100;
+        const color = colors[index] || 'secondary';
+        
+        html += `
+            <div class="d-flex justify-content-between mb-2">
+                <span style="font-size: 0.9em;">${product.name}</span>
+                <span class="fw-bold">${product.sales.toLocaleString()}</span>
+            </div>
+            <div class="progress mb-3" style="height: 6px;">
+                <div class="progress-bar bg-${color}" style="width: ${percentage}%"></div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML = html;
+}
+</script>
+{% endblock %}

@@ -1,0 +1,436 @@
+{% extends "base.html" %}
+
+{% block title %}Email Drafter - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-envelope text-info me-2"></i>Email Drafter</h2>
+                <p class="text-muted">Create professional emails for marketing, customer service, and business communications</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Email Configuration</h5>
+            </div>
+            <div class="card-body">
+                <form id="emailForm">
+                    <div class="mb-3">
+                        <label for="emailType" class="form-label">Email Type</label>
+                        <select class="form-select" id="emailType" required>
+                            <option value="">Select type</option>
+                            <option value="marketing">Marketing</option>
+                            <option value="customer_service">Customer Service</option>
+                            <option value="follow_up">Follow Up</option>
+                            <option value="thank_you">Thank You</option>
+                            <option value="announcement">Announcement</option>
+                            <option value="invitation">Invitation</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="recipientType" class="form-label">Recipient Type</label>
+                        <select class="form-select" id="recipientType">
+                            <option value="customer">Existing Customer</option>
+                            <option value="prospect">Potential Customer</option>
+                            <option value="partner">Business Partner</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="emailTone" class="form-label">Tone</label>
+                        <select class="form-select" id="emailTone">
+                            <option value="professional">Professional</option>
+                            <option value="friendly">Friendly</option>
+                            <option value="casual">Casual</option>
+                            <option value="formal">Formal</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="emailPurpose" class="form-label">Purpose/Subject</label>
+                        <input type="text" class="form-control" id="emailPurpose" 
+                               placeholder="e.g., Product launch announcement">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="emailContext" class="form-label">Additional Context</label>
+                        <textarea class="form-control" id="emailContext" rows="3" 
+                                  placeholder="Any additional details or context..."></textarea>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="senderName" class="form-label">Sender Name</label>
+                        <input type="text" class="form-control" id="senderName" 
+                               value="Your Name" placeholder="Your name or team name">
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-info" id="generateBtn">
+                            <i class="fas fa-magic me-1"></i>Generate Email
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Recent Emails</h6>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">Welcome Campaign</div>
+                                <small class="text-muted">Marketing • Friendly</small>
+                            </div>
+                            <small class="text-muted">2h ago</small>
+                        </div>
+                    </div>
+                    <div class="list-group-item px-0 py-2">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <div class="fw-semibold">Customer Support</div>
+                                <small class="text-muted">Service • Professional</small>
+                            </div>
+                            <small class="text-muted">1d ago</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Generated Email</h5>
+                <div>
+                    <button class="btn btn-sm btn-outline-primary" id="copyEmailBtn" style="display: none;">
+                        <i class="fas fa-copy me-1"></i>Copy Email
+                    </button>
+                    <button class="btn btn-sm btn-primary" id="downloadBtn" style="display: none;">
+                        <i class="fas fa-download me-1"></i>Download
+                    </button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div id="emailPreview" class="border rounded p-3" style="min-height: 400px; background: #f8f9fa;">
+                    <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 400px;">
+                        <div class="text-center">
+                            <i class="fas fa-envelope fa-3x mb-3"></i>
+                            <h5>Email Preview</h5>
+                            <p>Configure your email settings and click "Generate Email" to create your professional email.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Email Tips & Best Practices</h6>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6 class="text-primary">Subject Line Tips</h6>
+                        <ul class="small">
+                            <li>Keep it under 50 characters</li>
+                            <li>Make it specific and actionable</li>
+                            <li>Avoid spam trigger words</li>
+                            <li>Personalize when possible</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6 class="text-success">Content Tips</h6>
+                        <ul class="small">
+                            <li>Start with a clear greeting</li>
+                            <li>Get to the point quickly</li>
+                            <li>Include a clear call-to-action</li>
+                            <li>End with professional closing</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const emailForm = document.getElementById('emailForm');
+    const generateBtn = document.getElementById('generateBtn');
+    const copyEmailBtn = document.getElementById('copyEmailBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const emailPreview = document.getElementById('emailPreview');
+    
+    let generatedEmail = '';
+    
+    emailForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const formData = {
+            emailType: document.getElementById('emailType').value,
+            recipientType: document.getElementById('recipientType').value,
+            tone: document.getElementById('emailTone').value,
+            purpose: document.getElementById('emailPurpose').value,
+            context: document.getElementById('emailContext').value,
+            senderName: document.getElementById('senderName').value
+        };
+        
+        if (!formData.emailType) {
+            alert('Please select an email type');
+            return;
+        }
+        
+        // Show loading state
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+        generateBtn.disabled = true;
+        
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Generate mock email
+            const email = generateMockEmail(formData);
+            displayEmail(email);
+            
+            // Show action buttons
+            copyEmailBtn.style.display = 'inline-block';
+            downloadBtn.style.display = 'inline-block';
+            
+        } catch (error) {
+            console.error('Error generating email:', error);
+            alert('Failed to generate email');
+        } finally {
+            generateBtn.innerHTML = '<i class="fas fa-magic me-1"></i>Generate Email';
+            generateBtn.disabled = false;
+        }
+    });
+    
+    copyEmailBtn.addEventListener('click', function() {
+        navigator.clipboard.writeText(generatedEmail).then(() => {
+            this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            setTimeout(() => {
+                this.innerHTML = '<i class="fas fa-copy me-1"></i>Copy Email';
+            }, 2000);
+        });
+    });
+    
+    downloadBtn.addEventListener('click', function() {
+        const blob = new Blob([generatedEmail], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'email.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+});
+
+function generateMockEmail(data) {
+    const subjects = {
+        marketing: `Exciting News from ${data.senderName || 'Our Team'}!`,
+        customer_service: `Re: Your Inquiry - We're Here to Help`,
+        follow_up: `Following Up on Our Conversation`,
+        thank_you: `Thank You from ${data.senderName || 'Our Team'}`,
+        announcement: `Important Update from ${data.senderName || 'Our Team'}`,
+        invitation: `You're Invited! Special Event`
+    };
+    
+    const greetings = {
+        professional: 'Dear [Recipient Name]',
+        friendly: 'Hi [Recipient Name]',
+        casual: 'Hey [Recipient Name]',
+        formal: 'Dear [Recipient Name]',
+        urgent: 'Dear [Recipient Name]'
+    };
+    
+    const closings = {
+        professional: 'Best regards',
+        friendly: 'Thanks and best wishes',
+        casual: 'Talk soon',
+        formal: 'Sincerely',
+        urgent: 'Thank you for your immediate attention'
+    };
+    
+    const subject = data.purpose || subjects[data.emailType] || 'Professional Email';
+    const greeting = greetings[data.tone] || greetings.professional;
+    const closing = closings[data.tone] || closings.professional;
+    
+    let body = '';
+    
+    switch(data.emailType) {
+        case 'marketing':
+            body = `We hope this email finds you well.
+
+We're excited to share some fantastic news with you! ${data.context || 'We have something special that we think you\'ll love.'}
+
+${data.purpose ? `Our ${data.purpose.toLowerCase()} is now available, and we wanted you to be among the first to know.` : 'We have an exclusive offer just for you.'}
+
+Here's what makes this special:
+• Premium quality and excellent value
+• Designed with your needs in mind
+• Limited time availability
+
+Don't miss out on this opportunity! Click the link below to learn more and take advantage of this exclusive offer.
+
+[Call-to-Action Button]
+
+We appreciate your continued trust in us and look forward to serving you.`;
+            break;
+            
+        case 'customer_service':
+            body = `Thank you for reaching out to us.
+
+${data.context || 'We have received your inquiry and want to address your concerns promptly.'}
+
+We understand how important this matter is to you, and we're committed to providing you with the best possible solution.
+
+${data.purpose ? `Regarding your question about ${data.purpose.toLowerCase()}, ` : ''}Here's what we can do to help:
+
+• Review your specific situation thoroughly
+• Provide you with detailed information
+• Ensure you receive the support you need
+
+If you have any additional questions or concerns, please don't hesitate to contact us. We're here to help and want to ensure you have a positive experience.`;
+            break;
+            
+        case 'follow_up':
+            body = `I wanted to follow up on our recent conversation.
+
+${data.context || 'Thank you for taking the time to speak with us about your needs.'}
+
+${data.purpose ? `As discussed, regarding ${data.purpose.toLowerCase()}, ` : ''}I wanted to provide you with the next steps:
+
+• Review the information we discussed
+• Answer any additional questions you might have
+• Move forward with the proposed solution
+
+I'm available at your convenience to discuss this further. Please let me know what works best for your schedule.
+
+Looking forward to continuing our conversation and helping you achieve your goals.`;
+            break;
+            
+        case 'thank_you':
+            body = `Thank you so much for choosing us!
+
+${data.context || 'We truly appreciate your business and the trust you\'ve placed in our services.'}
+
+${data.purpose ? `Your recent ${data.purpose.toLowerCase()} means ` : 'Your support means '}a great deal to us, and we're committed to continuing to exceed your expectations.
+
+Here's what you can expect from us moving forward:
+• Continued excellent service
+• Regular updates and improvements
+• Dedicated support whenever you need it
+
+We look forward to serving you again and building a long-lasting relationship.
+
+Thank you once again for your business!`;
+            break;
+            
+        case 'announcement':
+            body = `We have some exciting news to share with you!
+
+${data.context || 'We\'re pleased to announce an important update that will benefit you.'}
+
+${data.purpose || 'This announcement reflects our commitment to providing you with the best possible experience.'}
+
+Here are the key details:
+• Enhanced features and improvements
+• Better value for our customers
+• Continued focus on your satisfaction
+
+We believe this change will have a positive impact on your experience with us.
+
+If you have any questions about this announcement, please don't hesitate to reach out. We're here to help and ensure a smooth transition.`;
+            break;
+            
+        case 'invitation':
+            body = `You're invited to join us for a special event!
+
+${data.context || 'We would be delighted to have you attend our upcoming event.'}
+
+Event Details:
+• What: ${data.purpose || 'Special Business Event'}
+• When: [Date and Time]
+• Where: [Location/Online]
+• Who: You and other valued guests
+
+This will be a great opportunity to:
+• Connect with like-minded professionals
+• Learn about exciting developments
+• Enjoy great company and refreshments
+
+Please RSVP by [Date] to secure your spot. We have limited spaces available, so we encourage you to respond soon.
+
+We hope to see you there!`;
+            break;
+            
+        default:
+            body = `${data.context || 'I hope this email finds you well.'}
+
+${data.purpose || 'I wanted to reach out to you regarding our recent discussion.'}
+
+Thank you for your time and consideration. I look forward to hearing from you soon.`;
+    }
+    
+    const fullEmail = `Subject: ${subject}
+
+${greeting},
+
+${body}
+
+${closing},
+${data.senderName || 'Your Name'}
+
+---
+${data.senderName || 'Your Business'}
+Email: contact@yourbusiness.com
+Phone: (555) 123-4567
+Website: www.yourbusiness.com`;
+
+    return fullEmail;
+}
+
+function displayEmail(email) {
+    generatedEmail = email;
+    
+    const lines = email.split('\n');
+    const subject = lines[0];
+    const body = lines.slice(1).join('\n');
+    
+    document.getElementById('emailPreview').innerHTML = `
+        <div class="email-display">
+            <div class="email-header mb-3 p-3 bg-white border rounded">
+                <div class="mb-2"><strong>${subject}</strong></div>
+                <div class="text-muted small">
+                    <div>From: ${document.getElementById('senderName').value || 'Your Name'} &lt;your@email.com&gt;</div>
+                    <div>To: [Recipient Email]</div>
+                    <div>Date: ${new Date().toLocaleDateString()}</div>
+                </div>
+            </div>
+            <div class="email-body bg-white p-3 border rounded">
+                <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${body}</pre>
+            </div>
+        </div>
+    `;
+}
+</script>
+{% endblock %}

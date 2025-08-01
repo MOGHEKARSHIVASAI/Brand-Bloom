@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}AI Toolkit - Empower Your Small Business{% endblock %}
+
+{% block content %}
+<div class="hero-section py-5 mb-5 bg-gradient">
+    <div class="container text-center">
+        <h1 class="display-4 fw-bold mb-4">AI-Powered Tools for Small Business Success</h1>
+        <p class="lead mb-4">Streamline your business operations with our comprehensive AI toolkit designed specifically for small business owners.</p>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">Login</a>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row text-center mb-5">
+        <div class="col-12">
+            <h2 class="h3 mb-4">Powerful Tools at Your Fingertips</h2>
+        </div>
+    </div>
+    
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-globe fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Website Builder</h5>
+                    <p class="card-text">Create professional websites with AI-generated content tailored to your business.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-comments fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Feedback Analyzer</h5>
+                    <p class="card-text">Analyze customer feedback and reviews to gain valuable insights for improvement.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-envelope fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Email Drafter</h5>
+                    <p class="card-text">Craft professional emails for marketing, customer service, and business communications.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-image fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Poster Maker</h5>
+                    <p class="card-text">Design eye-catching posters and marketing materials for your business.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Sales Insights</h5>
+                    <p class="card-text">Upload your sales data and get detailed analytics and insights to boost performance.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon mb-3">
+                        <i class="fas fa-user-tie fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Business Profile</h5>
+                    <p class="card-text">Manage your business information and customize your AI-powered tools.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <div class="cta-section p-5 bg-light rounded">
+                <h3 class="mb-3">Ready to Transform Your Business?</h3>
+                <p class="mb-4">Join thousands of small business owners who are already using AI to grow their businesses.</p>
+                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Start Your Free Trial</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+*.log
+
+# Virtual environments
+myenv/
+env/
+venv/
+
+# Database files
+*.db
+
+# IDE/editor files
+.vscode/
+.idea/
+*.swp
+*.sublime-workspace
+*.sublime-project
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploads and user-generated files
+uploads/
+
+# Static files (optional, if generated)
+static/
+
+# Etc folder (if contains system/config files)
+etc/

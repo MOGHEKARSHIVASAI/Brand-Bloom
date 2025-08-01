@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Feedback Analyzer - AI Toolkit{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2><i class="fas fa-comments text-success me-2"></i>Feedback Analyzer</h2>
+                <p class="text-muted">Analyze customer feedback and reviews to gain valuable insights</p>
+            </div>
+            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Feedback Input</h5>
+            </div>
+            <div class="card-body">
+                <form id="feedbackForm">
+                    <div class="mb-3">
+                        <label for="feedbackTitle" class="form-label">Analysis Title (Optional)</label>
+                        <input type="text" class="form-control" id="feedbackTitle" placeholder="e.g., Customer Service Review">
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="feedbackText" class="form-label">Feedback Text</label>
+                        <textarea class="form-control" id="feedbackText" rows="8" 
+                                  placeholder="Paste customer feedback, reviews, or comments here..." required></textarea>
+                        <div class="form-text">
+                            <span id="wordCount">0</span> words
+                        </div>
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success" id="analyzeBtn">
+                            <i class="fas fa-search me-1"></i>Analyze Feedback
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Sample Feedback</h6>
+            </div>
+            <div class="card-body">
+                <p class="mb-2"><strong>Positive Example:</strong></p>
+                <p class="text-muted small mb-3">"The service was excellent and the staff was very helpful. I would definitely recommend this company to others!"</p>
+                
+                <p class="mb-2"><strong>Negative Example:</strong></p>
+                <p class="text-muted small mb-0">"The product arrived late and was damaged. Customer service was unhelpful and rude."</p>
+                
+                <button class="btn btn-outline-primary btn-sm mt-2" id="loadSample">
+                    Load Sample Text
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Analysis Results</h5>
+            </div>
+            <div class="card-body" id="resultsContainer">
+                <div class="text-center text-muted" id="noResults">
+                    <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                    <h5>Analysis Results</h5>
+                    <p>Enter feedback text and click "Analyze Feedback" to see detailed insights.</p>
+                </div>
+                
+                <div id="analysisResults" style="display: none;">
+                    <!-- Sentiment Overview -->
+                    <div class="mb-4">
+                        <h6>Sentiment Analysis</h6>
+                        <div class="d-flex align-items-center mb-2">
+                            <span class="me-2">Overall Sentiment:</span>
+                            <span class="badge" id="sentimentBadge">Neutral</span>
+                        </div>
+                        <div class="progress mb-2">
+                            <div class="progress-bar" id="sentimentBar" style="width: 0%"></div>
+                        </div>
+                        <small class="text-muted">Confidence: <span id="confidenceScore">0%</span></small>
+                    </div>
+                    
+                    <!-- Key Insights -->
+                    <div class="mb-4">
+                        <h6>Key Insights</h6>
+                        <div id="insightsList"></div>
+                    </div>
+                    
+                    <!-- Top Keywords -->
+                    <div class="mb-4">
+                        <h6>Top Keywords</h6>
+                        <div id="keywordsList"></div>
+                    </div>
+                    
+                    <!-- Themes -->
+                    <div class="mb-4">
+                        <h6>Main Themes</h6>
+                        <div id="themesList"></div>
+                    </div>
+                    
+                    <!-- Summary -->
+                    <div class="mb-3">
+                        <h6>Summary</h6>
+                        <p id="summaryText" class="text-muted"></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Analyses -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Analyses</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Title</th>
+                                <th>Sentiment</th>
+                                <th>Word Count</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recentAnalyses">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">No recent analyses</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const feedbackText = document.getElementById('feedbackText');
+    const wordCount = document.getElementById('wordCount');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const loadSampleBtn = document.getElementById('loadSample');
+    
+    // Word count
+    feedbackText.addEventListener('input', function() {
+        const words = this.value.trim().split(/\s+/).filter(word => word.length > 0);
+        wordCount.textContent = words.length;
+    });
+    
+    // Load sample text
+    loadSampleBtn.addEventListener('click', function() {
+        feedbackText.value = "The service was excellent and the staff was very helpful. However, the wait time was a bit long and the prices seem high for what you get. Overall, I would recommend this place to others, but they could improve on efficiency and value for money.";
+        feedbackText.dispatchEvent(new Event('input'));
+    });
+    
+    // Analyze feedback
+    document.getElementById('feedbackForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const text = feedbackText.value.trim();
+        if (!text) {
+            alert('Please enter some feedback text to analyze.');
+            return;
+        }
+        
+        // Show loading state
+        analyzeBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Analyzing...';
+        analyzeBtn.disabled = true;
+        
+        try {
+            // Simulate API call
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Mock analysis results
+            const mockResults = generateMockAnalysis(text);
+            displayResults(mockResults);
+            
+        } catch (error) {
+            console.error('Analysis failed:', error);
+            alert('Analysis failed. Please try again.');
+        } finally {
+            analyzeBtn.innerHTML = '<i class="fas fa-search me-1"></i>Analyze Feedback';
+            analyzeBtn.disabled = false;
+        }
+    });
+});
+
+function generateMockAnalysis(text) {
+    const words = text.toLowerCase().split(/\s+/);
+    
+    // Simple sentiment analysis
+    const positiveWords = ['excellent', 'great', 'good', 'helpful', 'recommend', 'amazing', 'fantastic'];
+    const negativeWords = ['bad', 'terrible', 'awful', 'long', 'high', 'expensive', 'slow'];
+    
+    const positiveCount = words.filter(word => positiveWords.includes(word)).length;
+    const negativeCount = words.filter(word => negativeWords.includes(word)).length;
+    
+    let sentiment = 'neutral';
+    let score = 0;
+    let confidence = 0.7;
+    
+    if (positiveCount > negativeCount) {
+        sentiment = 'positive';
+        score = 0.7;
+        confidence = 0.8;
+    } else if (negativeCount > positiveCount) {
+        sentiment = 'negative';
+        score = -0.6;
+        confidence = 0.75;
+    }
+    
+    return {
+        sentiment: {
+            label: sentiment,
+            score: score,
+            confidence: confidence
+        },
+        keywords: [
+            { word: 'service', count: 1 },
+            { word: 'staff', count: 1 },
+            { word: 'helpful', count: 1 },
+            { word: 'recommend', count: 1 }
+        ],
+        themes: {
+            'customer_service': { score: 3, percentage: 30 },
+            'pricing': { score: 2, percentage: 20 },
+            'user_experience': { score: 2, percentage: 20 }
+        },
+        insights: [
+            { type: 'positive', category: 'service', message: 'Customers appreciate helpful staff' },
+            { type: 'improvement', category: 'efficiency', message: 'Consider improving wait times' },
+            { type: 'neutral', category: 'pricing', message: 'Price perception could be addressed' }
+        ],
+        summary: `Analysis of ${words.length} words shows ${sentiment} sentiment with focus on customer service and pricing concerns.`
+    };
+}
+
+function displayResults(results) {
+    document.getElementById('noResults').style.display = 'none';
+    document.getElementById('analysisResults').style.display = 'block';
+    
+    // Sentiment
+    const sentimentBadge = document.getElementById('sentimentBadge');
+    const sentimentBar = document.getElementById('sentimentBar');
+    const confidenceScore = document.getElementById('confidenceScore');
+    
+    sentimentBadge.textContent = results.sentiment.label.charAt(0).toUpperCase() + results.sentiment.label.slice(1);
+    sentimentBadge.className = `badge bg-${getSentimentColor(results.sentiment.label)}`;
+    
+    const percentage = Math.abs(results.sentiment.score * 100);
+    sentimentBar.style.width = `${percentage}%`;
+    sentimentBar.className = `progress-bar bg-${getSentimentColor(results.sentiment.label)}`;
+    
+    confidenceScore.textContent = `${Math.round(results.sentiment.confidence * 100)}%`;
+    
+    // Keywords
+    const keywordsList = document.getElementById('keywordsList');
+    keywordsList.innerHTML = results.keywords.map(kw => 
+        `<span class="badge bg-secondary me-2 mb-1">${kw.word} (${kw.count})</span>`
+    ).join('');
+    
+    // Themes
+    const themesList = document.getElementById('themesList');
+    themesList.innerHTML = Object.entries(results.themes).map(([theme, data]) => `
+        <div class="mb-2">
+            <div class="d-flex justify-content-between">
+                <span>${theme.replace('_', ' ').toUpperCase()}</span>
+                <span>${data.percentage}%</span>
+            </div>
+            <div class="progress" style="height: 6px;">
+                <div class="progress-bar bg-info" style="width: ${data.percentage}%"></div>
+            </div>
+        </div>
+    `).join('');
+    
+    // Insights
+    const insightsList = document.getElementById('insightsList');
+    insightsList.innerHTML = results.insights.map(insight => `
+        <div class="alert alert-${getInsightColor(insight.type)} py-2">
+            <small><strong>${insight.category}:</strong> ${insight.message}</small>
+        </div>
+    `).join('');
+    
+    // Summary
+    document.getElementById('summaryText').textContent = results.summary;
+}
+
+function getSentimentColor(sentiment) {
+    switch(sentiment) {
+        case 'positive': return 'success';
+        case 'negative': return 'danger';
+        default: return 'secondary';
+    }
+}
+
+function getInsightColor(type) {
+    switch(type) {
+        case 'positive': return 'success';
+        case 'improvement': return 'warning';
+        case 'negative': return 'danger';
+        default: return 'info';
+    }
+}
+</script>
+{% endblock %}
