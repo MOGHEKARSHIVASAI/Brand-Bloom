@@ -1,0 +1,380 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UrbanStyle - Modern Fashion & Lifestyle</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f8f8f8;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        h1, h2, h3 {
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Layout Helpers */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .flex {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            background-image: url('https://via.placeholder.com/1200x600/222/fff?text=UrbanStyle+Hero'); /* Replace with your image */
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            padding: 150px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .services h2 {
+            margin-bottom: 40px;
+        }
+
+        .service-card {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .service-card i {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        /* Why Choose Us Section */
+        .why-choose-us {
+            background-color: #f0f0f0;
+            padding: 50px 0;
+        }
+
+        .why-choose-us h2 {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .selling-point {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .selling-point i {
+            font-size: 2em;
+            margin-bottom: 15px;
+            color: #007bff;
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 50px 0;
+            text-align: center;
+        }
+
+        .testimonials h2 {
+            margin-bottom: 40px;
+        }
+
+        .testimonial {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+
+        .testimonial p {
+            font-style: italic;
+            margin-bottom: 15px;
+        }
+
+        .testimonial-author {
+            font-weight: bold;
+            color: #555;
+        }
+
+        /* Contact Section */
+        .contact {
+            background-color: #222;
+            color: white;
+            padding: 50px 0;
+        }
+
+        .contact h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #555;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .contact .btn {
+            background-color: #007bff;
+            border: none;
+            cursor: pointer;
+        }
+
+        .contact .btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .hero {
+                padding: 100px 0;
+            }
+
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            .testimonial {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content container">
+            <h1>UrbanStyle: Your Modern Look</h1>
+            <p>Discover trendy apparel, accessories, footwear, and home decor at affordable prices.</p>
+            <a href="#" class="btn">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services">
+        <div class="container">
+            <h2>Our Collections</h2>
+            <div class="grid">
+                <div class="service-card">
+                    <i class="fas fa-tshirt">👕</i>
+                    <h3>Trendy Apparel</h3>
+                    <p>Stay ahead of the curve with our latest clothing collections.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-gem">💎</i>
+                    <h3>Stylish Accessories</h3>
+                    <p>Complete your look with our curated selection of accessories.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-shoe-prints">👟</i>
+                    <h3>Footwear</h3>
+                    <p>Step out in style with our diverse range of footwear options.</p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-home">🏠</i>
+                    <h3>Home Decor</h3>
+                    <p>Transform your living space with our modern home decor pieces.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why Choose Us Section -->
+    <section class="why-choose-us">
+        <div class="container">
+            <h2>Why Choose UrbanStyle?</h2>
+            <div class="grid">
+                <div class="selling-point">
+                    <i class="fas fa-thumbs-up">👍</i>
+                    <h3>Quality & Style</h3>
+                    <p>We offer high-quality products with a focus on modern style and trends.</p>
+                </div>
+                <div class="selling-point">
+                    <i class="fas fa-tags">🏷️</i>
+                    <h3>Affordable Prices</h3>
+                    <p>Enjoy fashionable items without breaking the bank.</p>
+                </div>
+                <div class="selling-point">
+                    <i class="fas fa-truck">🚚</i>
+                    <h3>Fast Shipping</h3>
+                    <p>Get your orders delivered quickly and reliably.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <h2>What Our Customers Say</h2>
+            <div class="flex" style="overflow-x: auto; scroll-snap-type: x mandatory; padding: 20px 0;">
+                <div class="testimonial" style="min-width: 80%; scroll-snap-align: start;">
+                    <p>"I love UrbanStyle! The clothes are so trendy and affordable. I always find something new to wear."</p>
+                    <p class="testimonial-author">- Sarah M.</p>
+                </div>
+                <div class="testimonial" style="min-width: 80%; scroll-snap-align: start;">
+                    <p>"Great quality and excellent customer service. I'm a big fan of UrbanStyle's home decor collection."</p>
+                    <p class="testimonial-author">- John B.</p>
+                </div>
+                <div class="testimonial" style="min-width: 80%; scroll-snap-align: start;">
+                    <p>"I've been shopping at UrbanStyle for years and I'm always impressed with their selection. Highly recommended!"</p>
+                    <p class="testimonial-author">- Emily L.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <div class="contact-form">
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your Email">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" rows="5" placeholder="Your Message"></textarea>
+                    </div>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 UrbanStyle. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Font Awesome (for icons) - Load Locally if possible -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</body>
+</html>
+```

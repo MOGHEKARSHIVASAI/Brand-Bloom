@@ -48,6 +48,21 @@ class Database:
             )
         ''')
         
+        # Create websites table with keyword
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS websites (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                title TEXT NOT NULL,
+                html_content TEXT NOT NULL,
+                metadata TEXT,
+                keyword TEXT UNIQUE,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users (id)
+            )
+        ''')
+        
         conn.commit()
         conn.close()
         print("Database initialized successfully!")
@@ -156,6 +171,9 @@ class Database:
         conn = self.get_connection()
         cursor = conn.cursor()
         
+        # Remove None values
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        
         # Convert goals to JSON if provided
         if 'goals' in kwargs and kwargs['goals']:
             kwargs['goals'] = json.dumps(kwargs['goals'])
@@ -164,15 +182,22 @@ class Database:
         set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
         values = list(kwargs.values()) + [user_id]
         
-        cursor.execute(f'''
-            UPDATE business 
-            SET {set_clause}, updated_at = CURRENT_TIMESTAMP
-            WHERE user_id = ?
-        ''', values)
+        try:
+            cursor.execute(f'''
+                UPDATE business 
+                SET {set_clause}, updated_at = CURRENT_TIMESTAMP
+                WHERE user_id = ?
+            ''', values)
+            
+            conn.commit()
+            success = cursor.rowcount > 0
+        except Exception as e:
+            success = False
+            print(f"Error updating business: {str(e)}")
+        finally:
+            conn.close()
         
-        conn.commit()
-        conn.close()
-        return cursor.rowcount > 0
+        return success
     
     def get_user_with_business(self, user_id):
         """Get user with their business information"""
@@ -181,6 +206,139 @@ class Database:
             business = self.get_business_by_user_id(user_id)
             user['business'] = business
         return user
+    
+    # Website operations
+    def save_website(self, user_id, title, html_content, metadata, keyword=None):
+        """Save generated website to database"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        metadata_json = json.dumps(metadata) if metadata else None
+        
+        try:
+            cursor.execute('''
+                INSERT INTO websites (user_id, title, html_content, metadata, keyword)
+                VALUES (?, ?, ?, ?, ?)
+            ''', (user_id, title, html_content, metadata_json, keyword))
+            
+            website_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+            return website_id
+        except sqlite3.IntegrityError:
+            conn.close()
+            return None  # Keyword already exists
+    
+    def get_website_by_id(self, website_id, user_id=None):
+        """Get website by ID for specific user (or public if user_id is None)"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        if user_id is not None:
+            cursor.execute('SELECT * FROM websites WHERE id = ? AND user_id = ?', 
+                          (website_id, user_id))
+        else:
+            cursor.execute('SELECT * FROM websites WHERE id = ?', (website_id,))
+        
+        website = cursor.fetchone()
+        conn.close()
+        
+        if website:
+            website_dict = dict(website)
+            if website_dict['metadata']:
+                try:
+                    website_dict['metadata'] = json.loads(website_dict['metadata'])
+                except:
+                    website_dict['metadata'] = {}
+            return website_dict
+        return None
+    
+    def get_website_by_keyword(self, keyword, user_id=None):
+        """Get website by keyword for specific user (or public if user_id is None)"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        if user_id is not None:
+            cursor.execute('SELECT * FROM websites WHERE keyword = ? AND user_id = ?', 
+                          (keyword, user_id))
+        else:
+            cursor.execute('SELECT * FROM websites WHERE keyword = ?', (keyword,))
+        
+        website = cursor.fetchone()
+        conn.close()
+        
+        if website:
+            website_dict = dict(website)
+            if website_dict['metadata']:
+                try:
+                    website_dict['metadata'] = json.loads(website_dict['metadata'])
+                except:
+                    website_dict['metadata'] = {}
+            return website_dict
+        return None
+    def get_user_websites(self, user_id):
+        """Get all websites for a user"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM websites WHERE user_id = ?', (user_id,))
+        websites = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for website in websites:
+            website_dict = dict(website)
+            if website_dict['metadata']:
+                try:
+                    website_dict['metadata'] = json.loads(website_dict['metadata'])
+                except:
+                    website_dict['metadata'] = {}
+            result.append(website_dict)
+        return result
+    
+    def count_deployed_websites(self, user_id):
+        """Count websites with non-null keywords for a user"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT COUNT(*) FROM websites WHERE user_id = ? AND keyword IS NOT NULL', (user_id,))
+        count = cursor.fetchone()[0]
+        conn.close()
+        
+        return count
+    
+    def update_website(self, website_id, user_id, **kwargs):
+        """Update website information"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        # Remove None values
+        kwargs = {k: v for k, v in kwargs.items() if v is not None}
+        
+        # Convert metadata to JSON if provided
+        if 'metadata' in kwargs and kwargs['metadata']:
+            kwargs['metadata'] = json.dumps(kwargs['metadata'])
+        
+        # Build dynamic update query
+        set_clause = ', '.join([f"{key} = ?" for key in kwargs.keys()])
+        values = list(kwargs.values()) + [website_id, user_id]
+        
+        try:
+            cursor.execute(f'''
+                UPDATE websites 
+                SET {set_clause}, updated_at = CURRENT_TIMESTAMP
+                WHERE id = ? AND user_id = ?
+            ''', values)
+            
+            conn.commit()
+            success = cursor.rowcount > 0
+        except Exception as e:
+            success = False
+            print(f"Error updating website: {str(e)}")
+        finally:
+            conn.close()
+        
+        return success
 
 # Initialize database instance
 db = Database()

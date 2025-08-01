@@ -1,108 +1,635 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Toolkit - Empower Your Small Business</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-{% block title %}AI Toolkit - Empower Your Small Business{% endblock %}
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
 
-{% block content %}
-<div class="hero-section py-5 mb-5 bg-gradient">
-    <div class="container text-center">
-        <h1 class="display-4 fw-bold mb-4">AI-Powered Tools for Small Business Success</h1>
-        <p class="lead mb-4">Streamline your business operations with our comprehensive AI toolkit designed specifically for small business owners.</p>
-        <div class="d-grid gap-2 d-md-flex justify-content-md-center">
-            <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg me-md-2">Get Started</a>
-            <a href="{{ url_for('login') }}" class="btn btn-outline-primary btn-lg">Login</a>
-        </div>
-    </div>
-</div>
+        /* Hero Section with Dynamic Background */
+        .hero-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            position: relative;
+            min-height: 100vh;
+            overflow: hidden;
+        }
 
-<div class="container">
-    <div class="row text-center mb-5">
-        <div class="col-12">
-            <h2 class="h3 mb-4">Powerful Tools at Your Fingertips</h2>
-        </div>
-    </div>
-    
-    <div class="row g-4 mb-5">
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-globe fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="card-title">Website Builder</h5>
-                    <p class="card-text">Create professional websites with AI-generated content tailored to your business.</p>
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" style="stop-color:rgba(255,255,255,0.1)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="300" cy="700" r="120" fill="url(%23a)"/><circle cx="700" cy="800" r="80" fill="url(%23a)"/></svg>');
+            animation: float 20s ease-in-out infinite;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-20px, -20px) rotate(1deg); }
+            50% { transform: translate(20px, -10px) rotate(-1deg); }
+            75% { transform: translate(-10px, 20px) rotate(0.5deg); }
+        }
+
+        /* Particle Animation */
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Text Animations */
+        .text-gradient {
+            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f3ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            background-size: 200% 200%;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        /* Interactive Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            padding: 18px 36px;
+            border-radius: 50px;
+            border: none;
+            color: white;
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 18px 36px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.4);
+            font-weight: 600;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Feature Cards with 3D Effect */
+        .feature-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 40px;
+            border-radius: 24px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            transform: scaleX(0);
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) rotateX(5deg);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Icon Animations */
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 32px;
+            color: white;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+        }
+
+        .icon-website { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .icon-feedback { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .icon-email { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .icon-poster { background: linear-gradient(135deg, #43e97b, #38f9d7); }
+        .icon-sales { background: linear-gradient(135deg, #fa709a, #fee140); }
+        .icon-profile { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(10deg);
+        }
+
+        /* Stats Counter Animation */
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #ffffff, #f0f8ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Scroll Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Pulse Animation for CTA */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .feature-card {
+                padding: 24px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem !important;
+            }
+            
+            .hero-section p {
+                font-size: 1.2rem !important;
+            }
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-white font-bold text-2xl">
+                    <i class="fas fa-brain mr-2"></i>AI Toolkit
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#features" class="text-white hover:text-gray-200 transition-colors">Features</a>
+                    <a href="#stats" class="text-white hover:text-gray-200 transition-colors">Stats</a>
+                    <a href="/login" class="text-white hover:text-gray-200 transition-colors">Login</a>
+                    <a href="/register" class="bg-white text-purple-600 px-4 py-2 rounded-full hover:bg-gray-100 transition-colors">Sign Up</a>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-comments fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="card-title">Feedback Analyzer</h5>
-                    <p class="card-text">Analyze customer feedback and reviews to gain valuable insights for improvement.</p>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section flex items-center justify-center relative">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-6xl md:text-8xl font-black text-white mb-8 leading-tight">
+                    AI-Powered Tools for
+                    <span class="text-gradient block">Small Business</span> Success
+                </h1>
+                <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Transform your business operations with our comprehensive AI toolkit designed specifically for ambitious entrepreneurs and small business owners.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <button class="btn-primary pulse-animation group">
+                        <i class="fas fa-rocket mr-3"></i>
+                        Get Started Free
+                        <i class="fas fa-arrow-right ml-3 transform group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                    <button class="btn-secondary group">
+                        <i class="fas fa-play mr-3"></i>
+                        Watch Demo
+                        <i class="fas fa-external-link-alt ml-3 transform group-hover:scale-110 transition-transform"></i>
+                    </button>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-envelope fa-3x text-primary"></i>
+
+        <!-- Scroll Indicator -->
+        <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 bg-gradient-to-br from-gray-50 to-white">
+        <div class="container mx-auto px-6">
+            <div class="text-center mb-20 reveal">
+                <h2 class="text-5xl md:text-6xl font-black text-gray-800 mb-6">
+                    Powerful Tools at Your
+                    <span style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Fingertips</span>
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+                    Everything you need to grow your business, powered by cutting-edge artificial intelligence technology that adapts to your unique needs.
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Website Builder -->
+                <div class="feature-card reveal group">
+                    <div class="feature-icon icon-website">
+                        <i class="fas fa-globe"></i>
                     </div>
-                    <h5 class="card-title">Email Drafter</h5>
-                    <p class="card-text">Craft professional emails for marketing, customer service, and business communications.</p>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">AI Website Builder</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Create stunning, professional websites with AI-generated content perfectly tailored to your business identity and goals.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Feedback Analyzer -->
+                <div class="feature-card reveal group" style="animation-delay: 0.1s;">
+                    <div class="feature-icon icon-feedback">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Smart Feedback Analyzer</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Transform customer feedback and reviews into actionable insights with advanced sentiment analysis and trend detection.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Email Drafter -->
+                <div class="feature-card reveal group" style="animation-delay: 0.2s;">
+                    <div class="feature-icon icon-email">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Intelligent Email Drafter</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Craft compelling emails for marketing campaigns, customer service, and business communications with AI assistance.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Poster Maker -->
+                <div class="feature-card reveal group" style="animation-delay: 0.3s;">
+                    <div class="feature-icon icon-poster">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Creative Poster Maker</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Design eye-catching posters, flyers, and marketing materials that capture attention and drive engagement.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Sales Insights -->
+                <div class="feature-card reveal group" style="animation-delay: 0.4s;">
+                    <div class="feature-icon icon-sales">
+                        <i class="fas fa-chart-trending-up"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Advanced Sales Insights</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Upload your sales data and receive detailed analytics, forecasts, and recommendations to boost performance.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
+                </div>
+
+                <!-- Business Profile -->
+                <div class="feature-card reveal group" style="animation-delay: 0.5s;">
+                    <div class="feature-icon icon-profile">
+                        <i class="fas fa-user-gear"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-4">Smart Business Profile</h3>
+                    <p class="text-gray-600 mb-6 leading-relaxed">Manage your business information and customize AI-powered tools to match your specific industry and goals.</p>
+                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                        Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
+                    </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-image fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="card-title">Poster Maker</h5>
-                    <p class="card-text">Design eye-catching posters and marketing materials for your business.</p>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="py-24 bg-gradient-to-r from-purple-600 via-blue-600 to-blue-700 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
+                    Trusted by Thousands of
+                    <span class="text-gradient">Entrepreneurs</span>
+                </h2>
+                <p class="text-xl text-white/80 max-w-2xl mx-auto">
+                    Join the growing community of successful business owners who are transforming their operations with AI.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="stat-card reveal">
+                    <div class="stat-number" data-count="15000">0</div>
+                    <div class="text-white/90 text-lg font-semibold">Happy Customers</div>
+                    <div class="text-white/70 text-sm mt-2">Across 50+ countries</div>
+                </div>
+                <div class="stat-card reveal" style="animation-delay: 0.2s;">
+                    <div class="stat-number" data-count="75000">0</div>
+                    <div class="text-white/90 text-lg font-semibold">Projects Completed</div>
+                    <div class="text-white/70 text-sm mt-2">And counting every day</div>
+                </div>
+                <div class="stat-card reveal" style="animation-delay: 0.4s;">
+                    <div class="stat-number" data-count="99">0</div>
+                    <div class="text-white/90 text-lg font-semibold">% Success Rate</div>
+                    <div class="text-white/70 text-sm mt-2">Customer satisfaction</div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-chart-line fa-3x text-primary"></i>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
+        <div class="container mx-auto px-6 text-center relative z-10">
+            <div class="max-w-4xl mx-auto reveal">
+                <h3 class="text-5xl md:text-6xl font-black text-white mb-8 leading-tight">
+                    Ready to Transform Your
+                    <span style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Business?</span>
+                </h3>
+                <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Join thousands of innovative business owners who are already using AI to accelerate their growth, streamline operations, and achieve remarkable success.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                    <button class="btn-primary pulse-animation group">
+                        <i class="fas fa-rocket mr-3"></i>
+                        Start Your Free Trial
+                        <i class="fas fa-arrow-right ml-3 transform group-hover:translate-x-2 transition-transform"></i>
+                    </button>
+                    <button class="btn-secondary group">
+                        <i class="fas fa-phone mr-3"></i>
+                        Contact Sales Team
+                        <i class="fas fa-external-link-alt ml-3 transform group-hover:scale-110 transition-transform"></i>
+                    </button>
+                </div>
+                
+                <div class="mt-16 text-center">
+                    <p class="text-gray-400 mb-4">Trusted by leading companies</p>
+                    <div class="flex justify-center items-center space-x-8 opacity-60">
+                        <div class="w-24 h-8 bg-white/10 rounded flex items-center justify-center">
+                            <span class="text-white text-sm font-semibold">StartupCo</span>
+                        </div>
+                        <div class="w-24 h-8 bg-white/10 rounded flex items-center justify-center">
+                            <span class="text-white text-sm font-semibold">TechFlow</span>
+                        </div>
+                        <div class="w-24 h-8 bg-white/10 rounded flex items-center justify-center">
+                            <span class="text-white text-sm font-semibold">InnovateLab</span>
+                        </div>
                     </div>
-                    <h5 class="card-title">Sales Insights</h5>
-                    <p class="card-text">Upload your sales data and get detailed analytics and insights to boost performance.</p>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm">
-                <div class="card-body text-center p-4">
-                    <div class="feature-icon mb-3">
-                        <i class="fas fa-user-tie fa-3x text-primary"></i>
-                    </div>
-                    <h5 class="card-title">Business Profile</h5>
-                    <p class="card-text">Manage your business information and customize your AI-powered tools.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center">
-            <div class="cta-section p-5 bg-light rounded">
-                <h3 class="mb-3">Ready to Transform Your Business?</h3>
-                <p class="mb-4">Join thousands of small business owners who are already using AI to grow their businesses.</p>
-                <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg">Start Your Free Trial</a>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
+    </section>
+
+    <script>
+        // Particle System
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
+            particle.style.animation = `particleFloat ${Math.random() * 10 + 10}s ease-in-out`;
+            document.querySelector('.hero-section').appendChild(particle);
+            
+            setTimeout(() => particle.remove(), 20000);
+        }
+
+        // Create particles
+        setInterval(createParticle, 300);
+
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-count'));
+                let current = 0;
+                const increment = target / 100;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        counter.textContent = target + (counter.textContent.includes('%') ? '%' : '');
+                        clearInterval(timer);
+                    } else {
+                        counter.textContent = Math.floor(current) + (counter.textContent.includes('%') ? '%' : '');
+                    }
+                }, 20);
+            });
+        }
+
+        // Scroll Animation Observer
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    
+                    // Trigger counter animation when stats section is visible
+                    if (entry.target.closest('#stats')) {
+                        setTimeout(animateCounters, 300);
+                    }
+                }
+            });
+        }, { threshold: 0.1 });
+
+        revealElements.forEach(element => {
+            revealObserver.observe(element);
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Add click handlers for buttons
+        document.querySelectorAll('.btn-primary, .btn-secondary').forEach(button => {
+            button.addEventListener('click', (e) => {
+                // Create ripple effect
+                const ripple = document.createElement('span');
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                button.appendChild(ripple);
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Feature card interactions
+        document.querySelectorAll('.feature-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) rotateX(5deg) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) rotateX(0) scale(1)';
+            });
+        });
+    </script>
+
+    <style>
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>
