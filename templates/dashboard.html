@@ -3,77 +3,269 @@
 {% block title %}Dashboard - AI Toolkit{% endblock %}
 
 {% block content %}
-<div class="row mb-4">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                <h1 class="h3">Welcome back{% if business %}, {{ business.business_name }}{% endif %}!</h1>
-                <p class="text-muted">Here's what you can accomplish today with AI-powered tools</p>
+<!-- Elegant Header with Ivory & Red Theme -->
+<div class="elegant-header">
+    <div class="header-content">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <div class="welcome-section">
+                    <div class="status-badge">
+                        <div class="status-dot"></div>
+                        <span>Active Session</span>
+                    </div>
+                    <h1 class="main-title">
+                        <span id="greeting">Good morning</span>{% if business %}, {{ business.business_name }}{% endif %}
+                    </h1>
+                    <p class="subtitle">Transform your business with intelligent AI solutions</p>
+                    <div class="achievement-bar">
+                        <div class="achievement-progress" data-progress="78"></div>
+                        <span class="achievement-text">78% workflow optimization achieved</span>
+                    </div>
+                </div>
             </div>
-            <div>
-                <span class="badge bg-success fs-6">All Systems Ready</span>
+            <div class="col-lg-5">
+                <div class="dashboard-metrics">
+                    <div class="metric-circle">
+                        <div class="circle-progress" data-percentage="92">
+                            <div class="circle-inner">
+                                <span class="percentage">92%</span>
+                                <span class="metric-label">Efficiency</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-decoration"></div>
+</div>
+
+<!-- Sophisticated Stats Grid -->
+<div class="stats-grid">
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="stat-item">
+                <div class="stat-visual">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-wand-magic-sparkles"></i>
+                    </div>
+                    <div class="stat-chart">
+                        <div class="mini-chart" data-values="[12, 18, 25, 30, 28, 35, 42]"></div>
+                    </div>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value" data-target="42">0</h3>
+                    <p class="stat-title">AI Operations</p>
+                    <span class="stat-trend positive">+18% this month</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stat-item">
+                <div class="stat-visual">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-rocket"></i>
+                    </div>
+                    <div class="stat-chart">
+                        <div class="mini-chart" data-values="[5, 8, 12, 15, 18, 22, 28]"></div>
+                    </div>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value" data-target="28">0</h3>
+                    <p class="stat-title">Projects Launched</p>
+                    <span class="stat-trend positive">+12% this month</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stat-item">
+                <div class="stat-visual">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="stat-chart">
+                        <div class="mini-chart" data-values="[45, 52, 48, 65, 72, 85, 96]"></div>
+                    </div>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value" data-target="96">0</h3>
+                    <p class="stat-title">Communications</p>
+                    <span class="stat-trend positive">+24% this month</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-3">
+            <div class="stat-item">
+                <div class="stat-visual">
+                    <div class="stat-icon-wrapper">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-chart">
+                        <div class="mini-chart" data-values="[20, 25, 30, 35, 45, 52, 64]"></div>
+                    </div>
+                </div>
+                <div class="stat-details">
+                    <h3 class="stat-value" data-target="64">0</h3>
+                    <p class="stat-title">Analytics Reports</p>
+                    <span class="stat-trend positive">+32% this month</span>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Quick Stats -->
-<div class="row mb-4">
-    <div class="col-md-3">
-        <div class="card bg-primary text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Tools Used</h6>
-                        <h2 class="mb-0">12</h2>
+<!-- Refined AI Tools Section -->
+<div class="tools-section">
+    <div class="section-title">
+        <h2>AI-Powered Business Solutions</h2>
+        <p>Sophisticated tools designed for modern enterprises</p>
+    </div>
+    
+    <div class="tools-masonry">
+        <div class="row g-4">
+            <!-- Website Builder - Featured Tool -->
+            <div class="col-lg-6">
+                <div class="tool-card featured-tool">
+                    <div class="tool-header">
+                        <div class="tool-meta">
+                            <span class="tool-category">Website Development</span>
+                            <span class="featured-badge">Featured</span>
+                        </div>
+                        <div class="tool-icon-large">
+                            <i class="fas fa-globe-americas"></i>
+                        </div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-tools fa-2x opacity-75"></i>
+                    <div class="tool-content">
+                        <h3>Professional Website Builder</h3>
+                        <p>Create stunning, responsive websites with AI-powered content generation, custom design templates, and seamless deployment capabilities.</p>
+                        <div class="tool-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>AI Content Generation</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>Responsive Design</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check"></i>
+                                <span>One-Click Deployment</span>
+                            </div>
+                        </div>
+                        <div class="tool-stats-row">
+                            <div class="tool-stat">
+                                <span class="stat-number">2.4k+</span>
+                                <span class="stat-label">Sites Created</span>
+                            </div>
+                            <div class="tool-stat">
+                                <span class="stat-number">98%</span>
+                                <span class="stat-label">Satisfaction</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tool-action">
+                        <a href="{{ url_for('website_tool') }}" class="btn-primary-red">
+                            Start Building
+                            <i class="fas fa-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-success text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Websites Created</h6>
-                        <h2 class="mb-0">3</h2>
+            
+            <!-- Other Tools in Grid -->
+            <div class="col-lg-6">
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <div class="tool-card compact-tool">
+                            <div class="compact-header">
+                                <div class="compact-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <span class="tool-status new">New</span>
+                            </div>
+                            <div class="compact-content">
+                                <h4>Feedback Intelligence</h4>
+                                <p>Advanced sentiment analysis and customer insight extraction.</p>
+                                <div class="compact-metric">
+                                    <span class="metric-value">99.2%</span>
+                                    <span class="metric-label">Accuracy</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('feedback_tool') }}" class="compact-action">
+                                <span>Analyze</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-globe fa-2x opacity-75"></i>
+                    
+                    <div class="col-md-6">
+                        <div class="tool-card compact-tool">
+                            <div class="compact-header">
+                                <div class="compact-icon">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </div>
+                                <span class="tool-status trending">Trending</span>
+                            </div>
+                            <div class="compact-content">
+                                <h4>Email Composer</h4>
+                                <p>Professional email crafting with AI-powered personalization.</p>
+                                <div class="compact-metric">
+                                    <span class="metric-value">94%</span>
+                                    <span class="metric-label">Open Rate</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('email_tool') }}" class="compact-action">
+                                <span>Compose</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-info text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Emails Drafted</h6>
-                        <h2 class="mb-0">25</h2>
+                    
+                    <div class="col-md-6">
+                        <div class="tool-card compact-tool">
+                            <div class="compact-header">
+                                <div class="compact-icon">
+                                    <i class="fas fa-palette"></i>
+                                </div>
+                            </div>
+                            <div class="compact-content">
+                                <h4>Design Studio</h4>
+                                <p>Create compelling visual content and marketing materials.</p>
+                                <div class="compact-metric">
+                                    <span class="metric-value">500+</span>
+                                    <span class="metric-label">Templates</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('poster_tool') }}" class="compact-action">
+                                <span>Design</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-envelope fa-2x opacity-75"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-3">
-        <div class="card bg-warning text-white">
-            <div class="card-body">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <h6 class="card-title">Reports Generated</h6>
-                        <h2 class="mb-0">8</h2>
-                    </div>
-                    <div class="align-self-center">
-                        <i class="fas fa-chart-bar fa-2x opacity-75"></i>
+                    
+                    <div class="col-md-6">
+                        <div class="tool-card compact-tool">
+                            <div class="compact-header">
+                                <div class="compact-icon">
+                                    <i class="fas fa-chart-pie"></i>
+                                </div>
+                            </div>
+                            <div class="compact-content">
+                                <h4>Sales Analytics</h4>
+                                <p>Comprehensive data analysis and performance insights.</p>
+                                <div class="compact-metric">
+                                    <span class="metric-value">Real-time</span>
+                                    <span class="metric-label">Processing</span>
+                                </div>
+                            </div>
+                            <a href="{{ url_for('sales_tool') }}" class="compact-action">
+                                <span>Analyze</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -81,164 +273,130 @@
     </div>
 </div>
 
-<!-- AI Tools Grid -->
-<div class="row mb-4">
-    <div class="col-12">
-        <h4 class="mb-3">AI-Powered Tools</h4>
-    </div>
-</div>
-
-<div class="row g-4 mb-5">
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-globe fa-3x text-primary"></i>
+<!-- Activity & Insights Dashboard -->
+<div class="row g-4 mt-4">
+    <div class="col-lg-8">
+        <div class="activity-panel">
+            <div class="panel-header">
+                <div class="header-left">
+                    <h3>Recent Activity</h3>
+                    <p>Your AI-powered workflow timeline</p>
                 </div>
-                <h5 class="card-title">Website Builder</h5>
-                <p class="card-text">Create professional websites with AI-generated content tailored to your business needs.</p>
-                <a href="{{ url_for('website_tool') }}" class="btn btn-primary">Launch Tool</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-comments fa-3x text-success"></i>
-                </div>
-                <h5 class="card-title">Feedback Analyzer</h5>
-                <p class="card-text">Analyze customer feedback and reviews to gain valuable insights for business improvement.</p>
-                <a href="{{ url_for('feedback_tool') }}" class="btn btn-success">Launch Tool</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-envelope fa-3x text-info"></i>
-                </div>
-                <h5 class="card-title">Email Drafter</h5>
-                <p class="card-text">Craft professional emails for marketing, customer service, and business communications.</p>
-                <a href="{{ url_for('email_tool') }}" class="btn btn-info">Launch Tool</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-image fa-3x text-warning"></i>
-                </div>
-                <h5 class="card-title">Poster Maker</h5>
-                <p class="card-text">Design eye-catching posters and marketing materials to promote your business effectively.</p>
-                <a href="{{ url_for('poster_tool') }}" class="btn btn-warning">Launch Tool</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-chart-line fa-3x text-danger"></i>
-                </div>
-                <h5 class="card-title">Sales Insights</h5>
-                <p class="card-text">Upload your sales data and get detailed analytics and insights to boost performance.</p>
-                <a href="{{ url_for('sales_tool') }}" class="btn btn-danger">Launch Tool</a>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-6 col-lg-4">
-        <div class="card h-100 border-0 shadow-sm tool-card">
-            <div class="card-body text-center p-4">
-                <div class="tool-icon mb-3">
-                    <i class="fas fa-user-tie fa-3x text-secondary"></i>
-                </div>
-                <h5 class="card-title">Business Profile</h5>
-                <p class="card-text">Manage your business information and customize your AI-powered tools preferences.</p>
-                <a href="{{ url_for('profile') }}" class="btn btn-secondary">View Profile</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Recent Activity -->
-<div class="row">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Recent Activity</h5>
-                <small class="text-muted">Last 7 days</small>
-            </div>
-            <div class="card-body">
-                <div class="activity-item d-flex align-items-center mb-3">
-                    <div class="activity-icon me-3">
-                        <i class="fas fa-globe text-primary"></i>
+                <div class="header-right">
+                    <div class="time-filters">
+                        <button class="time-filter active" data-period="today">Today</button>
+                        <button class="time-filter" data-period="week">7 Days</button>
+                        <button class="time-filter" data-period="month">30 Days</button>
                     </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold">Website content generated</div>
-                        <small class="text-muted">2 hours ago</small>
+                </div>
+            </div>
+            
+            <div class="activity-stream">
+                <div class="activity-row">
+                    <div class="activity-time">14:30</div>
+                    <div class="activity-indicator website"></div>
+                    <div class="activity-content">
+                        <h5>Website deployment successful</h5>
+                        <p>Restaurant landing page published with custom domain integration</p>
+                        <span class="activity-tag">Website Builder</span>
                     </div>
                 </div>
                 
-                <div class="activity-item d-flex align-items-center mb-3">
-                    <div class="activity-icon me-3">
-                        <i class="fas fa-envelope text-info"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold">Marketing email drafted</div>
-                        <small class="text-muted">1 day ago</small>
-                    </div>
-                </div>
-                
-                <div class="activity-item d-flex align-items-center mb-3">
-                    <div class="activity-icon me-3">
-                        <i class="fas fa-chart-line text-success"></i>
-                    </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold">Sales report analyzed</div>
-                        <small class="text-muted">2 days ago</small>
+                <div class="activity-row">
+                    <div class="activity-time">12:15</div>
+                    <div class="activity-indicator email"></div>
+                    <div class="activity-content">
+                        <h5>Email campaign generated</h5>
+                        <p>Marketing sequence created with 95% engagement prediction</p>
+                        <span class="activity-tag">Email Composer</span>
                     </div>
                 </div>
                 
-                <div class="activity-item d-flex align-items-center">
-                    <div class="activity-icon me-3">
-                        <i class="fas fa-comments text-warning"></i>
+                <div class="activity-row">
+                    <div class="activity-time">10:45</div>
+                    <div class="activity-indicator analytics"></div>
+                    <div class="activity-content">
+                        <h5>Sales report processed</h5>
+                        <p>Q4 performance analysis completed with growth recommendations</p>
+                        <span class="activity-tag">Sales Analytics</span>
                     </div>
-                    <div class="flex-grow-1">
-                        <div class="fw-semibold">Customer feedback analyzed</div>
-                        <small class="text-muted">3 days ago</small>
+                </div>
+                
+                <div class="activity-row">
+                    <div class="activity-time">09:20</div>
+                    <div class="activity-indicator feedback"></div>
+                    <div class="activity-content">
+                        <h5>Customer sentiment analyzed</h5>
+                        <p>247 reviews processed with detailed sentiment breakdown</p>
+                        <span class="activity-tag">Feedback Intelligence</span>
                     </div>
                 </div>
             </div>
         </div>
     </div>
     
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Quick Tips</h5>
+    <div class="col-lg-4">
+        <div class="insights-panel">
+            <div class="panel-header">
+                <h3>AI Insights</h3>
+                <p>Intelligent recommendations</p>
             </div>
-            <div class="card-body">
-                <div class="tip-item mb-3">
-                    <div class="fw-semibold text-primary">💡 Pro Tip</div>
-                    <small>Upload your customer feedback regularly to the Feedback Analyzer for better insights.</small>
+            
+            <div class="insight-cards">
+                <div class="insight-card priority-high">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h5>Optimization Opportunity</h5>
+                        <p>Your email campaigns show 23% higher engagement on Tuesdays. Consider scheduling more content for optimal reach.</p>
+                    </div>
+                    <div class="insight-action">
+                        <button class="btn-insight">Apply Suggestion</button>
+                    </div>
                 </div>
                 
-                <div class="tip-item mb-3">
-                    <div class="fw-semibold text-success">🚀 Growth Hack</div>
-                    <small>Use the Email Drafter to create consistent marketing campaigns.</small>
+                <div class="insight-card priority-medium">
+                    <div class="insight-icon">
+                        <i class="fas fa-trending-up"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h5>Growth Pattern Detected</h5>
+                        <p>Your website traffic increased 40% after implementing AI-generated content. Continue this strategy.</p>
+                    </div>
                 </div>
                 
-                <div class="tip-item">
-                    <div class="fw-semibold text-info">📊 Analytics</div>
-                    <small>Regular sales data uploads help identify trends and opportunities.</small>
+                <div class="insight-card priority-low">
+                    <div class="insight-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h5>Feature Recommendation</h5>
+                        <p>Based on your usage, you might benefit from our new automated poster scheduling feature.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h4>Quick Actions</h4>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="location.href='{{ url_for('website_tool') }}'">
+                        <i class="fas fa-plus"></i>
+                        <span>New Site</span>
+                    </button>
+                    <button class="action-btn" onclick="location.href='{{ url_for('email_tool') }}'">
+                        <i class="fas fa-edit"></i>
+                        <span>Draft Email</span>
+                    </button>
+                    <button class="action-btn" onclick="location.href='{{ url_for('sales_tool') }}'">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Data</span>
+                    </button>
+                    <button class="action-btn" onclick="location.href='{{ url_for('profile') }}'">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -248,22 +406,896 @@
 
 {% block scripts %}
 <style>
-.tool-card {
-    transition: transform 0.2s ease-in-out;
+/* Ivory & Red Color Scheme */
+:root {
+    --ivory: #FFFEF7;
+    --ivory-dark: #F8F6F0;
+    --ivory-darker: #F0ECE3;
+    --red: #DC2626;
+    --red-light: #EF4444;
+    --red-dark: #B91C1C;
+    --red-pale: #FEF2F2;
+    --charcoal: #374151;
+    --charcoal-light: #6B7280;
+    --charcoal-lighter: #9CA3AF;
+    --success: #059669;
+    --shadow-light: 0 4px 16px rgba(220, 38, 38, 0.08);
+    --shadow-medium: 0 8px 32px rgba(220, 38, 38, 0.12);
+    --shadow-strong: 0 16px 48px rgba(220, 38, 38, 0.16);
 }
 
-.tool-card:hover {
-    transform: translateY(-2px);
+body {
+    background: var(--ivory);
+    color: var(--charcoal);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-.activity-icon {
-    width: 35px;
-    height: 35px;
+/* Elegant Header */
+.elegant-header {
+    background: linear-gradient(135deg, var(--ivory) 0%, var(--ivory-dark) 100%);
+    border: 1px solid var(--ivory-darker);
+    border-radius: 24px;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.elegant-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(220, 38, 38, 0.05) 0%, transparent 70%);
     border-radius: 50%;
-    background-color: #f8f9fa;
+    transform: translate(50px, -50px);
+}
+
+.header-decoration {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red-light) 50%, var(--red) 100%);
+}
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--red-pale);
+    color: var(--red);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--red);
+    border-radius: 50%;
+    animation: statusPulse 2s infinite;
+}
+
+.main-title {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.subtitle {
+    font-size: 1.25rem;
+    color: var(--charcoal-light);
+    margin-bottom: 2rem;
+}
+
+.achievement-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: white;
+    padding: 1rem;
+    border-radius: 12px;
+    box-shadow: var(--shadow-light);
+}
+
+.achievement-progress {
+    width: 200px;
+    height: 6px;
+    background: var(--ivory-darker);
+    border-radius: 3px;
+    position: relative;
+    overflow: hidden;
+}
+
+.achievement-progress::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red-light) 100%);
+    border-radius: 3px;
+    transition: width 2s ease;
+    width: 0;
+}
+
+.achievement-text {
+    font-weight: 600;
+    color: var(--charcoal);
+}
+
+/* Dashboard Metrics Circle */
+.dashboard-metrics {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.metric-circle {
+    position: relative;
+    width: 180px;
+    height: 180px;
+}
+
+.circle-progress {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: conic-gradient(var(--red) 0deg, var(--red-light) calc(var(--percentage) * 3.6deg), var(--ivory-darker) calc(var(--percentage) * 3.6deg));
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+}
+
+.circle-inner {
+    width: 140px;
+    height: 140px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: var(--shadow-light);
+}
+
+.percentage {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--red);
+}
+
+.metric-label {
+    font-size: 0.875rem;
+    color: var(--charcoal-light);
+    font-weight: 600;
+}
+
+/* Sophisticated Stats Grid */
+.stats-grid {
+    margin-bottom: 3rem;
+}
+
+.stat-item {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    transition: all 0.3s ease;
+    border: 1px solid var(--ivory-darker);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--red), var(--red-light));
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+}
+
+.stat-visual {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.stat-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: var(--red-pale);
+    color: var(--red);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+.mini-chart {
+    width: 80px;
+    height: 40px;
+    position: relative;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--charcoal);
+    margin: 0;
+}
+
+.stat-title {
+    color: var(--charcoal-light);
+    font-weight: 600;
+    margin: 0.5rem 0;
+}
+
+.stat-trend {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+.stat-trend.positive {
+    color: var(--success);
+}
+
+/* Refined Tools Section */
+.tools-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.section-title h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+}
+
+.section-title p {
+    font-size: 1.25rem;
+    color: var(--charcoal-light);
+}
+
+/* Featured Tool Card */
+.featured-tool {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: var(--shadow-medium);
+    border: 1px solid var(--ivory-darker);
+    position: relative;
+    height: 100%;
+}
+
+.tool-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.tool-category {
+    color: var(--charcoal-light);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.featured-badge {
+    background: var(--red);
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tool-icon-large {
+    width: 80px;
+    height: 80px;
+    background: var(--red-pale);
+    color: var(--red);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+.featured-tool h3 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+}
+
+.featured-tool p {
+    color: var(--charcoal-light);
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.tool-features {
+    margin-bottom: 2rem;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.feature-item i {
+    color: var(--success);
+    font-size: 0.875rem;
+}
+
+.tool-stats-row {
+    display: flex;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.tool-stat {
+    text-align: center;
+}
+
+.tool-stat .stat-number {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--red);
+}
+
+.tool-stat .stat-label {
+    font-size: 0.875rem;
+    color: var(--charcoal-light);
+}
+
+.btn-primary-red {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: var(--red);
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 16px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-primary-red:hover {
+    background: var(--red-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-medium);
+}
+
+/* Compact Tool Cards */
+.compact-tool {
+    background: white;
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--ivory-darker);
+    transition: all 0.3s ease;
+    height: 100%;
+    position: relative;
+}
+
+.compact-tool:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-medium);
+}
+
+.compact-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.compact-icon {
+    width: 50px;
+    height: 50px;
+    background: var(--red-pale);
+    color: var(--red);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+}
+
+.tool-status {
+    padding: 0.25rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.tool-status.new {
+    background: var(--success);
+    color: white;
+}
+
+.tool-status.trending {
+    background: var(--red);
+    color: white;
+}
+
+.compact-content h4 {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 0.75rem;
+}
+
+.compact-content p {
+    color: var(--charcoal-light);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.compact-metric {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.compact-metric .metric-value {
+    font-weight: 700;
+    color: var(--red);
+}
+
+.compact-metric .metric-label {
+    font-size: 0.875rem;
+    color: var(--charcoal-light);
+}
+
+.compact-action {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--red);
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+    background: var(--red-pale);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.compact-action:hover {
+    color: white;
+    background: var(--red);
+}
+
+/* Activity Panel */
+.activity-panel {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--ivory-darker);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--ivory-darker);
+}
+
+.header-left h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin: 0;
+}
+
+.header-left p {
+    color: var(--charcoal-light);
+    margin: 0;
+}
+
+.time-filters {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.time-filter {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--ivory-darker);
+    background: transparent;
+    color: var(--charcoal-light);
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.time-filter.active,
+.time-filter:hover {
+    background: var(--red);
+    color: white;
+    border-color: var(--red);
+}
+
+.activity-stream {
+    space-y: 1.5rem;
+}
+
+.activity-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.activity-row:hover {
+    background: var(--ivory-dark);
+}
+
+.activity-time {
+    font-size: 0.875rem;
+    color: var(--charcoal-light);
+    font-weight: 600;
+    min-width: 60px;
+}
+
+.activity-indicator {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+}
+
+.activity-indicator.website { background: var(--red); }
+.activity-indicator.email { background: #3B82F6; }
+.activity-indicator.analytics { background: var(--success); }
+.activity-indicator.feedback { background: #8B5CF6; }
+
+.activity-content h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin: 0 0 0.25rem 0;
+}
+
+.activity-content p {
+    color: var(--charcoal-light);
+    margin: 0 0 0.5rem 0;
+    line-height: 1.4;
+}
+
+.activity-tag {
+    background: var(--ivory-darker);
+    color: var(--charcoal-light);
+    padding: 0.25rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Insights Panel */
+.insights-panel {
+    background: white;
+    border-radius: 24px;
+    padding: 2rem;
+    box-shadow: var(--shadow-light);
+    border: 1px solid var(--ivory-darker);
+}
+
+.insight-cards {
+    margin-bottom: 2rem;
+}
+
+.insight-card {
+    background: var(--ivory-dark);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--red);
+    transition: all 0.3s ease;
+}
+
+.insight-card:hover {
+    background: white;
+    box-shadow: var(--shadow-light);
+}
+
+.insight-card.priority-high { border-left-color: var(--red); }
+.insight-card.priority-medium { border-left-color: #F59E0B; }
+.insight-card.priority-low { border-left-color: var(--success); }
+
+.insight-icon {
+    width: 40px;
+    height: 40px;
+    background: var(--red-pale);
+    color: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.insight-card h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--charcoal);
+    margin-bottom: 0.5rem;
+}
+
+.insight-card p {
+    color: var(--charcoal-light);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.btn-insight {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-insight:hover {
+    background: var(--red-dark);
+}
+
+/* Quick Actions */
+.quick-actions h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--charcoal);
+    margin-bottom: 1rem;
+}
+
+.action-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+}
+
+.action-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+    border: 1px solid var(--ivory-darker);
+    border-radius: 12px;
+    background: white;
+    color: var(--charcoal);
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover {
+    border-color: var(--red);
+    color: var(--red);
+    background: var(--red-pale);
+}
+
+.action-btn i {
+    font-size: 1.25rem;
+}
+
+.action-btn span {
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Animations */
+@keyframes statusPulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+@keyframes counterUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .main-title {
+        font-size: 2rem;
+    }
+    
+    .elegant-header {
+        padding: 2rem 1.5rem;
+    }
+    
+    .panel-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .action-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-metrics {
+        margin-top: 2rem;
+    }
 }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Dynamic greeting
+    const hour = new Date().getHours();
+    const greetingEl = document.getElementById('greeting');
+    
+    if (hour < 12) greetingEl.textContent = 'Good morning';
+    else if (hour < 17) greetingEl.textContent = 'Good afternoon';
+    else greetingEl.textContent = 'Good evening';
+    
+    // Animated counters
+    const animateCounters = () => {
+        const counters = document.querySelectorAll('.stat-value');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const counter = entry.target;
+                    const target = parseInt(counter.getAttribute('data-target'));
+                    const increment = target / 60;
+                    let current = 0;
+                    
+                    const updateCounter = () => {
+                        current += increment;
+                        if (current < target) {
+                            counter.textContent = Math.ceil(current);
+                            requestAnimationFrame(updateCounter);
+                        } else {
+                            counter.textContent = target;
+                        }
+                    };
+                    
+                    counter.style.animation = 'counterUp 0.6s ease';
+                    updateCounter();
+                    observer.unobserve(counter);
+                }
+            });
+        });
+        
+        counters.forEach(counter => observer.observe(counter));
+    };
+    
+    // Achievement bar animation
+    setTimeout(() => {
+        const progressBar = document.querySelector('.achievement-progress');
+        const progress = progressBar.getAttribute('data-progress');
+        progressBar.style.setProperty('--progress', progress + '%');
+        progressBar.querySelector('::after').style.width = progress + '%';
+    }, 1000);
+    
+    // Circle progress animation
+    const circleProgress = document.querySelector('.circle-progress');
+    if (circleProgress) {
+        const percentage = circleProgress.getAttribute('data-percentage');
+        circleProgress.style.setProperty('--percentage', percentage);
+    }
+    
+    // Mini charts simulation
+    document.querySelectorAll('.mini-chart').forEach(chart => {
+        const values = JSON.parse(chart.getAttribute('data-values'));
+        const canvas = document.createElement('canvas');
+        canvas.width = 80;
+        canvas.height = 40;
+        chart.appendChild(canvas);
+        
+        const ctx = canvas.getContext('2d');
+        ctx.strokeStyle = '#DC2626';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        
+        values.forEach((value, index) => {
+            const x = (index / (values.length - 1)) * 80;
+            const y = 40 - ((value / Math.max(...values)) * 35);
+            if (index === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+        });
+        
+        ctx.stroke();
+    });
+    
+    // Time filter functionality
+    document.querySelectorAll('.time-filter').forEach(filter => {
+        filter.addEventListener('click', () => {
+            document.querySelectorAll('.time-filter').forEach(f => f.classList.remove('active'));
+            filter.classList.add('active');
+            
+            // Simulate activity filtering
+            const activities = document.querySelectorAll('.activity-row');
+            activities.forEach((activity, index) => {
+                activity.style.animation = `counterUp 0.4s ease ${index * 0.1}s forwards`;
+            });
+        });
+    });
+    
+    // Insight card interactions
+    document.querySelectorAll('.btn-insight').forEach(btn => {
+        btn.addEventListener('click', () => {
+            btn.textContent = 'Applied ✓';
+            btn.style.background = '#059669';
+            setTimeout(() => {
+                btn.textContent = 'Apply Suggestion';
+                btn.style.background = '#DC2626';
+            }, 2000);
+        });
+    });
+    
+    // Initialize animations
+    animateCounters();
+    
+    // Tool card hover effects
+    document.querySelectorAll('.compact-tool').forEach(card => {
+        card.addEventListener('mouseenter', () => {
+            card.style.transform = 'translateY(-4px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+});
+</script>
+<script src="{{ url_for('static', filename='js/speech_integration.js') }}"></script>
+<script src="{{ url_for('static', filename='js/enhanced_form_integration.js') }}"></script>
 {% endblock %}

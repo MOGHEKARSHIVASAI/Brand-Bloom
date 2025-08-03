@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
-{% block title %}Email Drafter - AI Toolkit{% endblock %}
+{% block title %}Email Drafter & Sender - AI Toolkit{% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h2><i class="fas fa-envelope text-info me-2"></i>Email Drafter</h2>
-                <p class="text-muted">Create professional emails for marketing, customer service, and business communications</p>
+                <h2><i class="fas fa-envelope text-info me-2"></i>Email Drafter & Sender</h2>
+                <p class="text-muted">Create professional emails and send them to customers</p>
             </div>
             <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
                 <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
@@ -85,30 +85,55 @@
             </div>
         </div>
         
-        <div class="card mt-3">
+        <!-- Email Sending Section -->
+        <div class="card mt-3" id="emailSendingCard" style="display: none;">
             <div class="card-header">
-                <h6 class="mb-0">Recent Emails</h6>
+                <h6 class="mb-0">Send Email</h6>
             </div>
             <div class="card-body">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item px-0 py-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <div class="fw-semibold">Welcome Campaign</div>
-                                <small class="text-muted">Marketing • Friendly</small>
-                            </div>
-                            <small class="text-muted">2h ago</small>
+                <!-- Single Email -->
+                <div class="mb-3">
+                    <h6 class="text-primary">Send Single Email</h6>
+                    <form id="singleEmailForm">
+                        <div class="mb-2">
+                            <input type="email" class="form-control form-control-sm" id="recipientEmail" 
+                                   placeholder="Recipient email" required>
                         </div>
-                    </div>
-                    <div class="list-group-item px-0 py-2">
-                        <div class="d-flex justify-content-between">
-                            <div>
-                                <div class="fw-semibold">Customer Support</div>
-                                <small class="text-muted">Service • Professional</small>
-                            </div>
-                            <small class="text-muted">1d ago</small>
+                        <div class="mb-2">
+                            <input type="text" class="form-control form-control-sm" id="recipientName" 
+                                   placeholder="Recipient name (optional)">
                         </div>
-                    </div>
+                        <button type="submit" class="btn btn-success btn-sm w-100">
+                            <i class="fas fa-paper-plane me-1"></i>Send Email
+                        </button>
+                    </form>
+                </div>
+                
+                <hr>
+                
+                <!-- Bulk Email -->
+                <div class="mb-3">
+                    <h6 class="text-primary">Send Bulk Emails</h6>
+                    <form id="bulkEmailForm">
+                        <div class="mb-2">
+                            <input type="file" class="form-control form-control-sm" id="csvFile" 
+                                   accept=".csv" required>
+                            <small class="text-muted">CSV format: name,email</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm w-100">
+                            <i class="fas fa-users me-1"></i>Send to All
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- CSV Example -->
+                <div class="mt-3">
+                    <small class="text-muted">
+                        <strong>CSV Example:</strong><br>
+                        name,email<br>
+                        John Smith,john@example.com<br>
+                        Jane Doe,jane@example.com
+                    </small>
                 </div>
             </div>
         </div>
@@ -120,7 +145,7 @@
                 <h5 class="mb-0">Generated Email</h5>
                 <div>
                     <button class="btn btn-sm btn-outline-primary" id="copyEmailBtn" style="display: none;">
-                        <i class="fas fa-copy me-1"></i>Copy Email
+                        <i class="fas fa-copy me-1"></i>Copy
                     </button>
                     <button class="btn btn-sm btn-primary" id="downloadBtn" style="display: none;">
                         <i class="fas fa-download me-1"></i>Download
@@ -137,6 +162,16 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+        
+        <!-- Email Results -->
+        <div class="card mt-3" id="emailResults" style="display: none;">
+            <div class="card-header">
+                <h6 class="mb-0">Email Results</h6>
+            </div>
+            <div class="card-body">
+                <div id="emailResultsContent"></div>
             </div>
         </div>
         
@@ -179,9 +214,16 @@ document.addEventListener('DOMContentLoaded', function() {
     const copyEmailBtn = document.getElementById('copyEmailBtn');
     const downloadBtn = document.getElementById('downloadBtn');
     const emailPreview = document.getElementById('emailPreview');
+    const singleEmailForm = document.getElementById('singleEmailForm');
+    const bulkEmailForm = document.getElementById('bulkEmailForm');
+    const emailSendingCard = document.getElementById('emailSendingCard');
+    const emailResults = document.getElementById('emailResults');
     
     let generatedEmail = '';
+    let generatedSubject = '';
+    let generatedBody = '';
     
+    // Generate email
     emailForm.addEventListener('submit', async function(e) {
         e.preventDefault();
         
@@ -204,17 +246,32 @@ document.addEventListener('DOMContentLoaded', function() {
         generateBtn.disabled = true;
         
         try {
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000));
+            const response = await fetch('/api/draft-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
             
-            // Generate mock email
-            const email = generateMockEmail(formData);
-            displayEmail(email);
+            const result = await response.json();
             
-            // Show action buttons
-            copyEmailBtn.style.display = 'inline-block';
-            downloadBtn.style.display = 'inline-block';
-            
+            if (result.status === 'success') {
+                const email = result.email;
+                generatedSubject = email.subject;
+                generatedBody = email.body + '\n\n' + email.signature;
+                generatedEmail = `Subject: ${generatedSubject}\n\n${generatedBody}`;
+                
+                displayEmail(generatedEmail);
+                
+                // Show action buttons
+                copyEmailBtn.style.display = 'inline-block';
+                downloadBtn.style.display = 'inline-block';
+                emailSendingCard.style.display = 'block';
+                
+            } else {
+                alert('Failed to generate email: ' + result.message);
+            }
         } catch (error) {
             console.error('Error generating email:', error);
             alert('Failed to generate email');
@@ -224,15 +281,117 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Send single email
+    singleEmailForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!generatedSubject || !generatedBody) {
+            alert('Please generate an email first');
+            return;
+        }
+        
+        const email = document.getElementById('recipientEmail').value;
+        const name = document.getElementById('recipientName').value;
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        submitBtn.disabled = true;
+        
+        try {
+            const response = await fetch('/api/send-email', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: email,
+                    name: name,
+                    subject: generatedSubject,
+                    body: generatedBody
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showResults('success', result.message);
+                singleEmailForm.reset();
+            } else {
+                showResults('error', result.message);
+            }
+            
+        } catch (error) {
+            showResults('error', 'Error sending email: ' + error.message);
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    // Send bulk emails
+    bulkEmailForm.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!generatedSubject || !generatedBody) {
+            alert('Please generate an email first');
+            return;
+        }
+        
+        const csvFile = document.getElementById('csvFile').files[0];
+        if (!csvFile) {
+            alert('Please select a CSV file');
+            return;
+        }
+        
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        submitBtn.disabled = true;
+        
+        try {
+            const formData = new FormData();
+            formData.append('csv_file', csvFile);
+            formData.append('subject', generatedSubject);
+            formData.append('body', generatedBody);
+            
+            const response = await fetch('/api/send-bulk-emails', {
+                method: 'POST',
+                body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                let message = result.message;
+                if (result.errors && result.errors.length > 0) {
+                    message += '\n\nErrors:\n' + result.errors.join('\n');
+                }
+                showResults('success', message);
+                bulkEmailForm.reset();
+            } else {
+                showResults('error', result.message);
+            }
+            
+        } catch (error) {
+            showResults('error', 'Error sending bulk emails: ' + error.message);
+        } finally {
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }
+    });
+    
+    // Copy email functionality
     copyEmailBtn.addEventListener('click', function() {
         navigator.clipboard.writeText(generatedEmail).then(() => {
             this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
             setTimeout(() => {
-                this.innerHTML = '<i class="fas fa-copy me-1"></i>Copy Email';
+                this.innerHTML = '<i class="fas fa-copy me-1"></i>Copy';
             }, 2000);
         });
     });
     
+    // Download email functionality
     downloadBtn.addEventListener('click', function() {
         const blob = new Blob([generatedEmail], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
@@ -242,195 +401,52 @@ document.addEventListener('DOMContentLoaded', function() {
         a.click();
         URL.revokeObjectURL(url);
     });
-});
-
-function generateMockEmail(data) {
-    const subjects = {
-        marketing: `Exciting News from ${data.senderName || 'Our Team'}!`,
-        customer_service: `Re: Your Inquiry - We're Here to Help`,
-        follow_up: `Following Up on Our Conversation`,
-        thank_you: `Thank You from ${data.senderName || 'Our Team'}`,
-        announcement: `Important Update from ${data.senderName || 'Our Team'}`,
-        invitation: `You're Invited! Special Event`
-    };
     
-    const greetings = {
-        professional: 'Dear [Recipient Name]',
-        friendly: 'Hi [Recipient Name]',
-        casual: 'Hey [Recipient Name]',
-        formal: 'Dear [Recipient Name]',
-        urgent: 'Dear [Recipient Name]'
-    };
-    
-    const closings = {
-        professional: 'Best regards',
-        friendly: 'Thanks and best wishes',
-        casual: 'Talk soon',
-        formal: 'Sincerely',
-        urgent: 'Thank you for your immediate attention'
-    };
-    
-    const subject = data.purpose || subjects[data.emailType] || 'Professional Email';
-    const greeting = greetings[data.tone] || greetings.professional;
-    const closing = closings[data.tone] || closings.professional;
-    
-    let body = '';
-    
-    switch(data.emailType) {
-        case 'marketing':
-            body = `We hope this email finds you well.
-
-We're excited to share some fantastic news with you! ${data.context || 'We have something special that we think you\'ll love.'}
-
-${data.purpose ? `Our ${data.purpose.toLowerCase()} is now available, and we wanted you to be among the first to know.` : 'We have an exclusive offer just for you.'}
-
-Here's what makes this special:
-• Premium quality and excellent value
-• Designed with your needs in mind
-• Limited time availability
-
-Don't miss out on this opportunity! Click the link below to learn more and take advantage of this exclusive offer.
-
-[Call-to-Action Button]
-
-We appreciate your continued trust in us and look forward to serving you.`;
-            break;
-            
-        case 'customer_service':
-            body = `Thank you for reaching out to us.
-
-${data.context || 'We have received your inquiry and want to address your concerns promptly.'}
-
-We understand how important this matter is to you, and we're committed to providing you with the best possible solution.
-
-${data.purpose ? `Regarding your question about ${data.purpose.toLowerCase()}, ` : ''}Here's what we can do to help:
-
-• Review your specific situation thoroughly
-• Provide you with detailed information
-• Ensure you receive the support you need
-
-If you have any additional questions or concerns, please don't hesitate to contact us. We're here to help and want to ensure you have a positive experience.`;
-            break;
-            
-        case 'follow_up':
-            body = `I wanted to follow up on our recent conversation.
-
-${data.context || 'Thank you for taking the time to speak with us about your needs.'}
-
-${data.purpose ? `As discussed, regarding ${data.purpose.toLowerCase()}, ` : ''}I wanted to provide you with the next steps:
-
-• Review the information we discussed
-• Answer any additional questions you might have
-• Move forward with the proposed solution
-
-I'm available at your convenience to discuss this further. Please let me know what works best for your schedule.
-
-Looking forward to continuing our conversation and helping you achieve your goals.`;
-            break;
-            
-        case 'thank_you':
-            body = `Thank you so much for choosing us!
-
-${data.context || 'We truly appreciate your business and the trust you\'ve placed in our services.'}
-
-${data.purpose ? `Your recent ${data.purpose.toLowerCase()} means ` : 'Your support means '}a great deal to us, and we're committed to continuing to exceed your expectations.
-
-Here's what you can expect from us moving forward:
-• Continued excellent service
-• Regular updates and improvements
-• Dedicated support whenever you need it
-
-We look forward to serving you again and building a long-lasting relationship.
-
-Thank you once again for your business!`;
-            break;
-            
-        case 'announcement':
-            body = `We have some exciting news to share with you!
-
-${data.context || 'We\'re pleased to announce an important update that will benefit you.'}
-
-${data.purpose || 'This announcement reflects our commitment to providing you with the best possible experience.'}
-
-Here are the key details:
-• Enhanced features and improvements
-• Better value for our customers
-• Continued focus on your satisfaction
-
-We believe this change will have a positive impact on your experience with us.
-
-If you have any questions about this announcement, please don't hesitate to reach out. We're here to help and ensure a smooth transition.`;
-            break;
-            
-        case 'invitation':
-            body = `You're invited to join us for a special event!
-
-${data.context || 'We would be delighted to have you attend our upcoming event.'}
-
-Event Details:
-• What: ${data.purpose || 'Special Business Event'}
-• When: [Date and Time]
-• Where: [Location/Online]
-• Who: You and other valued guests
-
-This will be a great opportunity to:
-• Connect with like-minded professionals
-• Learn about exciting developments
-• Enjoy great company and refreshments
-
-Please RSVP by [Date] to secure your spot. We have limited spaces available, so we encourage you to respond soon.
-
-We hope to see you there!`;
-            break;
-            
-        default:
-            body = `${data.context || 'I hope this email finds you well.'}
-
-${data.purpose || 'I wanted to reach out to you regarding our recent discussion.'}
-
-Thank you for your time and consideration. I look forward to hearing from you soon.`;
-    }
-    
-    const fullEmail = `Subject: ${subject}
-
-${greeting},
-
-${body}
-
-${closing},
-${data.senderName || 'Your Name'}
-
----
-${data.senderName || 'Your Business'}
-Email: contact@yourbusiness.com
-Phone: (555) 123-4567
-Website: www.yourbusiness.com`;
-
-    return fullEmail;
-}
-
-function displayEmail(email) {
-    generatedEmail = email;
-    
-    const lines = email.split('\n');
-    const subject = lines[0];
-    const body = lines.slice(1).join('\n');
-    
-    document.getElementById('emailPreview').innerHTML = `
-        <div class="email-display">
-            <div class="email-header mb-3 p-3 bg-white border rounded">
-                <div class="mb-2"><strong>${subject}</strong></div>
-                <div class="text-muted small">
-                    <div>From: ${document.getElementById('senderName').value || 'Your Name'} &lt;your@email.com&gt;</div>
-                    <div>To: [Recipient Email]</div>
-                    <div>Date: ${new Date().toLocaleDateString()}</div>
+    // Helper functions
+    function displayEmail(email) {
+        const lines = email.split('\n');
+        const subject = lines[0];
+        const body = lines.slice(1).join('\n');
+        
+        emailPreview.innerHTML = `
+            <div class="email-display">
+                <div class="email-header mb-3 p-3 bg-white border rounded">
+                    <div class="mb-2"><strong>${subject}</strong></div>
+                    <div class="text-muted small">
+                        <div>From: ${document.getElementById('senderName').value} &lt;your@email.com&gt;</div>
+                        <div>To: [Recipient Email]</div>
+                        <div>Date: ${new Date().toLocaleDateString()}</div>
+                    </div>
+                </div>
+                <div class="email-body bg-white p-3 border rounded">
+                    <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${body}</pre>
                 </div>
             </div>
-            <div class="email-body bg-white p-3 border rounded">
-                <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${body}</pre>
+        `;
+    }
+    
+    function showResults(type, message) {
+        const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+        const icon = type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle';
+        
+        document.getElementById('emailResultsContent').innerHTML = `
+            <div class="alert ${alertClass}">
+                <i class="fas ${icon} me-2"></i>
+                <pre style="white-space: pre-wrap; margin: 0; font-family: inherit;">${message}</pre>
             </div>
-        </div>
-    `;
-}
+        `;
+        
+        emailResults.style.display = 'block';
+        
+        // Auto-hide after 10 seconds for success messages
+        if (type === 'success') {
+            setTimeout(() => {
+                emailResults.style.display = 'none';
+            }, 10000);
+        }
+    }
+});
 </script>
+<script src="{{ url_for('static', filename='js/speech_integration.js') }}"></script>
+<script src="{{ url_for('static', filename='js/enhanced_form_integration.js') }}"></script>
 {% endblock %}

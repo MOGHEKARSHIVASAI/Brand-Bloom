@@ -21,7 +21,7 @@ def configure_gemini_api() -> bool:
     if not GEMINI_AVAILABLE:
         return False
     
-    api_key = os.getenv('GEMINI_API_KEY')
+    api_key = 'AIzaSyDd3d3Dv5tVxXRieMDDo5ZHqacP9XPa0oU'
     if not api_key:
         print("Error: GEMINI_API_KEY environment variable not set.")
         print("Please set it using the appropriate command for your terminal.")
@@ -64,7 +64,7 @@ def generate_ai_email(request_data: Dict[str, Any]) -> Dict[str, Any]:
     Generates personalized email content by calling the Gemini API.
     """
     prompt = create_email_prompt(request_data)
-    model = genai.GenerativeModel('gemini-1.5-flash')
+    model = genai.GenerativeModel('gemini-2.0-flash')
     
     generation_config = genai.types.GenerationConfig(
         temperature=0.7,

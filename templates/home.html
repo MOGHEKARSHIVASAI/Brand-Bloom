@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Toolkit - Empower Your Small Business</title>
+    <title>Brand Bloom - Empower Your Small Business</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
 
         /* Hero Section with Dynamic Background */
         .hero-section {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background: linear-gradient(135deg, #ebe8e0 0%, #f5f2ea 50%, #ebe8e0 100%);
             position: relative;
             min-height: 100vh;
             overflow: hidden;
@@ -34,22 +34,22 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" style="stop-color:rgba(255,255,255,0.1)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="300" cy="700" r="120" fill="url(%23a)"/><circle cx="700" cy="800" r="80" fill="url(%23a)"/></svg>');
-            animation: float 20s ease-in-out infinite;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><radialGradient id="a" cx="50%" cy="50%"><stop offset="0%" style="stop-color:rgba(208,17,16,0.1)"/><stop offset="100%" style="stop-color:rgba(208,17,16,0)"/></radialGradient></defs><circle cx="200" cy="200" r="100" fill="url(%23a)"/><circle cx="800" cy="300" r="150" fill="url(%23a)"/><circle cx="300" cy="700" r="120" fill="url(%23a)"/><circle cx="700" cy="800" r="80" fill="url(%23a)"/></svg>');
+            animation: float 10s ease-in-out infinite;
         }
 
-        /* Floating Animation */
+        /* Floating Animation - Made faster */
         @keyframes float {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(-20px, -20px) rotate(1deg); }
-            50% { transform: translate(20px, -10px) rotate(-1deg); }
-            75% { transform: translate(-10px, 20px) rotate(0.5deg); }
+            25% { transform: translate(-30px, -30px) rotate(2deg); }
+            50% { transform: translate(30px, -15px) rotate(-2deg); }
+            75% { transform: translate(-15px, 30px) rotate(1deg); }
         }
 
-        /* Particle Animation */
+        /* Particle Animation - Made faster */
         .particle {
             position: absolute;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(208, 17, 16, 0.4);
             border-radius: 50%;
             pointer-events: none;
         }
@@ -73,7 +73,7 @@
 
         /* Text Animations */
         .text-gradient {
-            background: linear-gradient(135deg, #ffffff 0%, #f0f8ff 50%, #e6f3ff 100%);
+            background: linear-gradient(135deg, #d01110 0%, #e63946 50%, #d01110 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -88,7 +88,7 @@
 
         /* Interactive Buttons */
         .btn-primary {
-            background: linear-gradient(135deg, #ff6b6b 0%, #4ecdc4 100%);
+            background: linear-gradient(135deg, #d01110 0%, #e63946 100%);
             padding: 18px 36px;
             border-radius: 50px;
             border: none;
@@ -99,7 +99,7 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 10px 30px rgba(208, 17, 16, 0.3);
         }
 
         .btn-primary::before {
@@ -115,7 +115,7 @@
 
         .btn-primary:hover {
             transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+            box-shadow: 0 15px 40px rgba(208, 17, 16, 0.4);
         }
 
         .btn-primary:hover::before {
@@ -123,11 +123,11 @@
         }
 
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
+            background: rgba(208, 17, 16, 0.1);
+            color: #d01110;
             padding: 18px 36px;
             border-radius: 50px;
-            border: 2px solid rgba(255, 255, 255, 0.4);
+            border: 2px solid rgba(208, 17, 16, 0.3);
             font-weight: 600;
             font-size: 18px;
             cursor: pointer;
@@ -136,9 +136,9 @@
         }
 
         .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(208, 17, 16, 0.2);
             transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 30px rgba(208, 17, 16, 0.2);
         }
 
         /* Feature Cards with 3D Effect */
@@ -151,7 +151,7 @@
             cursor: pointer;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(235, 232, 224, 0.3);
         }
 
         .feature-card::before {
@@ -161,7 +161,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background: linear-gradient(90deg, #d01110, #e63946, #dc2626, #ef4444);
             transform: scaleX(0);
             transition: transform 0.5s ease;
         }
@@ -190,12 +190,12 @@
             position: relative;
         }
 
-        .icon-website { background: linear-gradient(135deg, #667eea, #764ba2); }
-        .icon-feedback { background: linear-gradient(135deg, #f093fb, #f5576c); }
-        .icon-email { background: linear-gradient(135deg, #4facfe, #00f2fe); }
-        .icon-poster { background: linear-gradient(135deg, #43e97b, #38f9d7); }
-        .icon-sales { background: linear-gradient(135deg, #fa709a, #fee140); }
-        .icon-profile { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .icon-website { background: linear-gradient(135deg, #d01110, #8b0000); }
+        .icon-feedback { background: linear-gradient(135deg, #e63946, #d01110); }
+        .icon-email { background: linear-gradient(135deg, #dc2626, #991b1b); }
+        .icon-poster { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .icon-sales { background: linear-gradient(135deg, #f87171, #ef4444); }
+        .icon-profile { background: linear-gradient(135deg, #fca5a5, #f87171); }
 
         .feature-card:hover .feature-icon {
             transform: scale(1.1) rotate(10deg);
@@ -203,26 +203,26 @@
 
         /* Stats Counter Animation */
         .stat-card {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(208, 17, 16, 0.1);
             backdrop-filter: blur(20px);
             border-radius: 20px;
             padding: 30px;
             text-align: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(208, 17, 16, 0.2);
             transition: all 0.3s ease;
         }
 
         .stat-card:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(208, 17, 16, 0.15);
         }
 
         .stat-number {
             font-size: 3rem;
             font-weight: 800;
-            color: white;
+            color: #d01110;
             margin-bottom: 10px;
-            background: linear-gradient(135deg, #ffffff, #f0f8ff);
+            background: linear-gradient(135deg, #d01110, #e63946);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
@@ -241,9 +241,9 @@
 
         /* Pulse Animation for CTA */
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(208, 17, 16, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(208, 17, 16, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(208, 17, 16, 0); }
         }
 
         .pulse-animation {
@@ -271,14 +271,14 @@
             top: 0;
             width: 100%;
             z-index: 1000;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(235, 232, 224, 0.1);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid rgba(235, 232, 224, 0.2);
             transition: all 0.3s ease;
         }
 
         .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(235, 232, 224, 0.95);
             backdrop-filter: blur(20px);
         }
 
@@ -293,14 +293,14 @@
     <nav class="navbar">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
-                <div class="text-white font-bold text-2xl">
-                    <i class="fas fa-brain mr-2"></i>AI Toolkit
+                <div class="text-gray-800 font-bold text-2xl">
+                    <i class="fas fa-brain mr-2 text-red-600"></i>Brand Bloom
                 </div>
                 <div class="hidden md:flex space-x-8">
-                    <a href="#features" class="text-white hover:text-gray-200 transition-colors">Features</a>
-                    <a href="#stats" class="text-white hover:text-gray-200 transition-colors">Stats</a>
-                    <a href="/login" class="text-white hover:text-gray-200 transition-colors">Login</a>
-                    <a href="/register" class="bg-white text-purple-600 px-4 py-2 rounded-full hover:bg-gray-100 transition-colors">Sign Up</a>
+                    <a href="#features" class="text-gray-800 hover:text-red-600 transition-colors">Features</a>
+                    <a href="#stats" class="text-gray-800 hover:text-red-600 transition-colors">Stats</a>
+                    <a href="/login" class="text-gray-800 hover:text-red-600 transition-colors">Login</a>
+                    <a href="/register" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition-colors">Sign Up</a>
                 </div>
             </div>
         </div>
@@ -310,11 +310,11 @@
     <section class="hero-section flex items-center justify-center relative">
         <div class="container mx-auto px-6 text-center relative z-10">
             <div class="max-w-4xl mx-auto">
-                <h1 class="text-6xl md:text-8xl font-black text-white mb-8 leading-tight">
+                <h1 class="text-6xl md:text-8xl font-black text-gray-800 mb-8 leading-tight">
                     AI-Powered Tools for
                     <span class="text-gradient block">Small Business</span> Success
                 </h1>
-                <p class="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed">
+                <p class="text-xl md:text-2xl text-gray-700 mb-12 max-w-3xl mx-auto leading-relaxed">
                     Transform your business operations with our comprehensive AI toolkit designed specifically for ambitious entrepreneurs and small business owners.
                 </p>
                 <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -334,8 +334,8 @@
 
         <!-- Scroll Indicator -->
         <div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-            <div class="w-6 h-10 border-2 border-white rounded-full flex justify-center">
-                <div class="w-1 h-3 bg-white rounded-full mt-2 animate-pulse"></div>
+            <div class="w-6 h-10 border-2 border-red-600 rounded-full flex justify-center">
+                <div class="w-1 h-3 bg-red-600 rounded-full mt-2 animate-pulse"></div>
             </div>
         </div>
     </section>
@@ -346,7 +346,7 @@
             <div class="text-center mb-20 reveal">
                 <h2 class="text-5xl md:text-6xl font-black text-gray-800 mb-6">
                     Powerful Tools at Your
-                    <span style="background: linear-gradient(135deg, #667eea, #764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Fingertips</span>
+                    <span style="background: linear-gradient(135deg, #d01110, #e63946); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Fingertips</span>
                 </h2>
                 <p class="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
                     Everything you need to grow your business, powered by cutting-edge artificial intelligence technology that adapts to your unique needs.
@@ -361,7 +361,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">AI Website Builder</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Create stunning, professional websites with AI-generated content perfectly tailored to your business identity and goals.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -373,7 +373,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Smart Feedback Analyzer</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Transform customer feedback and reviews into actionable insights with advanced sentiment analysis and trend detection.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -385,7 +385,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Intelligent Email Drafter</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Craft compelling emails for marketing campaigns, customer service, and business communications with AI assistance.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -397,7 +397,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Creative Poster Maker</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Design eye-catching posters, flyers, and marketing materials that capture attention and drive engagement.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -409,7 +409,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Advanced Sales Insights</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Upload your sales data and receive detailed analytics, forecasts, and recommendations to boost performance.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -421,7 +421,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-4">Smart Business Profile</h3>
                     <p class="text-gray-600 mb-6 leading-relaxed">Manage your business information and customize AI-powered tools to match your specific industry and goals.</p>
-                    <div class="text-purple-600 font-semibold group-hover:text-purple-700 transition-colors">
+                    <div class="text-red-600 font-semibold group-hover:text-red-700 transition-colors">
                         Explore Feature <i class="fas fa-arrow-right ml-2 transform group-hover:translate-x-2 transition-transform"></i>
                     </div>
                 </div>
@@ -430,12 +430,12 @@
     </section>
 
     <!-- Stats Section -->
-    <section id="stats" class="py-24 bg-gradient-to-r from-purple-600 via-blue-600 to-blue-700 relative overflow-hidden">
+    <section id="stats" class="py-24 bg-gradient-to-r from-red-600 via-red-700 to-red-800 relative overflow-hidden">
         <div class="container mx-auto px-6 relative z-10">
             <div class="text-center mb-16 reveal">
                 <h2 class="text-4xl md:text-5xl font-black text-white mb-6">
                     Trusted by Thousands of
-                    <span class="text-gradient">Entrepreneurs</span>
+                    <span class="text-gradient" style="background: linear-gradient(135deg, #ebe8e0, #f5f2ea); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Entrepreneurs</span>
                 </h2>
                 <p class="text-xl text-white/80 max-w-2xl mx-auto">
                     Join the growing community of successful business owners who are transforming their operations with AI.
@@ -444,17 +444,17 @@
             
             <div class="grid md:grid-cols-3 gap-8 text-center">
                 <div class="stat-card reveal">
-                    <div class="stat-number" data-count="15000">0</div>
+                    <div class="stat-number text-white/90" data-count="15000">0</div>
                     <div class="text-white/90 text-lg font-semibold">Happy Customers</div>
                     <div class="text-white/70 text-sm mt-2">Across 50+ countries</div>
                 </div>
                 <div class="stat-card reveal" style="animation-delay: 0.2s;">
-                    <div class="stat-number" data-count="75000">0</div>
+                    <div class="stat-number text-white" data-count="75000">0</div>
                     <div class="text-white/90 text-lg font-semibold">Projects Completed</div>
                     <div class="text-white/70 text-sm mt-2">And counting every day</div>
                 </div>
                 <div class="stat-card reveal" style="animation-delay: 0.4s;">
-                    <div class="stat-number" data-count="99">0</div>
+                    <div class="stat-number text-white" data-count="99">0</div>
                     <div class="text-white/90 text-lg font-semibold">% Success Rate</div>
                     <div class="text-white/70 text-sm mt-2">Customer satisfaction</div>
                 </div>
@@ -463,12 +463,12 @@
     </section>
 
     <!-- CTA Section -->
-    <section class="py-24 bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 relative overflow-hidden">
+    <section class="py-24 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 relative overflow-hidden">
         <div class="container mx-auto px-6 text-center relative z-10">
             <div class="max-w-4xl mx-auto reveal">
                 <h3 class="text-5xl md:text-6xl font-black text-white mb-8 leading-tight">
                     Ready to Transform Your
-                    <span style="background: linear-gradient(135deg, #ff6b6b, #4ecdc4); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Business?</span>
+                    <span style="background: linear-gradient(135deg, #d01110, #e63946); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Business?</span>
                 </h3>
                 <p class="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
                     Join thousands of innovative business owners who are already using AI to accelerate their growth, streamline operations, and achieve remarkable success.
@@ -479,7 +479,7 @@
                         Start Your Free Trial
                         <i class="fas fa-arrow-right ml-3 transform group-hover:translate-x-2 transition-transform"></i>
                     </button>
-                    <button class="btn-secondary group">
+                    <button class="btn-secondary group" style="background: rgba(235, 232, 224, 0.1); color: #ebe8e0; border-color: rgba(235, 232, 224, 0.3);">
                         <i class="fas fa-phone mr-3"></i>
                         Contact Sales Team
                         <i class="fas fa-external-link-alt ml-3 transform group-hover:scale-110 transition-transform"></i>
@@ -505,20 +505,20 @@
     </section>
 
     <script>
-        // Particle System
+        // Particle System - Made faster
         function createParticle() {
             const particle = document.createElement('div');
             particle.className = 'particle';
             particle.style.left = Math.random() * 100 + '%';
             particle.style.width = particle.style.height = Math.random() * 4 + 2 + 'px';
-            particle.style.animation = `particleFloat ${Math.random() * 10 + 10}s ease-in-out`;
+            particle.style.animation = `particleFloat ${Math.random() * 5 + 5}s ease-in-out`; // Faster: 5-10s instead of 10-20s
             document.querySelector('.hero-section').appendChild(particle);
             
-            setTimeout(() => particle.remove(), 20000);
+            setTimeout(() => particle.remove(), 10000); // Remove faster
         }
 
-        // Create particles
-        setInterval(createParticle, 300);
+        // Create particles faster
+        setInterval(createParticle, 150); // Create every 150ms instead of 300ms
 
         // Counter Animation
         function animateCounters() {

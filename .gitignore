@@ -1,6 +1,8 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
+*.pyd
 *.so
 *.egg
 *.egg-info/
@@ -12,6 +14,12 @@ build/
 myenv/
 env/
 venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints
 
 # Database files
 *.db
@@ -29,9 +37,13 @@ Thumbs.db
 
 # Uploads and user-generated files
 uploads/
+*.csv
+*.tmp
+*.temp
 
 # Static files (optional, if generated)
 static/
+*.html
 
 # Etc folder (if contains system/config files)
 etc/

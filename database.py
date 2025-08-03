@@ -63,6 +63,25 @@ class Database:
             )
         ''')
         
+        # Create feedback table
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS feedback (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                website_id INTEGER NOT NULL,
+                customer_name TEXT,
+                customer_email TEXT,
+                rating INTEGER CHECK (rating >= 1 AND rating <= 5),
+                feedback_text TEXT NOT NULL,
+                page_url TEXT,
+                user_agent TEXT,
+                ip_address TEXT,
+                analysis_data TEXT,
+                is_analyzed BOOLEAN DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (website_id) REFERENCES websites (id) ON DELETE CASCADE
+            )
+        ''')
+        
         conn.commit()
         conn.close()
         print("Database initialized successfully!")
@@ -276,6 +295,7 @@ class Database:
                     website_dict['metadata'] = {}
             return website_dict
         return None
+    
     def get_user_websites(self, user_id):
         """Get all websites for a user"""
         conn = self.get_connection()
@@ -339,6 +359,135 @@ class Database:
             conn.close()
         
         return success
+
+    # Feedback operations
+    def save_feedback(self, website_id, customer_name, customer_email, rating, 
+                     feedback_text, page_url=None, user_agent=None, ip_address=None):
+        """Save customer feedback for a website"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            cursor.execute('''
+                INSERT INTO feedback (website_id, customer_name, customer_email, rating, 
+                                    feedback_text, page_url, user_agent, ip_address)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ''', (website_id, customer_name, customer_email, rating, feedback_text, 
+                  page_url, user_agent, ip_address))
+            
+            feedback_id = cursor.lastrowid
+            conn.commit()
+            conn.close()
+            return feedback_id
+        except Exception as e:
+            conn.close()
+            print(f"Error saving feedback: {str(e)}")
+            return None
+    
+    def get_website_feedback(self, website_id, user_id=None):
+        """Get all feedback for a website"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        if user_id:
+            # Verify the user owns the website
+            cursor.execute('''
+                SELECT f.* FROM feedback f
+                JOIN websites w ON f.website_id = w.id
+                WHERE f.website_id = ? AND w.user_id = ?
+                ORDER BY f.created_at DESC
+            ''', (website_id, user_id))
+        else:
+            cursor.execute('''
+                SELECT * FROM feedback WHERE website_id = ?
+                ORDER BY created_at DESC
+            ''', (website_id,))
+        
+        feedback_list = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for feedback in feedback_list:
+            feedback_dict = dict(feedback)
+            if feedback_dict['analysis_data']:
+                try:
+                    feedback_dict['analysis_data'] = json.loads(feedback_dict['analysis_data'])
+                except:
+                    feedback_dict['analysis_data'] = {}
+            result.append(feedback_dict)
+        return result
+    
+    def get_user_all_feedback(self, user_id):
+        """Get all feedback for all websites owned by user"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT f.*, w.title as website_title, w.keyword as website_keyword
+            FROM feedback f
+            JOIN websites w ON f.website_id = w.id
+            WHERE w.user_id = ?
+            ORDER BY f.created_at DESC
+        ''', (user_id,))
+        
+        feedback_list = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for feedback in feedback_list:
+            feedback_dict = dict(feedback)
+            if feedback_dict['analysis_data']:
+                try:
+                    feedback_dict['analysis_data'] = json.loads(feedback_dict['analysis_data'])
+                except:
+                    feedback_dict['analysis_data'] = {}
+            result.append(feedback_dict)
+        return result
+    
+    def update_feedback_analysis(self, feedback_id, analysis_data):
+        """Update feedback with analysis data"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        try:
+            analysis_json = json.dumps(analysis_data) if analysis_data else None
+            cursor.execute('''
+                UPDATE feedback 
+                SET analysis_data = ?, is_analyzed = 1
+                WHERE id = ?
+            ''', (analysis_json, feedback_id))
+            
+            conn.commit()
+            success = cursor.rowcount > 0
+        except Exception as e:
+            success = False
+            print(f"Error updating feedback analysis: {str(e)}")
+        finally:
+            conn.close()
+        
+        return success
+    
+    def get_feedback_stats(self, user_id):
+        """Get feedback statistics for user's websites"""
+        conn = self.get_connection()
+        cursor = conn.cursor()
+        
+        cursor.execute('''
+            SELECT 
+                COUNT(*) as total_feedback,
+                AVG(rating) as avg_rating,
+                COUNT(CASE WHEN rating >= 4 THEN 1 END) as positive_feedback,
+                COUNT(CASE WHEN rating <= 2 THEN 1 END) as negative_feedback,
+                COUNT(CASE WHEN is_analyzed = 1 THEN 1 END) as analyzed_feedback
+            FROM feedback f
+            JOIN websites w ON f.website_id = w.id
+            WHERE w.user_id = ?
+        ''', (user_id,))
+        
+        stats = cursor.fetchone()
+        conn.close()
+        
+        return dict(stats) if stats else None
 
 # Initialize database instance
 db = Database()
