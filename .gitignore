@@ -47,3 +47,4 @@ static/
 
 # Etc folder (if contains system/config files)
 etc/
+.env
