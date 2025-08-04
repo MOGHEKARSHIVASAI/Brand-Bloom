@@ -293,7 +293,7 @@ class EnhancedSpeechProcessor:
                     temperature=0.3,
                     max_output_tokens=1024,
                     top_p=0.8,
-                    response_mime_type="application/json"
+                   
                 )
             )
             
