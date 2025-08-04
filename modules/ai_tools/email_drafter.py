@@ -70,7 +70,7 @@ def generate_ai_email(request_data: Dict[str, Any]) -> Dict[str, Any]:
         temperature=0.7,
         max_output_tokens=1024,
         top_p=0.9,
-        response_mime_type="application/json"
+       
     )
     
     response = model.generate_content(prompt, generation_config=generation_config)
