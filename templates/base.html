@@ -1,10 +1,17 @@
-<!-- Enhanced base.html template with ivory and red color palette -->
+<!-- Enhanced responsive base.html template with mobile-first design -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#d01110">
     <title>{% block title %}Brand Bloom{% endblock %}</title>
+    
+    <!-- Preconnect to external resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -15,7 +22,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
-    <!-- Custom Color Palette Styles -->
+    <!-- Responsive Color Palette Styles -->
     <style>
         :root {
             /* Primary Ivory & Red Color Palette */
@@ -30,45 +37,94 @@
             --text-light: #6B6B6B;
             --border-light: #E8E8E0;
             --shadow-soft: rgba(220, 20, 60, 0.1);
+            
+            /* Responsive spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 1.5rem;
+            --spacing-xl: 2rem;
+            --spacing-2xl: 3rem;
+            
+            /* Responsive font sizes */
+            --font-xs: 0.75rem;
+            --font-sm: 0.875rem;
+            --font-base: 1rem;
+            --font-lg: 1.125rem;
+            --font-xl: 1.25rem;
+            --font-2xl: 1.5rem;
+            --font-3xl: 1.875rem;
+            --font-4xl: 2.25rem;
         }
 
-        /* Global body styling */
+        /* Reset and base styles with mobile-first approach */
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            scroll-behavior: smooth;
+            -webkit-text-size-adjust: 100%;
+        }
+
         body {
             background-color: var(--primary-ivory-light);
             color: var(--text-dark);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
 
-        /* Custom Navigation Bar */
+        /* Enhanced Mobile Navigation */
         .navbar-custom {
             background: linear-gradient(135deg, var(--secondary-red) 0%, var(--secondary-red-dark) 100%);
-            box-shadow: 0 2px 10px var(--shadow-soft);
-            border-bottom: 3px solid var(--primary-ivory);
+            box-shadow: 0 2px 20px var(--shadow-soft);
+            border-bottom: 2px solid var(--primary-ivory);
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+        }
+
+        .navbar-custom.scrolled {
+            box-shadow: 0 4px 30px var(--shadow-soft);
+            backdrop-filter: blur(20px);
         }
 
         .navbar-custom .navbar-brand {
             color: var(--primary-ivory) !important;
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: clamp(1.25rem, 4vw, 1.5rem);
             text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
         }
 
         .navbar-custom .navbar-brand:hover {
             color: white !important;
             transform: translateY(-1px);
-            transition: all 0.3s ease;
         }
 
+        /* Mobile-optimized navigation links */
         .navbar-custom .navbar-nav .nav-link {
             color: var(--primary-ivory) !important;
             font-weight: 500;
             padding: 0.75rem 1rem !important;
-            border-radius: 6px;
-            margin: 0 0.2rem;
+            border-radius: 8px;
+            margin: 0.25rem;
             transition: all 0.3s ease;
+            font-size: var(--font-base);
+            min-height: 44px; /* Touch-friendly minimum */
+            display: flex;
+            align-items: center;
         }
 
-        .navbar-custom .navbar-nav .nav-link:hover {
+        .navbar-custom .navbar-nav .nav-link:hover,
+        .navbar-custom .navbar-nav .nav-link:focus {
             background-color: rgba(245, 245, 220, 0.2);
             color: white !important;
             transform: translateY(-1px);
@@ -79,100 +135,158 @@
             color: var(--secondary-red) !important;
         }
 
+        /* Enhanced dropdown for mobile */
         .navbar-custom .dropdown-menu {
             background-color: var(--primary-ivory);
             border: 2px solid var(--secondary-red);
-            box-shadow: 0 4px 15px var(--shadow-soft);
+            box-shadow: 0 8px 30px var(--shadow-soft);
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-top: 0.5rem;
         }
 
         .navbar-custom .dropdown-item {
             color: var(--text-dark);
             font-weight: 500;
-            padding: 0.75rem 1.5rem;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
             transition: all 0.3s ease;
+            font-size: var(--font-sm);
+            min-height: 44px;
+            display: flex;
+            align-items: center;
         }
 
-        .navbar-custom .dropdown-item:hover {
+        .navbar-custom .dropdown-item:hover,
+        .navbar-custom .dropdown-item:focus {
             background-color: var(--secondary-red);
             color: var(--primary-ivory);
         }
 
-        .navbar-custom .dropdown-divider {
-            border-color: var(--secondary-red);
-            opacity: 0.3;
+        /* Mobile hamburger improvements */
+        .navbar-toggler {
+            border: none !important;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            min-width: 44px;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .navbar-toggler {
-            border-color: var(--primary-ivory) !important;
+        .navbar-toggler:focus {
+            box-shadow: 0 0 0 0.2rem rgba(245, 245, 220, 0.5);
         }
 
         .navbar-toggler-icon {
             background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28245, 245, 220, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") !important;
+            width: 1.5rem;
+            height: 1.5rem;
         }
 
-        /* Enhanced Alert Messages */
+        /* Enhanced Alert Messages for Mobile */
+        .alert {
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid;
+            font-size: var(--font-sm);
+        }
+
         .alert-info {
             background-color: var(--primary-ivory);
             border-color: var(--secondary-red);
             color: var(--text-dark);
-            border-left: 4px solid var(--secondary-red);
+            border-left-color: var(--secondary-red);
         }
 
-        /* Button Styling */
-        .btn-primary {
-            background-color: var(--secondary-red);
-            border-color: var(--secondary-red);
-            color: var(--primary-ivory);
+        .alert-dismissible .btn-close {
+            padding: 1rem;
+            font-size: 0.875rem;
+        }
+
+        /* Responsive Button Styling */
+        .btn {
+            border-radius: 12px;
             font-weight: 600;
             transition: all 0.3s ease;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
 
-        .btn-primary:hover {
-            background-color: var(--secondary-red-dark);
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-red) 0%, var(--secondary-red-dark) 100%);
+            border-color: var(--secondary-red);
+            color: var(--primary-ivory);
+            box-shadow: 0 4px 15px rgba(220, 20, 60, 0.3);
+        }
+
+        .btn-primary:hover,
+        .btn-primary:focus {
+            background: linear-gradient(135deg, var(--secondary-red-dark) 0%, var(--accent-red) 100%);
             border-color: var(--secondary-red-dark);
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px var(--shadow-soft);
+            box-shadow: 0 6px 20px rgba(220, 20, 60, 0.4);
+            color: var(--primary-ivory);
         }
 
         .btn-outline-primary {
             color: var(--secondary-red);
             border-color: var(--secondary-red);
+            border-width: 2px;
         }
 
-        .btn-outline-primary:hover {
+        .btn-outline-primary:hover,
+        .btn-outline-primary:focus {
             background-color: var(--secondary-red);
             border-color: var(--secondary-red);
             color: var(--primary-ivory);
         }
 
-        /* Form Elements */
-        .form-control {
-            border-color: var(--border-light);
+        /* Enhanced Form Elements for Mobile */
+        .form-control,
+        .form-select {
+            border: 2px solid var(--border-light);
             background-color: var(--primary-ivory);
             color: var(--text-dark);
+            border-radius: 12px;
+            padding: 0.75rem 1rem;
+            font-size: var(--font-base);
+            transition: all 0.3s ease;
+            min-height: 44px;
         }
 
-        .form-control:focus {
+        .form-control:focus,
+        .form-select:focus {
             border-color: var(--secondary-red);
             box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
             background-color: white;
         }
 
-        .form-select {
-            border-color: var(--border-light);
-            background-color: var(--primary-ivory);
+        .form-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+            font-size: var(--font-sm);
         }
 
-        .form-select:focus {
-            border-color: var(--secondary-red);
-            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
-        }
-
-        /* Card Components */
+        /* Enhanced Card Components */
         .card {
             background-color: var(--primary-ivory);
             border: 1px solid var(--border-light);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border-radius: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.12);
         }
 
         .card-header {
@@ -180,26 +294,44 @@
             border-bottom: 1px solid var(--border-light);
             color: var(--text-dark);
             font-weight: 600;
+            border-radius: 16px 16px 0 0;
+            padding: 1rem 1.25rem;
         }
 
-        /* Speech Integration Styles with New Palette */
+        .card-body {
+            padding: 1.25rem;
+        }
+
+        /* Container System for Mobile-First */
+        .container-fluid {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Speech Integration Styles - Mobile Optimized */
         .speech-enabled-form {
             position: relative;
         }
         
         .speech-form-overlay {
-            position: absolute;
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             background: rgba(220, 20, 60, 0.1);
-            border: 2px dashed var(--secondary-red);
-            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 3px dashed var(--secondary-red);
+            border-radius: 0;
             display: none;
             align-items: center;
             justify-content: center;
-            z-index: 100;
+            z-index: 1040;
         }
         
         .speech-form-overlay.active {
@@ -210,6 +342,11 @@
             text-align: center;
             color: var(--secondary-red);
             font-weight: 600;
+            padding: 2rem;
+            background: var(--primary-ivory);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(220, 20, 60, 0.3);
+            max-width: 90vw;
         }
         
         .speech-pulse {
@@ -217,7 +354,7 @@
             height: 80px;
             border-radius: 50%;
             background: var(--secondary-red);
-            margin: 0 auto 15px;
+            margin: 0 auto 1rem;
             animation: speechPulse 1.5s infinite;
             display: flex;
             align-items: center;
@@ -234,42 +371,44 @@
         
         .speech-command-help {
             position: fixed;
-            bottom: 80px;
-            left: 20px;
+            bottom: 1rem;
+            left: 1rem;
+            right: 1rem;
             background: var(--primary-ivory);
             border: 2px solid var(--secondary-red);
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: 0 4px 15px var(--shadow-soft);
-            max-width: 300px;
+            border-radius: 16px;
+            padding: 1rem;
+            box-shadow: 0 8px 30px var(--shadow-soft);
             z-index: 1000;
             display: none;
+            max-height: 50vh;
+            overflow-y: auto;
         }
         
         .speech-command-help.show {
             display: block;
-            animation: slideInLeft 0.3s ease;
+            animation: slideInUp 0.3s ease;
         }
         
-        @keyframes slideInLeft {
-            from { transform: translateX(-100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+        @keyframes slideInUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .speech-success-message {
             position: fixed;
             top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            left: 1rem;
+            right: 1rem;
+            transform: translateY(-50%);
             background: var(--secondary-red);
             color: var(--primary-ivory);
-            padding: 20px 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
             z-index: 2000;
             display: none;
             text-align: center;
-            min-width: 300px;
         }
         
         .speech-success-message.show {
@@ -278,110 +417,327 @@
         }
         
         @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0.8); opacity: 0; }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            0% { transform: translateY(-50%) scale(0.8); opacity: 0; }
+            100% { transform: translateY(-50%) scale(1); opacity: 1; }
         }
         
         /* Enhanced form field styling for speech */
-        .form-control.speech-filled {
-            border-color: var(--secondary-red);
-            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
-            background-color: var(--primary-ivory-light);
-        }
-        
+        .form-control.speech-filled,
         .form-select.speech-filled {
             border-color: var(--secondary-red);
             box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.25);
             background-color: var(--primary-ivory-light);
         }
 
-        /* Text Colors */
-        .text-primary {
-            color: var(--secondary-red) !important;
+        /* Responsive Typography */
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-dark);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: 1rem;
         }
 
-        .text-muted {
-            color: var(--text-light) !important;
+        h1 { font-size: clamp(1.75rem, 5vw, 3rem); }
+        h2 { font-size: clamp(1.5rem, 4vw, 2.5rem); }
+        h3 { font-size: clamp(1.25rem, 3vw, 2rem); }
+        h4 { font-size: clamp(1.125rem, 2.5vw, 1.5rem); }
+        h5 { font-size: clamp(1rem, 2vw, 1.25rem); }
+        h6 { font-size: clamp(0.875rem, 1.5vw, 1.125rem); }
+
+        p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            font-size: var(--font-base);
+            line-height: 1.6;
         }
 
         /* Links */
         a {
             color: var(--secondary-red);
             text-decoration: none;
+            transition: all 0.3s ease;
         }
 
-        a:hover {
+        a:hover, a:focus {
             color: var(--secondary-red-dark);
+            text-decoration: underline;
         }
 
-        /* Custom utility classes */
-        .bg-ivory {
-            background-color: var(--primary-ivory) !important;
+        /* Utility Classes */
+        .bg-ivory { background-color: var(--primary-ivory) !important; }
+        .bg-ivory-light { background-color: var(--primary-ivory-light) !important; }
+        .bg-red-primary { background-color: var(--secondary-red) !important; }
+        .text-red-primary { color: var(--secondary-red) !important; }
+        .text-ivory { color: var(--primary-ivory) !important; }
+        .border-red { border-color: var(--secondary-red) !important; }
+        .border-ivory { border-color: var(--primary-ivory) !important; }
+
+        /* Loading States */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            position: relative;
         }
 
-        .bg-ivory-light {
-            background-color: var(--primary-ivory-light) !important;
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid var(--border-light);
+            border-top: 2px solid var(--secondary-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
         }
 
-        .bg-red-primary {
-            background-color: var(--secondary-red) !important;
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        .text-red-primary {
-            color: var(--secondary-red) !important;
-        }
-
-        .text-ivory {
-            color: var(--primary-ivory) !important;
-        }
-
-        .border-red {
-            border-color: var(--secondary-red) !important;
-        }
-
-        .border-ivory {
-            border-color: var(--primary-ivory) !important;
-        }
+        /* Responsive Breakpoints */
         
-        /* Mobile responsive adjustments */
-        @media (max-width: 768px) {
-            .navbar-custom .navbar-nav .nav-link {
-                padding: 0.5rem 1rem !important;
-                margin: 0.1rem 0;
+        /* Small devices (landscape phones, 576px and up) */
+        @media (min-width: 576px) {
+            .container-fluid {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
             }
-
+            
+            .container {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+            
             .speech-command-help {
-                bottom: 20px;
-                left: 10px;
-                right: 10px;
-                max-width: none;
+                left: 2rem;
+                right: 2rem;
             }
             
             .speech-success-message {
-                left: 10px;
-                right: 10px;
-                transform: translateY(-50%);
-                min-width: auto;
+                left: 2rem;
+                right: 2rem;
             }
         }
 
-        /* Smooth transitions for all interactive elements */
-        * {
-            transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+        /* Medium devices (tablets, 768px and up) */
+        @media (min-width: 768px) {
+            :root {
+                --spacing-md: 1.5rem;
+                --spacing-lg: 2rem;
+                --spacing-xl: 2.5rem;
+                --spacing-2xl: 4rem;
+            }
+            
+            .container-fluid {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .container {
+                padding-left: 2rem;
+                padding-right: 2rem;
+            }
+            
+            .speech-command-help {
+                left: auto;
+                right: 2rem;
+                bottom: 5rem;
+                max-width: 350px;
+            }
+            
+            .speech-success-message {
+                left: 50%;
+                right: auto;
+                transform: translate(-50%, -50%);
+                max-width: 400px;
+            }
+            
+            .navbar-custom {
+                padding: 0.75rem 0;
+            }
+        }
+
+        /* Large devices (desktops, 992px and up) */
+        @media (min-width: 992px) {
+            .speech-command-help {
+                bottom: 6rem;
+            }
+        }
+
+        /* Extra large devices (large desktops, 1200px and up) */
+        @media (min-width: 1200px) {
+            .container-fluid {
+                padding-left: 3rem;
+                padding-right: 3rem;
+            }
+        }
+
+        /* High DPI displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .navbar-custom .navbar-brand {
+                text-shadow: 0 0.5px 1px rgba(0,0,0,0.3);
+            }
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .btn:hover {
+                transform: none;
+            }
+            
+            .btn:active {
+                transform: scale(0.98);
+            }
+            
+            .card:hover {
+                transform: none;
+            }
+        }
+
+        /* Reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            
+            .speech-pulse {
+                animation: none;
+            }
+        }
+
+        /* Dark mode support */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --primary-ivory: #2a2826;
+                --primary-ivory-light: #1f1e1c;
+                --primary-ivory-dark: #35322f;
+                --text-dark: #f9f9f9;
+                --text-light: #d1d5db;
+                --border-light: #4b5563;
+            }
+            
+            .card {
+                background-color: var(--primary-ivory);
+            }
+            
+            .form-control,
+            .form-select {
+                background-color: var(--primary-ivory);
+                color: var(--text-dark);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            :root {
+                --shadow-soft: rgba(0, 0, 0, 0.5);
+            }
+            
+            .btn-primary {
+                border: 2px solid var(--primary-ivory);
+            }
+            
+            .card {
+                border: 2px solid var(--text-dark);
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .navbar-custom,
+            .btn,
+            .speech-command-help,
+            .speech-success-message,
+            .speech-form-overlay {
+                display: none !important;
+            }
+            
+            .card {
+                box-shadow: none !important;
+                border: 1px solid var(--text-dark) !important;
+            }
+            
+            body {
+                background: white !important;
+                color: black !important;
+            }
+        }
+
+        /* iOS safe area support */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .navbar-custom {
+                padding-top: calc(0.5rem + env(safe-area-inset-top));
+            }
+            
+            .speech-command-help {
+                bottom: calc(1rem + env(safe-area-inset-bottom));
+            }
+        }
+
+        /* Accessibility improvements */
+        .visually-hidden {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        /* Focus indicators */
+        *:focus {
+            outline: 2px solid var(--secondary-red);
+            outline-offset: 2px;
+        }
+
+        .btn:focus {
+            box-shadow: 0 0 0 0.2rem rgba(220, 20, 60, 0.5);
+        }
+
+        /* Skip link for keyboard navigation */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 6px;
+            background: var(--secondary-red);
+            color: var(--primary-ivory);
+            padding: 8px;
+            text-decoration: none;
+            border-radius: 4px;
+            z-index: 9999;
+        }
+
+        .skip-link:focus {
+            top: 6px;
         }
     </style>
     
     {% block head %}{% endblock %}
 </head>
 <body>
+    <!-- Skip to main content link for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-custom">
+    <nav class="navbar navbar-expand-lg navbar-custom" role="navigation" aria-label="Main navigation">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="{{ url_for('home') }}">
-                <i class="fas fa-brain me-2"></i>Brand Bloom
+            <a class="navbar-brand fw-bold" href="{{ url_for('home') }}" aria-label="Brand Bloom Home">
+                <i class="fas fa-brain me-2" aria-hidden="true"></i>Brand Bloom
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
@@ -389,52 +745,56 @@
                 <ul class="navbar-nav me-auto">
                     {% if session.user_id %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('dashboard') }}">
-                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        <a class="nav-link" href="{{ url_for('dashboard') }}" aria-label="Dashboard">
+                            <i class="fas fa-tachometer-alt me-1" aria-hidden="true"></i>Dashboard
                         </a>
                     </li>
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-tools me-1"></i>Tools
+                        <a class="nav-link dropdown-toggle" href="#" id="toolsDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" aria-label="Tools menu">
+                            <i class="fas fa-tools me-1" aria-hidden="true"></i>Tools
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" aria-labelledby="toolsDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('website_tool') }}">
-                                <i class="fas fa-globe me-2"></i>Website Builder
+                                <i class="fas fa-globe me-2" aria-hidden="true"></i>Website Builder
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('feedback_tool') }}">
-                                <i class="fas fa-comments me-2"></i>Feedback Analyzer
+                                <i class="fas fa-comments me-2" aria-hidden="true"></i>Feedback Analyzer
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('email_tool') }}">
-                                <i class="fas fa-envelope me-2"></i>Email Drafter
+                                <i class="fas fa-envelope me-2" aria-hidden="true"></i>Email Drafter
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('poster_tool') }}">
-                                <i class="fas fa-image me-2"></i>Poster Maker
+                                <i class="fas fa-image me-2" aria-hidden="true"></i>Poster Maker
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('sales_tool') }}">
-                                <i class="fas fa-chart-line me-2"></i>Sales Insights
+                                <i class="fas fa-chart-line me-2" aria-hidden="true"></i>Sales Insights
                             </a></li>
                         </ul>
                     </li>
                     {% endif %}
                 </ul>
+                
                 <!-- Google Translate Widget -->
-                <div id="google_translate_element" style="margin-right: 20px;"></div>
+                <div id="google_translate_element" class="me-3" style="margin-right: 20px;"></div>
+                
                 <ul class="navbar-nav">
                     {% if session.user_id %}
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user me-1"></i>{{ session.user_email }}
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" 
+                           data-bs-toggle="dropdown" aria-expanded="false" aria-label="User menu">
+                            <i class="fas fa-user me-1" aria-hidden="true"></i>{{ session.user_email }}
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="{{ url_for('profile') }}">
-                                <i class="fas fa-user-circle me-2"></i>Profile
+                                <i class="fas fa-user-circle me-2" aria-hidden="true"></i>Profile
                             </a></li>
                             <li><a class="dropdown-item" href="{{ url_for('settings') }}">
-                                <i class="fas fa-cog me-2"></i>Settings
+                                <i class="fas fa-cog me-2" aria-hidden="true"></i>Settings
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item" href="{{ url_for('logout') }}">
-                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                <i class="fas fa-sign-out-alt me-2" aria-hidden="true"></i>Logout
                             </a></li>
                         </ul>
                     </li>
@@ -458,7 +818,7 @@
                 {% for message in messages %}
                     <div class="alert alert-info alert-dismissible fade show" role="alert">
                         {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 {% endfor %}
             </div>
@@ -466,16 +826,16 @@
     {% endwith %}
 
     <!-- Main content -->
-    <main class="container-fluid py-4">
+    <main id="main-content" class="container-fluid py-4" role="main">
         {% block content %}{% endblock %}
     </main>
 
     <!-- Speech Integration Elements -->
     {% if session.user_id %}
     <!-- Global Speech Overlay -->
-    <div id="global-speech-overlay" class="speech-form-overlay">
+    <div id="global-speech-overlay" class="speech-form-overlay" role="dialog" aria-label="Speech input active" aria-live="polite">
         <div class="speech-listening-indicator">
-            <div class="speech-pulse">
+            <div class="speech-pulse" aria-hidden="true">
                 <i class="fas fa-microphone"></i>
             </div>
             <div>Listening for your command...</div>
@@ -484,14 +844,14 @@
     </div>
 
     <!-- Speech Success Message -->
-    <div id="speech-success-message" class="speech-success-message">
-        <i class="fas fa-check-circle fa-2x mb-2"></i>
+    <div id="speech-success-message" class="speech-success-message" role="alert" aria-live="assertive">
+        <i class="fas fa-check-circle fa-2x mb-2" aria-hidden="true"></i>
         <div id="speech-success-text">Speech command processed successfully!</div>
     </div>
 
     <!-- Speech Command Help -->
-    <div id="speech-command-help" class="speech-command-help">
-        <h6><i class="fas fa-microphone text-red-primary me-2"></i>Voice Commands</h6>
+    <div id="speech-command-help" class="speech-command-help" role="dialog" aria-label="Voice command help">
+        <h6><i class="fas fa-microphone text-red-primary me-2" aria-hidden="true"></i>Voice Commands</h6>
         <div class="small">
             <div class="mb-2"><strong>Examples:</strong></div>
             <div class="text-muted">
@@ -502,14 +862,15 @@
                 • "Go to email tool"
             </div>
         </div>
-        <button class="btn btn-sm btn-outline-primary mt-2" onclick="hideSpeechHelp()">
-            <i class="fas fa-times"></i> Close
+        <button class="btn btn-sm btn-outline-primary mt-2" onclick="hideSpeechHelp()" aria-label="Close help">
+            <i class="fas fa-times" aria-hidden="true"></i> Close
         </button>
     </div>
     {% endif %}
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    
     <!-- Google Translate JS -->
     <script type="text/javascript">
       function googleTranslateElementInit() {
@@ -522,31 +883,36 @@
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     
-    <!-- Speech Integration JavaScript -->
+    <!-- Enhanced Mobile-First JavaScript -->
     {% if session.user_id %}
     <script>
-        // Initialize speech integration after DOM loads
+        // Mobile-optimized speech integration
         document.addEventListener('DOMContentLoaded', function() {
-            // Import and initialize speech integration
+            // Initialize speech integration with mobile optimizations
             if (typeof SpeechToTextIntegration !== 'undefined') {
                 window.speechIntegration = new SpeechToTextIntegration();
                 console.log('Speech integration initialized');
-            } else {
-                console.warn('Speech integration not loaded');
             }
             
-            // Show help on first visit
-            setTimeout(showSpeechHelp, 2000);
+            // Show help on first visit (mobile-friendly)
+            if (!localStorage.getItem('speech_help_shown')) {
+                setTimeout(showSpeechHelp, 3000);
+            }
+            
+            // Add loading states
+            document.body.classList.add('loaded');
         });
         
+        // Enhanced mobile speech help
         function showSpeechHelp() {
             const help = document.getElementById('speech-command-help');
             if (help && !localStorage.getItem('speech_help_shown')) {
                 help.classList.add('show');
                 localStorage.setItem('speech_help_shown', 'true');
                 
-                // Auto-hide after 10 seconds
-                setTimeout(hideSpeechHelp, 10000);
+                // Auto-hide after 12 seconds on mobile, 8 seconds on desktop
+                const autoHideDelay = window.innerWidth < 768 ? 12000 : 8000;
+                setTimeout(hideSpeechHelp, autoHideDelay);
             }
         }
         
@@ -565,13 +931,15 @@
                 textEl.textContent = message;
                 successEl.classList.add('show');
                 
+                // Longer display time on mobile
+                const displayTime = window.innerWidth < 768 ? 4000 : 3000;
                 setTimeout(() => {
                     successEl.classList.remove('show');
-                }, 3000);
+                }, displayTime);
             }
         }
         
-        // Global speech shortcut (Ctrl/Cmd + Space)
+        // Enhanced global speech shortcut (mobile-friendly)
         document.addEventListener('keydown', function(e) {
             if ((e.ctrlKey || e.metaKey) && e.code === 'Space') {
                 e.preventDefault();
@@ -581,16 +949,40 @@
             }
         });
         
-        // Add visual feedback for speech-filled fields
+        // Touch-friendly speech activation
+        let touchStartTime = 0;
+        document.addEventListener('touchstart', function(e) {
+            if (e.touches.length === 3) { // Three-finger touch
+                touchStartTime = Date.now();
+            }
+        });
+        
+        document.addEventListener('touchend', function(e) {
+            if (e.changedTouches.length === 3 && Date.now() - touchStartTime > 1000) {
+                if (window.speechIntegration) {
+                    window.speechIntegration.toggleGlobalListening();
+                }
+            }
+        });
+        
+        // Enhanced visual feedback for speech
         function markFieldAsSpeechFilled(fieldElement) {
             fieldElement.classList.add('speech-filled');
             
-            // Add a small icon to indicate speech input
+            // Add mobile-friendly speech indicator
             if (!fieldElement.parentNode.querySelector('.speech-filled-icon')) {
                 const icon = document.createElement('span');
                 icon.className = 'speech-filled-icon';
                 icon.innerHTML = '<i class="fas fa-microphone text-red-primary" title="Filled via speech"></i>';
-                icon.style.cssText = 'position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10;';
+                icon.style.cssText = `
+                    position: absolute; 
+                    right: 12px; 
+                    top: 50%; 
+                    transform: translateY(-50%); 
+                    z-index: 10;
+                    font-size: 1rem;
+                    pointer-events: none;
+                `;
                 
                 const wrapper = fieldElement.parentNode;
                 if (wrapper.style.position !== 'relative') {
@@ -600,11 +992,11 @@
             }
         }
         
-        // Enhanced form submission tracking
+        // Mobile-optimized form submission tracking
         function trackSpeechFormSubmission(formId, speechData) {
             console.log(`Form ${formId} submitted via speech:`, speechData);
             
-            // Send analytics (if implemented)
+            // Send analytics with error handling
             fetch('/api/speech-analytics', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -612,13 +1004,496 @@
                     action: 'form_submission',
                     form_id: formId,
                     speech_data: speechData,
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    user_agent: navigator.userAgent,
+                    viewport: {
+                        width: window.innerWidth,
+                        height: window.innerHeight
+                    }
                 })
             }).catch(e => console.log('Analytics tracking failed:', e));
+        }
+        
+        // Enhanced navbar scroll behavior
+        let lastScrollTop = 0;
+        let scrollTimeout;
+        
+        window.addEventListener('scroll', function() {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(function() {
+                const navbar = document.querySelector('.navbar-custom');
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                if (scrollTop > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+                
+                lastScrollTop = scrollTop;
+            }, 10);
+        }, { passive: true });
+        
+        // Handle orientation changes
+        window.addEventListener('orientationchange', function() {
+            setTimeout(function() {
+                // Recalculate speech overlay positioning
+                const overlay = document.getElementById('global-speech-overlay');
+                if (overlay && overlay.classList.contains('active')) {
+                    // Force reflow
+                    overlay.style.display = 'none';
+                    overlay.offsetHeight; // Trigger reflow
+                    overlay.style.display = 'flex';
+                }
+            }, 200);
+        });
+        
+        // Enhanced resize handler
+        let resizeTimeout;
+        window.addEventListener('resize', function() {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function() {
+                // Update speech help positioning
+                const help = document.getElementById('speech-command-help');
+                if (help && help.classList.contains('show')) {
+                    // Adjust position based on new viewport
+                    if (window.innerWidth < 768) {
+                        help.style.left = '1rem';
+                        help.style.right = '1rem';
+                        help.style.bottom = '1rem';
+                    }
+                }
+            }, 150);
+        }, { passive: true });
+        
+        // Performance optimization for mobile
+        function optimizeForMobile() {
+            if (window.innerWidth < 768) {
+                // Reduce animation complexity on mobile
+                document.documentElement.style.setProperty('--animation-duration', '0.2s');
+                
+                // Optimize touch scrolling
+                document.body.style.webkitOverflowScrolling = 'touch';
+                
+                // Prevent zoom on input focus
+                const inputs = document.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    input.addEventListener('focus', function() {
+                        const viewport = document.querySelector('meta[name=viewport]');
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+                    });
+                    
+                    input.addEventListener('blur', function() {
+                        const viewport = document.querySelector('meta[name=viewport]');
+                        viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
+                    });
+                });
+            }
+        }
+        
+        // Initialize mobile optimizations
+        optimizeForMobile();
+        
+        // Service worker registration for PWA capabilities
+        if ('serviceWorker' in navigator && window.location.protocol === 'https:') {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(function(registration) {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(function(registrationError) {
+                        console.log('ServiceWorker registration failed:', registrationError);
+                    });
+            });
         }
     </script>
     {% endif %}
     
+    <!-- Enhanced Mobile Loading States -->
+    <script>
+        // Add loading class management
+        document.addEventListener('DOMContentLoaded', function() {
+            // Remove loading state after DOM is ready
+            document.body.classList.add('loaded');
+            
+            // Add click handlers for loading states
+            document.querySelectorAll('form').forEach(form => {
+                form.addEventListener('submit', function() {
+                    const submitBtn = form.querySelector('button[type="submit"], input[type="submit"]');
+                    if (submitBtn) {
+                        submitBtn.classList.add('loading');
+                        submitBtn.disabled = true;
+                        
+                        // Re-enable after 5 seconds as fallback
+                        setTimeout(() => {
+                            submitBtn.classList.remove('loading');
+                            submitBtn.disabled = false;
+                        }, 5000);
+                    }
+                });
+            });
+            
+            // Add AJAX loading indicators
+            if (window.fetch) {
+                const originalFetch = window.fetch;
+                window.fetch = function(...args) {
+                    // Show global loading indicator
+                    document.body.classList.add('loading');
+                    
+                    return originalFetch.apply(this, args)
+                        .finally(() => {
+                            document.body.classList.remove('loading');
+                        });
+                };
+            }
+        });
+        
+        // Enhanced touch interaction feedback
+        document.addEventListener('touchstart', function(e) {
+            const target = e.target.closest('.btn, .card, .nav-link');
+            if (target) {
+                target.style.transform = 'scale(0.98)';
+                target.style.transition = 'transform 0.1s ease';
+            }
+        }, { passive: true });
+        
+        document.addEventListener('touchend', function(e) {
+            const target = e.target.closest('.btn, .card, .nav-link');
+            if (target) {
+                setTimeout(() => {
+                    target.style.transform = '';
+                    target.style.transition = '';
+                }, 100);
+            }
+        }, { passive: true });
+        
+        // Network status indicator
+        function updateNetworkStatus() {
+            const status = navigator.onLine ? 'online' : 'offline';
+            document.body.setAttribute('data-network-status', status);
+            
+            if (!navigator.onLine) {
+                showNetworkAlert('You are currently offline. Some features may not work.');
+            }
+        }
+        
+        function showNetworkAlert(message) {
+            // Remove existing network alerts
+            const existingAlert = document.querySelector('.network-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alert = document.createElement('div');
+            alert.className = 'alert alert-warning network-alert position-fixed top-0 start-50 translate-middle-x mt-3';
+            alert.style.zIndex = '9999';
+            alert.innerHTML = `
+                <i class="fas fa-wifi me-2"></i>
+                ${message}
+                <button type="button" class="btn-close ms-2" onclick="this.parentElement.remove()"></button>
+            `;
+            document.body.appendChild(alert);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+        
+        window.addEventListener('online', updateNetworkStatus);
+        window.addEventListener('offline', updateNetworkStatus);
+        updateNetworkStatus();
+        
+        // Enhanced accessibility features
+        document.addEventListener('keydown', function(e) {
+            // Escape key to close modals/overlays
+            if (e.key === 'Escape') {
+                // Close speech overlay
+                const speechOverlay = document.getElementById('global-speech-overlay');
+                if (speechOverlay && speechOverlay.classList.contains('active')) {
+                    speechOverlay.classList.remove('active');
+                }
+                
+                // Close speech help
+                const speechHelp = document.getElementById('speech-command-help');
+                if (speechHelp && speechHelp.classList.contains('show')) {
+                    hideSpeechHelp();
+                }
+                
+                // Close Bootstrap modals
+                const modals = document.querySelectorAll('.modal.show');
+                modals.forEach(modal => {
+                    const bsModal = bootstrap.Modal.getInstance(modal);
+                    if (bsModal) {
+                        bsModal.hide();
+                    }
+                });
+            }
+        });
+        
+        // Focus management for better keyboard navigation
+        document.addEventListener('click', function(e) {
+            if (e.target.matches('.dropdown-toggle')) {
+                // Focus first dropdown item when dropdown opens
+                setTimeout(() => {
+                    const dropdown = e.target.nextElementSibling;
+                    if (dropdown && dropdown.classList.contains('show')) {
+                        const firstItem = dropdown.querySelector('.dropdown-item');
+                        if (firstItem) {
+                            firstItem.focus();
+                        }
+                    }
+                }, 100);
+            }
+        });
+        
+        // Performance monitoring for mobile devices
+        if (window.performance && window.performance.mark) {
+            window.addEventListener('load', function() {
+                performance.mark('page-loaded');
+                
+                // Measure and log performance metrics
+                setTimeout(() => {
+                    const navigation = performance.getEntriesByType('navigation')[0];
+                    const loadTime = navigation.loadEventEnd - navigation.fetchStart;
+                    
+                    console.log(`Page load time: ${loadTime}ms`);
+                    
+                    // Send to analytics if needed
+                    if (loadTime > 3000) {
+                        console.warn('Slow page load detected:', loadTime);
+                    }
+                }, 100);
+            });
+        }
+        
+        // Enhanced error handling
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript error:', e.error);
+            
+            // Show user-friendly error message on mobile
+            if (window.innerWidth < 768) {
+                showNetworkAlert('Something went wrong. Please refresh the page if issues persist.');
+            }
+        });
+        
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('Unhandled promise rejection:', e.reason);
+        });
+    </script>
+    
     {% block scripts %}{% endblock %}
+    
+    <!-- Additional mobile-specific styles -->
+    <style>
+        /* Loading state for body */
+        body.loading::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                transparent, 
+                var(--secondary-red), 
+                transparent
+            );
+            z-index: 9999;
+            animation: loading-bar 2s linear infinite;
+        }
+        
+        @keyframes loading-bar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        /* Network status indicators */
+        body[data-network-status="offline"] {
+            filter: grayscale(0.3);
+        }
+        
+        body[data-network-status="offline"]::before {
+            content: 'OFFLINE';
+            position: fixed;
+            bottom: 1rem;
+            right: 1rem;
+            background: #dc3545;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            z-index: 9998;
+        }
+        
+        /* Enhanced touch feedback */
+        .btn:active,
+        .card:active,
+        .nav-link:active {
+            transform: scale(0.98) !important;
+        }
+        
+        /* Improved dropdown positioning on mobile */
+        @media (max-width: 767px) {
+            .dropdown-menu {
+                position: fixed !important;
+                left: 1rem !important;
+                right: 1rem !important;
+                top: auto !important;
+                transform: none !important;
+                margin: 0 !important;
+                max-height: 50vh;
+                overflow-y: auto;
+            }
+            
+            .dropdown-menu.show {
+                animation: slideInUp 0.3s ease;
+            }
+        }
+        
+        /* Better form validation styles */
+        .form-control:invalid {
+            border-color: #dc3545;
+            box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+        }
+        
+        .form-control:valid {
+            border-color: #198754;
+            box-shadow: 0 0 0 0.2rem rgba(25, 135, 84, 0.25);
+        }
+        
+        /* Mobile-specific utility classes */
+        @media (max-width: 767px) {
+            .mobile-hidden {
+                display: none !important;
+            }
+            
+            .mobile-block {
+                display: block !important;
+            }
+            
+            .mobile-text-center {
+                text-align: center !important;
+            }
+            
+            .mobile-full-width {
+                width: 100% !important;
+            }
+        }
+        
+        /* Tablet-specific utility classes */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .tablet-hidden {
+                display: none !important;
+            }
+            
+            .tablet-block {
+                display: block !important;
+            }
+        }
+        
+        /* Desktop-specific utility classes */
+        @media (min-width: 1024px) {
+            .desktop-hidden {
+                display: none !important;
+            }
+            
+            .desktop-block {
+                display: block !important;
+            }
+        }
+        
+        /* Improved scrollbar for mobile webkit browsers */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--primary-ivory-light);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary-red);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--secondary-red-dark);
+        }
+        
+        /* Smooth scrolling for mobile Safari */
+        html {
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        /* Fix for iOS input zoom */
+        @media screen and (max-width: 767px) {
+            input[type="text"],
+            input[type="email"],
+            input[type="password"],
+            input[type="number"],
+            input[type="tel"],
+            input[type="url"],
+            input[type="search"],
+            textarea,
+            select {
+                font-size: 16px !important;
+            }
+        }
+        
+        /* Enhanced focus styles for better accessibility */
+        .btn:focus-visible,
+        .form-control:focus-visible,
+        .form-select:focus-visible,
+        .nav-link:focus-visible {
+            outline: 2px solid var(--secondary-red);
+            outline-offset: 2px;
+            border-radius: 4px;
+        }
+        
+        /* Loading skeleton animations */
+        .skeleton {
+            background: linear-gradient(90deg, 
+                var(--primary-ivory) 25%, 
+                var(--primary-ivory-light) 50%, 
+                var(--primary-ivory) 75%
+            );
+            background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+        }
+        
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        
+        /* Improved button loading states */
+        .btn.loading {
+            position: relative;
+            color: transparent !important;
+        }
+        
+        .btn.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 1rem;
+            height: 1rem;
+            margin: -0.5rem 0 0 -0.5rem;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            color: white;
+        }
+        
+        .btn-outline-primary.loading::after {
+            color: var(--secondary-red);
+        }
+    </style>
 </body>
 </html>
+                    

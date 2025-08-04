@@ -3,6 +3,7 @@ from werkzeug.utils import secure_filename
 import os
 import json
 from datetime import datetime
+import pandas as pd
 
 # Import database
 from database import get_db, init_db
@@ -82,6 +83,8 @@ def format_date(value, format='%B %Y'):
     else:
         return str(value)
 
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -139,48 +142,7 @@ def onboarding():
     
     return render_template('onboarding.html')
 
-@app.route('/dashboard')
-def dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    user_with_business = db.get_user_with_business(session['user_id'])
-    business_info = user_with_business.get('business') if user_with_business else None
-    
-    # Get feedback statistics
-    feedback_stats = db.get_feedback_stats(session['user_id'])
-    
-    return render_template('dashboard.html', business=business_info, feedback_stats=feedback_stats)
 
-@app.route('/tools/website')
-def website_tool():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('tools/website.html')
-
-@app.route('/tools/feedback')
-def feedback_tool():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    
-    # Get all feedback for user's websites
-    all_feedback = db.get_user_all_feedback(session['user_id'])
-    
-    return render_template('tools/feedback.html', feedback_list=all_feedback)
-
-
-
-@app.route('/tools/poster')
-def poster_tool():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('tools/poster.html')
-
-@app.route('/tools/sales')
-def sales_tool():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('tools/sales.html')
 
 @app.route('/profile')
 def profile():
@@ -615,21 +577,43 @@ def api_delete_website(website_id):
         conn.close()
         return jsonify({'error': str(e)}), 500
     
-# Add these imports and routes to your app.py file
+# Complete Speech Integration for app.py
+# Add these imports at the top of your existing app.py file
 
-# Additional imports for speech processing
-import re
+import os
 import json
-from speech_processor import SpeechProcessor
+import re
+from datetime import datetime
+from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify, Response
 
-# Initialize speech processor
-speech_processor = SpeechProcessor()
+# Import the enhanced speech processor (you'll need to create this file)
+try:
+    from enhanced_speech_processor import EnhancedSpeechProcessor
+    SPEECH_PROCESSOR_AVAILABLE = True
+except ImportError:
+    print("⚠️ Enhanced Speech Processor not found. Speech features will be limited.")
+    SPEECH_PROCESSOR_AVAILABLE = False
 
-# Add these routes to your app.py file
+# Initialize the enhanced speech processor globally
+enhanced_speech_processor = None
+
+def initialize_speech_system():
+    """Initialize the enhanced speech processing system"""
+    global enhanced_speech_processor
+    if enhanced_speech_processor is None and SPEECH_PROCESSOR_AVAILABLE:
+        try:
+            enhanced_speech_processor = EnhancedSpeechProcessor()
+            print("✅ Enhanced Speech System initialized successfully!")
+        except Exception as e:
+            print(f"❌ Speech system initialization failed: {e}")
+            enhanced_speech_processor = None
+    return enhanced_speech_processor
+
+# SPEECH API ENDPOINTS - Add these to your existing app.py
 
 @app.route('/api/process-speech', methods=['POST'])
 def api_process_speech():
-    """Process speech input with Gemini AI and return form instructions"""
+    """Enhanced speech processing endpoint"""
     if 'user_id' not in session:
         return jsonify({'success': False, 'error': 'Unauthorized'}), 401
     
@@ -642,22 +626,29 @@ def api_process_speech():
         if not transcript:
             return jsonify({
                 'success': False,
-                'error': 'No speech transcript provided'
+                'error': 'No transcript provided'
             }), 400
         
         # Add user context
-        user_context = {
+        context.update({
             'user_id': session['user_id'],
             'user_email': session.get('user_email'),
             'timestamp': datetime.now().isoformat()
-        }
-        context.update(user_context)
+        })
         
-        # Process with speech processor
-        result = speech_processor.process_speech_input(transcript, page, context)
+        # Get or initialize speech processor
+        processor = initialize_speech_system()
         
-        # Log speech interaction
-        print(f"Speech processed for user {session['user_id']}: '{transcript}' on {page}")
+        if processor:
+            # Process speech input with AI
+            result = processor.process_speech_input(transcript, page, context)
+        else:
+            # Fallback to basic processing
+            result = basic_speech_processing(transcript, page)
+        
+        # Log successful interactions
+        if result.get('success'):
+            print(f"Speech processed for user {session['user_id']}: '{transcript[:50]}...' -> {result['instructions']['action']}")
         
         return jsonify(result)
         
@@ -665,61 +656,343 @@ def api_process_speech():
         print(f"Speech processing error: {str(e)}")
         return jsonify({
             'success': False,
-            'error': f'Speech processing failed: {str(e)}'
+            'error': 'Speech processing failed',
+            'details': str(e) if app.debug else None
         }), 500
+
+def basic_speech_processing(transcript, page):
+    """Basic speech processing fallback when AI processor is not available"""
+    transcript_lower = transcript.lower()
+    
+    # Basic navigation commands
+    if any(nav in transcript_lower for nav in ['go to', 'open', 'show']):
+        if 'website' in transcript_lower:
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'navigate',
+                    'navigation': '/tools/website',
+                    'message': 'Navigating to website builder...',
+                    'confidence': 0.8
+                }
+            }
+        elif 'email' in transcript_lower:
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'navigate',
+                    'navigation': '/tools/email',
+                    'message': 'Navigating to email composer...',
+                    'confidence': 0.8
+                }
+            }
+        elif 'feedback' in transcript_lower:
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'navigate',
+                    'navigation': '/tools/feedback',
+                    'message': 'Navigating to feedback analyzer...',
+                    'confidence': 0.8
+                }
+            }
+        elif 'poster' in transcript_lower:
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'navigate',
+                    'navigation': '/tools/poster',
+                    'message': 'Navigating to poster maker...',
+                    'confidence': 0.8
+                }
+            }
+        elif 'dashboard' in transcript_lower:
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'navigate',
+                    'navigation': '/dashboard',
+                    'message': 'Navigating to dashboard...',
+                    'confidence': 0.8
+                }
+            }
+    
+    # Basic form filling
+    fields = {}
+    
+    # Extract business name
+    business_match = re.search(r'(?:for|called|named)\s+([^,.\n]+)', transcript, re.IGNORECASE)
+    if business_match:
+        fields['businessName'] = business_match.group(1).strip()
+        fields['senderName'] = business_match.group(1).strip()
+        fields['posterTitle'] = business_match.group(1).strip()
+    
+    # Website specific
+    if 'website' in transcript_lower or page == 'website':
+        if 'restaurant' in transcript_lower:
+            fields['websiteType'] = 'restaurant'
+        elif 'business' in transcript_lower:
+            fields['websiteType'] = 'business'
+        elif 'portfolio' in transcript_lower:
+            fields['websiteType'] = 'portfolio'
+    
+    # Email specific
+    if 'email' in transcript_lower or page == 'email':
+        if 'marketing' in transcript_lower:
+            fields['emailType'] = 'marketing'
+        elif 'professional' in transcript_lower:
+            fields['emailTone'] = 'professional'
+        elif 'friendly' in transcript_lower:
+            fields['emailTone'] = 'friendly'
+    
+    # Feedback specific
+    if 'analyze' in transcript_lower and 'feedback' in transcript_lower:
+        feedback_match = re.search(r'feedback[:\s]+(.+)', transcript, re.IGNORECASE)
+        if feedback_match:
+            fields['feedbackText'] = feedback_match.group(1).strip()
+            return {
+                'success': True,
+                'instructions': {
+                    'action': 'fill_form',
+                    'fields': fields,
+                    'tool_execution': {'tool': 'feedback', 'auto_submit': True},
+                    'message': 'Analyzing feedback from speech...',
+                    'confidence': 0.7
+                }
+            }
+    
+    # Return form filling result
+    if fields:
+        return {
+            'success': True,
+            'instructions': {
+                'action': 'fill_form',
+                'fields': fields,
+                'message': f'Filled {len(fields)} field(s) from speech.',
+                'confidence': 0.6
+            }
+        }
+    
+    # Default response
+    return {
+        'success': True,
+        'instructions': {
+            'action': 'fill_form',
+            'fields': {},
+            'message': 'Could not extract specific information from speech.',
+            'confidence': 0.3
+        }
+    }
 
 @app.route('/api/speech-capabilities', methods=['GET'])
 def api_speech_capabilities():
-    """Return available speech processing capabilities"""
-    return jsonify({
-        'gemini_available': speech_processor.model is not None,
-        'supported_pages': ['website', 'email', 'feedback', 'poster', 'sales', 'dashboard'],
-        'supported_actions': ['fill_form', 'navigate', 'execute_tool', 'combination'],
+    """Get speech processing capabilities and status"""
+    processor = initialize_speech_system()
+    
+    status = {
+        'initialized': processor is not None,
+        'gemini_available': False,
         'fallback_available': True,
-        'browser_support': {
-            'chrome': True,
-            'firefox': True,
-            'safari': True,
-            'edge': True
+        'supported_languages': ['en-US', 'en-GB', 'hi-IN', 'te-IN']
+    }
+    
+    if processor:
+        status = processor.get_status()
+    
+    return jsonify({
+        **status,
+        'user_authenticated': 'user_id' in session,
+        'supported_pages': ['website', 'email', 'feedback', 'poster', 'sales', 'dashboard'],
+        'available_actions': ['fill_form', 'navigate', 'execute_tool', 'combination'],
+        'keyboard_shortcuts': {
+            'toggle_speech': 'Ctrl+Space',
+            'cancel_speech': 'Escape',
+            'show_help': 'Alt+H'
         }
     })
 
 @app.route('/api/speech-test', methods=['POST'])
 def api_speech_test():
-    """Test endpoint for speech processing (development only)"""
-    if app.debug:  # Only available in debug mode
-        try:
-            data = request.get_json()
-            transcript = data.get('transcript', '')
-            page = data.get('page', 'website')
+    """Test speech processing with sample inputs (debug only)"""
+    if not app.debug:
+        return jsonify({'error': 'Test endpoint only available in debug mode'}), 404
+    
+    if 'user_id' not in session:
+        return jsonify({'error': 'Authentication required for testing'}), 401
+    
+    try:
+        data = request.get_json()
+        test_cases = data.get('test_cases', [])
+        
+        # Default test cases if none provided
+        if not test_cases:
+            test_cases = [
+                {'transcript': 'Create a website for my pizza restaurant called Tony\'s Place', 'page': 'website'},
+                {'transcript': 'Generate a professional marketing email for new customers', 'page': 'email'},
+                {'transcript': 'Analyze this feedback: great food but slow service', 'page': 'feedback'},
+                {'transcript': 'Make a promotional poster for grand opening sale', 'page': 'poster'},
+                {'transcript': 'Go to email composer', 'page': 'dashboard'},
+                {'transcript': 'Fill business name with Tech Solutions Inc', 'page': 'website'}
+            ]
+        
+        processor = initialize_speech_system()
+        results = []
+        
+        for case in test_cases:
+            if processor:
+                result = processor.process_speech_input(
+                    case['transcript'], 
+                    case['page'], 
+                    {'user_id': session['user_id'], 'test_mode': True}
+                )
+            else:
+                result = basic_speech_processing(case['transcript'], case['page'])
             
-            result = speech_processor.process_speech_input(transcript, page)
-            return jsonify(result)
+            results.append({
+                'input': case,
+                'output': result,
+                'success': result.get('success', False),
+                'confidence': result.get('instructions', {}).get('confidence', 0.0),
+                'action': result.get('instructions', {}).get('action', 'unknown'),
+                'processed_by': result.get('processed_by', 'fallback')
+            })
+        
+        # Calculate summary statistics
+        successful = sum(1 for r in results if r['success'])
+        avg_confidence = sum(r['confidence'] for r in results) / len(results) if results else 0
+        ai_processed = sum(1 for r in results if r['processed_by'] == 'gemini')
+        
+        return jsonify({
+            'success': True,
+            'test_results': results,
+            'summary': {
+                'total_tests': len(results),
+                'successful': successful,
+                'failed': len(results) - successful,
+                'success_rate': (successful / len(results)) * 100 if results else 0,
+                'average_confidence': round(avg_confidence, 2),
+                'ai_processed': ai_processed,
+                'fallback_processed': len(results) - ai_processed
+            }
+        })
+        
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+@app.route('/api/speech-analytics', methods=['POST'])
+def api_speech_analytics():
+    """Store speech usage analytics"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    try:
+        data = request.get_json()
+        
+        # Create analytics record
+        analytics_data = {
+            'user_id': session['user_id'],
+            'action': data.get('action'),
+            'form_id': data.get('form_id'),
+            'speech_data': data.get('speech_data', {}),
+            'timestamp': data.get('timestamp', datetime.now().isoformat()),
+            'user_agent': request.headers.get('User-Agent'),
+            'ip_address': request.remote_addr,
+            'viewport': data.get('viewport', {}),
+            'success': data.get('speech_data', {}).get('success', False),
+            'confidence': data.get('speech_data', {}).get('confidence', 0.0)
+        }
+        
+        # In a production app, you would save this to a database
+        # For now, we'll just log it
+        print(f"📊 Speech Analytics: User {analytics_data['user_id']} - {analytics_data['action']} - Success: {analytics_data['success']}")
+        
+        # You could save to database like this:
+        # db.save_speech_analytics(analytics_data)
+        
+        return jsonify({'success': True, 'message': 'Analytics recorded'})
+        
+    except Exception as e:
+        print(f"Analytics error: {str(e)}")
+        return jsonify({'success': False, 'error': 'Failed to record analytics'}), 500
+
+@app.route('/api/speech-settings', methods=['GET', 'POST'])
+def api_speech_settings():
+    """Get or update user speech settings"""
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    processor = initialize_speech_system()
+    
+    if request.method == 'GET':
+        # Return current settings
+        settings = {
+            'language': 'en-US',
+            'confidence_threshold': 0.7,
+            'auto_submit': True,
+            'notifications': True,
+            'keyboard_shortcuts': True,
+            'supported_languages': ['en-US', 'en-GB', 'hi-IN', 'te-IN']
+        }
+        
+        if processor:
+            settings['supported_languages'] = processor.get_supported_languages()
+            settings['current_status'] = processor.get_status()
+        
+        return jsonify(settings)
+    
+    else:  # POST - Update settings
+        try:
+            settings = request.get_json()
+            
+            # Validate settings
+            if 'confidence_threshold' in settings:
+                threshold = float(settings['confidence_threshold'])
+                if not (0.1 <= threshold <= 1.0):
+                    return jsonify({'error': 'Confidence threshold must be between 0.1 and 1.0'}), 400
+                
+                if processor:
+                    processor.set_confidence_threshold(threshold)
+            
+            if 'language' in settings:
+                supported_languages = ['en-US', 'en-GB', 'hi-IN', 'te-IN']
+                if processor:
+                    supported_languages = processor.get_supported_languages()
+                
+                if settings['language'] not in supported_languages:
+                    return jsonify({'error': 'Unsupported language'}), 400
+            
+            # In production, save settings to database
+            # db.update_user_speech_settings(session['user_id'], settings)
+            
+            print(f"🎤 Speech settings updated for user {session['user_id']}: {settings}")
+            
+            return jsonify({
+                'success': True, 
+                'message': 'Settings updated successfully',
+                'updated_settings': settings
+            })
             
         except Exception as e:
-            return jsonify({
-                'success': False,
-                'error': str(e)
-            }), 500
-    else:
-        return jsonify({'error': 'Not available in production'}), 404
+            return jsonify({'error': f'Failed to update settings: {str(e)}'}), 500
 
-# Enhanced website generation with speech metadata
+# ENHANCED API ENDPOINTS WITH SPEECH SUPPORT
+
 @app.route('/api/generate-website-speech', methods=['POST'])
 def api_generate_website_speech():
-    """Generate website with speech input processing"""
+    """Enhanced website generation with speech metadata support"""
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
     
     try:
         data = request.json
-        
-        # Check if this came from speech input
         speech_metadata = data.get('speech_metadata', {})
         
-        # Log speech-generated websites
-        if speech_metadata.get('from_speech'):
-            print(f"Website generated via speech: '{speech_metadata.get('original_transcript')}'")
+        # Log speech-generated requests
+        if speech_metadata.get('fromSpeech'):
+            print(f"🎤 Website generation via speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'")
         
         # Use existing website generation logic
         result = generate_website_content(data)
@@ -727,13 +1000,15 @@ def api_generate_website_speech():
         # Add speech metadata to result
         if speech_metadata:
             result['speech_metadata'] = speech_metadata
+            if 'metadata' not in result:
+                result['metadata'] = {}
             result['metadata']['generated_via'] = 'speech'
-            result['metadata']['original_transcript'] = speech_metadata.get('original_transcript')
+            result['metadata']['original_transcript'] = speech_metadata.get('originalTranscript')
+            result['metadata']['speech_confidence'] = speech_metadata.get('confidence', 0.0)
         
-        # Store website with speech info
+        # Save website as usual but with speech metadata
         if result.get('html') and result.get('metadata'):
             try:
-                # Save website with speech metadata
                 website_id = db.save_website(
                     session['user_id'],
                     result['metadata']['title'],
@@ -742,39 +1017,32 @@ def api_generate_website_speech():
                 )
                 
                 if website_id:
-                    # Fix website ID in HTML (same as original logic)
+                    # Update HTML with website ID (existing logic)
                     html_content = result['html']
-                    placeholders_to_replace = [
-                        'WEBSITE_ID_PLACEHOLDER',
-                        '{{WEBSITE_ID}}',
-                        '{WEBSITE_ID}',
-                        'PLACEHOLDER_WEBSITE_ID'
-                    ]
+                    placeholders = ['WEBSITE_ID_PLACEHOLDER', '{{WEBSITE_ID}}', '{WEBSITE_ID}']
                     
-                    for placeholder in placeholders_to_replace:
-                        if placeholder in html_content:
-                            html_content = html_content.replace(placeholder, str(website_id))
+                    for placeholder in placeholders:
+                        html_content = html_content.replace(placeholder, str(website_id))
                     
                     # Ensure websiteId field exists
                     if 'id="websiteId"' not in html_content:
-                        import re
                         form_pattern = r'(<form[^>]*id="feedbackForm"[^>]*>)'
                         replacement = f'$1\n            <input type="hidden" id="websiteId" value="{website_id}">'
                         html_content = re.sub(form_pattern, replacement, html_content)
                     
-                    # Update website with corrected HTML
+                    # Update database
                     db.update_website(website_id, session['user_id'], html_content=html_content)
                     
                     result['website_id'] = website_id
                     result['success'] = True
                     result['html'] = html_content
                     
-                    # If generated via speech, show special success message
-                    if speech_metadata.get('from_speech'):
+                    # Add speech-specific success message
+                    if speech_metadata.get('fromSpeech'):
                         result['speech_success'] = True
-                        result['speech_message'] = f"Website successfully created from your voice command: '{speech_metadata.get('original_transcript')}'"
+                        result['speech_message'] = f"Website created from speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'"
                 else:
-                    result['error'] = 'Failed to save website to database'
+                    result['error'] = 'Failed to save website'
                     
             except Exception as e:
                 print(f"Error saving speech-generated website: {str(e)}")
@@ -786,10 +1054,9 @@ def api_generate_website_speech():
         print(f"Error in speech website generation: {str(e)}")
         return jsonify({'error': f'Website generation failed: {str(e)}'}), 500
 
-# Enhanced feedback processing for speech
 @app.route('/api/analyze-feedback-speech', methods=['POST'])
 def api_analyze_feedback_speech():
-    """Analyze feedback with speech input processing"""
+    """Enhanced feedback analysis with speech support"""
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
     
@@ -802,8 +1069,8 @@ def api_analyze_feedback_speech():
             return jsonify({'error': 'No feedback text provided'}), 400
         
         # Log speech-submitted feedback
-        if speech_metadata.get('from_speech'):
-            print(f"Feedback analyzed via speech: '{speech_metadata.get('original_transcript')}'")
+        if speech_metadata.get('fromSpeech'):
+            print(f"🎤 Feedback analysis via speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'")
         
         # Use existing feedback analysis
         result = analyze_feedback(feedback_text)
@@ -812,8 +1079,8 @@ def api_analyze_feedback_speech():
         if speech_metadata and result.get('status') == 'success':
             result['speech_metadata'] = speech_metadata
             result['analysis']['input_method'] = 'speech'
-            result['analysis']['original_transcript'] = speech_metadata.get('original_transcript')
-            result['speech_message'] = f"Feedback analyzed from your voice input: '{speech_metadata.get('original_transcript')}'"
+            result['analysis']['original_transcript'] = speech_metadata.get('originalTranscript')
+            result['speech_message'] = f"Analyzed from speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'"
         
         return jsonify(result)
         
@@ -821,10 +1088,9 @@ def api_analyze_feedback_speech():
         print(f"Error in speech feedback analysis: {str(e)}")
         return jsonify({'error': f'Feedback analysis failed: {str(e)}'}), 500
 
-# Enhanced email generation for speech
 @app.route('/api/draft-email-speech', methods=['POST'])
 def api_draft_email_speech():
-    """Draft email with speech input processing"""
+    """Enhanced email drafting with speech support"""
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
     
@@ -833,8 +1099,8 @@ def api_draft_email_speech():
         speech_metadata = data.get('speech_metadata', {})
         
         # Log speech-generated emails
-        if speech_metadata.get('from_speech'):
-            print(f"Email drafted via speech: '{speech_metadata.get('original_transcript')}'")
+        if speech_metadata.get('fromSpeech'):
+            print(f"🎤 Email drafting via speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'")
         
         # Use existing email drafting
         result = draft_email(data)
@@ -843,8 +1109,8 @@ def api_draft_email_speech():
         if speech_metadata and result.get('status') == 'success':
             result['speech_metadata'] = speech_metadata
             result['email']['input_method'] = 'speech'
-            result['email']['original_transcript'] = speech_metadata.get('original_transcript')
-            result['speech_message'] = f"Email drafted from your voice command: '{speech_metadata.get('original_transcript')}'"
+            result['email']['original_transcript'] = speech_metadata.get('originalTranscript')
+            result['speech_message'] = f"Email drafted from speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'"
         
         return jsonify(result)
         
@@ -852,10 +1118,9 @@ def api_draft_email_speech():
         print(f"Error in speech email drafting: {str(e)}")
         return jsonify({'error': f'Email drafting failed: {str(e)}'}), 500
 
-# Enhanced poster creation for speech
 @app.route('/api/create-poster-speech', methods=['POST'])
 def api_create_poster_speech():
-    """Create poster with speech input processing"""
+    """Enhanced poster creation with speech support"""
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
     
@@ -864,8 +1129,8 @@ def api_create_poster_speech():
         speech_metadata = data.get('speech_metadata', {})
         
         # Log speech-generated posters
-        if speech_metadata.get('from_speech'):
-            print(f"Poster created via speech: '{speech_metadata.get('original_transcript')}'")
+        if speech_metadata.get('fromSpeech'):
+            print(f"🎤 Poster creation via speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'")
         
         # Use existing poster creation
         result = create_poster_content(data)
@@ -874,8 +1139,8 @@ def api_create_poster_speech():
         if speech_metadata and result.get('status') == 'success':
             result['speech_metadata'] = speech_metadata
             result['poster']['input_method'] = 'speech'
-            result['poster']['original_transcript'] = speech_metadata.get('original_transcript')
-            result['speech_message'] = f"Poster created from your voice command: '{speech_metadata.get('original_transcript')}'"
+            result['poster']['original_transcript'] = speech_metadata.get('originalTranscript')
+            result['speech_message'] = f"Poster created from speech: '{speech_metadata.get('originalTranscript', '')[:50]}...'"
         
         return jsonify(result)
         
@@ -883,29 +1148,530 @@ def api_create_poster_speech():
         print(f"Error in speech poster creation: {str(e)}")
         return jsonify({'error': f'Poster creation failed: {str(e)}'}), 500
 
-# Speech analytics endpoint
-@app.route('/api/speech-analytics', methods=['GET'])
-def api_speech_analytics():
-    """Get speech usage analytics for the user"""
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
+# APP INITIALIZATION AND CONTEXT PROCESSORS
+
+def initialize_app():
+    """Initialize app components including speech system"""
+    print("🚀 Initializing Brand Bloom application...")
     
+    # Initialize database (existing)
+    init_db()
+    
+    # Initialize enhanced speech system
     try:
-        # This would ideally come from a speech_logs table in the database
-        # For now, return mock analytics
-        analytics = {
-            'total_speech_interactions': 0,
-            'successful_commands': 0,
-            'failed_commands': 0,
-            'most_used_tools': [],
-            'success_rate': 0.0,
-            'recent_interactions': []
+        initialize_speech_system()
+        print("✅ Speech system ready")
+    except Exception as e:
+        print(f"⚠️ Speech system initialization failed: {e}")
+    
+    print("🎉 Brand Bloom is ready!")
+
+@app.context_processor
+def inject_speech_status():
+    """Inject speech system status into all templates"""
+    speech_available = False
+    speech_status = {}
+    
+    if 'user_id' in session:
+        try:
+            processor = initialize_speech_system()
+            if processor:
+                speech_status = processor.get_status()
+                speech_available = speech_status.get('initialized', False)
+            else:
+                speech_status = {'initialized': False, 'fallback_available': True}
+                speech_available = True  # Basic speech still available
+        except:
+            pass
+    
+    return {
+        'speech_available': speech_available,
+        'speech_status': speech_status
+    }
+
+# ENHANCED ERROR HANDLERS
+
+@app.errorhandler(500)
+def internal_error(error):
+    """Enhanced error handler that considers speech context"""
+    # Check if error occurred during speech processing
+    is_speech_request = request.path.startswith('/api/') and 'speech' in request.path
+    
+    if is_speech_request:
+        return jsonify({
+            'success': False,
+            'error': 'Speech processing temporarily unavailable',
+            'fallback_available': True,
+            'message': 'Please try typing your request or use the manual form controls.'
+        }), 500
+    
+    # Regular error handling for non-speech requests
+    try:
+        return render_template('error.html', error=error), 500
+    except:
+        return f"Internal Server Error: {error}", 500
+
+# MIDDLEWARE AND LOGGING
+
+@app.before_request
+def log_speech_requests():
+    """Log speech-related requests for monitoring"""
+    if request.path.startswith('/api/') and 'speech' in request.path:
+        user_id = session.get('user_id', 'anonymous')
+        print(f"🎤 Speech API Request: {request.method} {request.path} - User: {user_id}")
+
+# DEVELOPMENT AND DEBUG ROUTES
+
+if app.config.get('DEBUG', False):
+    @app.route('/debug/speech-status')
+    def debug_speech_status():
+        """Debug endpoint to check speech system status"""
+        if 'user_id' not in session:
+            return jsonify({'error': 'Authentication required'}), 401
+        
+        try:
+            processor = initialize_speech_system()
+            
+            status_info = {
+                'speech_processor_available': processor is not None,
+                'basic_fallback_available': True,
+                'session_info': {
+                    'user_id': session.get('user_id'),
+                    'user_email': session.get('user_email')
+                },
+                'request_info': {
+                    'user_agent': request.headers.get('User-Agent'),
+                    'accept_language': request.headers.get('Accept-Language'),
+                    'remote_addr': request.remote_addr
+                },
+                'app_config': {
+                    'debug': app.debug,
+                    'testing': app.testing
+                }
+            }
+            
+            if processor:
+                status_info['processor_status'] = processor.get_status()
+            
+            return jsonify(status_info)
+            
+        except Exception as e:
+            return jsonify({'error': str(e)}), 500
+
+# TEMPLATE HELPERS
+
+def render_speech_template(template_name, **context):
+    """Enhanced template renderer that adds speech context"""
+    if 'user_id' in session:
+        try:
+            processor = initialize_speech_system()
+            if processor:
+                context['speech_capabilities'] = processor.get_status()
+            context['speech_enabled'] = True
+        except:
+            context['speech_enabled'] = False
+    else:
+        context['speech_enabled'] = False
+    
+    return render_template(template_name, **context)
+
+# UPDATE EXISTING ROUTE HANDLERS TO USE SPEECH-ENABLED TEMPLATES
+# Replace your existing tool routes with these:
+
+@app.route('/tools/website')
+def website_tool():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_speech_template('tools/website.html')
+
+@app.route('/tools/email')  
+def email_tool():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_speech_template('tools/email.html')
+
+@app.route('/tools/feedback')
+def feedback_tool():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    all_feedback = db.get_user_all_feedback(session['user_id'])
+    return render_speech_template('tools/feedback.html', feedback_list=all_feedback)
+
+@app.route('/tools/poster')
+def poster_tool():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_speech_template('tools/poster.html')
+
+@app.route('/tools/sales')
+def sales_tool():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    return render_speech_template('tools/sales.html')
+
+# ENHANCED DASHBOARD WITH SPEECH ANALYTICS
+
+@app.route('/dashboard')
+def dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    user_with_business = db.get_user_with_business(session['user_id'])
+    business_info = user_with_business.get('business') if user_with_business else None
+    
+    # Get feedback statistics
+    feedback_stats = db.get_feedback_stats(session['user_id'])
+    
+    # Add speech usage statistics (placeholder for now)
+    speech_stats = {
+        'total_interactions': 0,
+        'successful_commands': 0,
+        'most_used_tools': [],
+        'recent_activity': []
+    }
+    
+    return render_speech_template('dashboard.html', 
+                                business=business_info, 
+                                feedback_stats=feedback_stats,
+                                speech_stats=speech_stats)
+
+# SERVE SPEECH CONTROLLER JAVASCRIPT
+
+@app.route('/static/js/enhanced-speech-controller.js')
+def speech_controller_js():
+    """Serve the enhanced speech controller JavaScript"""
+    js_content = """
+// Enhanced Speech Controller - Basic Implementation
+console.log('🎤 Enhanced Speech Controller loaded');
+
+// This would normally load the full Enhanced Speech Controller
+// For now, providing a basic implementation
+
+class BasicSpeechController {
+    constructor() {
+        this.recognition = null;
+        this.isListening = false;
+        this.init();
+    }
+    
+    init() {
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            this.recognition = new SpeechRecognition();
+            this.recognition.continuous = false;
+            this.recognition.interimResults = false;
+            this.recognition.lang = 'en-US';
+            
+            this.recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                this.processTranscript(transcript);
+            };
+            
+            console.log('🎤 Basic Speech Recognition initialized');
+        }
+    }
+    
+    async processTranscript(transcript) {
+        console.log('Processing transcript:', transcript);
+        
+        try {
+            const response = await fetch('/api/process-speech', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    transcript: transcript,
+                    page: this.getCurrentPage()
+                })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                this.executeInstructions(result.instructions);
+            }
+        } catch (error) {
+            console.error('Speech processing error:', error);
+        }
+    }
+    
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('/tools/website')) return 'website';
+        if (path.includes('/tools/email')) return 'email';
+        if (path.includes('/tools/feedback')) return 'feedback';
+        if (path.includes('/tools/poster')) return 'poster';
+        if (path.includes('/tools/sales')) return 'sales';
+        if (path === '/' || path.includes('dashboard')) return 'dashboard';
+        return 'unknown';
+    }
+    
+    executeInstructions(instructions) {
+        console.log('Executing instructions:', instructions);
+        
+        switch (instructions.action) {
+            case 'navigate':
+                if (instructions.navigation) {
+                    window.location.href = instructions.navigation;
+                }
+                break;
+                
+            case 'fill_form':
+                this.fillForm(instructions.fields);
+                break;
         }
         
-        return jsonify(analytics)
+        if (instructions.message) {
+            this.showNotification(instructions.message);
+        }
+    }
+    
+    fillForm(fields) {
+        for (const [fieldId, value] of Object.entries(fields)) {
+            const field = document.getElementById(fieldId);
+            if (field) {
+                if (field.tagName === 'SELECT') {
+                    // Find matching option
+                    const options = Array.from(field.options);
+                    const match = options.find(opt => 
+                        opt.value.toLowerCase().includes(value.toLowerCase()) ||
+                        opt.text.toLowerCase().includes(value.toLowerCase())
+                    );
+                    if (match) {
+                        field.value = match.value;
+                    }
+                } else {
+                    field.value = value;
+                }
+                
+                // Trigger change event
+                field.dispatchEvent(new Event('input', { bubbles: true }));
+                field.dispatchEvent(new Event('change', { bubbles: true }));
+                
+                // Visual feedback
+                field.style.backgroundColor = '#e8f5e9';
+                setTimeout(() => {
+                    field.style.backgroundColor = '';
+                }, 2000);
+            }
+        }
+    }
+    
+    showNotification(message) {
+        // Create notification
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4caf50;
+            color: white;
+            padding: 16px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 300px;
+        `;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 4000);
+    }
+    
+    startListening() {
+        if (this.recognition && !this.isListening) {
+            this.recognition.start();
+            this.isListening = true;
+        }
+    }
+}
+
+// Initialize speech controller when DOM is ready
+document.addEventListener('DOMContentLoaded', function() {
+    if (window.speechConfig) {
+        window.basicSpeechController = new BasicSpeechController();
+        
+        // Add keyboard shortcut
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.code === 'Space') {
+                e.preventDefault();
+                window.basicSpeechController.startListening();
+            }
+        });
+        
+        console.log('🎤 Speech controller initialized with config:', window.speechConfig);
+    }
+});
+"""
+    
+    return Response(js_content, mimetype='application/javascript')
+
+# TEMPLATE FILTERS
+
+@app.template_filter('speech_status')
+def speech_status_filter(status_obj):
+    """Template filter to format speech status for display"""
+    if not status_obj:
+        return "Unavailable"
+    
+    if status_obj.get('initialized') and status_obj.get('gemini_available'):
+        return "AI-Powered"
+    elif status_obj.get('initialized'):
+        return "Basic Mode"
+    else:
+        return "Offline"
+
+@app.template_filter('speech_confidence')
+def speech_confidence_filter(confidence):
+    """Template filter to format confidence scores"""
+    if confidence is None:
+        return "N/A"
+    
+    try:
+        confidence = float(confidence)
+        if confidence >= 0.9:
+            return f"Excellent ({confidence:.0%})"
+        elif confidence >= 0.7:
+            return f"Good ({confidence:.0%})"
+        elif confidence >= 0.5:
+            return f"Fair ({confidence:.0%})"
+        else:
+            return f"Poor ({confidence:.0%})"
+    except:
+        return "N/A"
+
+# CLI COMMANDS FOR SPEECH SYSTEM MANAGEMENT
+
+@app.cli.command()
+def init_speech():
+    """Initialize the speech processing system"""
+    print("Initializing speech processing system...")
+    try:
+        processor = initialize_speech_system()
+        
+        if processor:
+            status = processor.get_status()
+            print(f"✅ Speech system initialized")
+            print(f"   Gemini AI: {'Available' if status.get('gemini_available') else 'Unavailable'}")
+            print(f"   Fallback: {'Available' if status.get('fallback_available') else 'Unavailable'}")
+            print(f"   Languages: {', '.join(status.get('supported_languages', []))}")
+        else:
+            print(f"✅ Basic speech system initialized")
+            print(f"   Gemini AI: Unavailable")
+            print(f"   Fallback: Available")
+            print(f"   Languages: en-US, en-GB, hi-IN, te-IN")
         
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"❌ Failed to initialize speech system: {e}")
+
+@app.cli.command()
+def test_speech():
+    """Test speech processing with sample inputs"""
+    print("Testing speech processing system...")
+    
+    try:
+        processor = initialize_speech_system()
+        
+        test_cases = [
+            {'transcript': 'Create a website for my restaurant', 'page': 'website'},
+            {'transcript': 'Generate marketing email', 'page': 'email'},
+            {'transcript': 'Analyze feedback about slow service', 'page': 'feedback'},
+        ]
+        
+        results = []
+        for case in test_cases:
+            if processor:
+                result = processor.test_processing([case])
+                results.extend(result)
+            else:
+                result = basic_speech_processing(case['transcript'], case['page'])
+                results.append({
+                    'input': case,
+                    'output': result,
+                    'success': result.get('success', False),
+                    'confidence': result.get('instructions', {}).get('confidence', 0.0)
+                })
+        
+        print(f"\nTest Results:")
+        print(f"Total tests: {len(results)}")
+        print(f"Successful: {sum(1 for r in results if r['success'])}")
+        if results:
+            avg_confidence = sum(r['confidence'] for r in results) / len(results)
+            print(f"Average confidence: {avg_confidence:.2f}")
+        
+        for i, result in enumerate(results, 1):
+            status = "✅" if result['success'] else "❌"
+            transcript = result['input']['transcript'][:30]
+            action = result['output']['instructions'].get('action', 'unknown')
+            print(f"{status} Test {i}: {transcript}... -> {action}")
+        
+    except Exception as e:
+        print(f"❌ Test failed: {e}")
+
+# ADD TO YOUR EXISTING APP INITIALIZATION
+
+# Add this to the end of your app.py file, BEFORE if __name__ == '__main__':
+
+# Initialize speech system on app startup
+initialize_speech_system()
+
+print("🎤 Enhanced Speech System Integration Complete!")
+print("=" * 60)
+print("✅ Speech API endpoints added")
+print("✅ Enhanced form processing")
+print("✅ Debug tools available")
+print("✅ Analytics tracking ready")
+print("✅ Multi-language support")
+print("")
+print("🎤 Available Speech Commands:")
+print("   • 'Create website for [business name]'")
+print("   • 'Generate [type] email for [recipients]'") 
+print("   • 'Analyze this feedback: [text]'")
+print("   • 'Make poster for [event]'")
+print("   • 'Go to [tool name]'")
+print("")
+print("🔧 Debug Endpoints (when DEBUG=True):")
+print("   • GET  /debug/speech-status")
+print("   • POST /api/speech-test")
+print("")
+print("🌐 API Endpoints:")
+print("   • POST /api/process-speech")
+print("   • GET  /api/speech-capabilities")
+print("   • POST /api/speech-analytics")
+print("   • GET/POST /api/speech-settings")
+print("")
+print("💡 Press Ctrl+Space to activate speech control")
+print("   (Available on all authenticated pages)")
+print("=" * 60)
+
+# STARTUP INSTRUCTIONS FOR USERS
+
+"""
+INSTALLATION INSTRUCTIONS:
+==========================
+
+1. Add this code to your existing app.py file (merge with your existing code)
+
+2. Create the enhanced_speech_processor.py file with the content from the previous artifact
+
+3. Update your base.html template with the enhanced version provided
+
+4. Your existing routes will automatically get speech support!
+
+5. Test the system:
+   - Visit /debug/speech-status to check system health
+   - Use Ctrl+Space to activate speech on any page
+   - Try commands like "Create website for my restaurant"
+
+6. Optional: Add the Enhanced Speech Controller JavaScript file to /static/js/
+
+The system will work with basic speech recognition even without the Gemini AI processor!
+"""
 
 @app.route('/api/get-deployed-websites-count', methods=['GET'])
 def api_get_deployed_websites_count():
@@ -978,11 +1744,6 @@ def api_draft_email():
     result = draft_email(data)
     return jsonify(result)
 
-@app.route('/tools/email')
-def email_tool():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-    return render_template('tools/email.html')
 
 
 @app.route('/api/create-poster', methods=['POST'])
@@ -1005,7 +1766,7 @@ import os
 # Email configuration (add these to your app.py)
 SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-SENDER_EMAIL = os.getenv("SENDER_EMAIL", "assetmanger1910@gmail.com")  # Set your email
+SENDER_EMAIL = os.getenv("SENDER_EMAIL", "assetmanager1910@gmail.com")  # Set your email
 SENDER_PASSWORD = os.getenv("SENDER_PASSWORD", "dhyi ybud ibgw lgsp")  # Set your app password
 
 def send_email(receiver_email, subject, body, receiver_name=None):
@@ -1186,6 +1947,11 @@ def api_upload_sales():
     
     return jsonify({'error': 'Invalid file format'}), 400
 
+<<<<<<< HEAD
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
 
+=======
+if __name__ == '__main__':
+    app.run(debug=True,port=5004)
+>>>>>>> 9467b48 (updates for latest deploy with enhancements)

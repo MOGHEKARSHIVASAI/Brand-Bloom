@@ -3,207 +3,809 @@
 {% block title %}Email Drafter & Sender - AI Toolkit{% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h2><i class="fas fa-envelope text-info me-2"></i>Email Drafter & Sender</h2>
-                <p class="text-muted">Create professional emails and send them to customers</p>
+<!-- Header Section -->
+<div class="container-fluid px-4 py-3">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div class="header-content">
+                    <div class="d-flex align-items-center mb-2">
+                        <div class="tool-icon-wrapper me-3">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h2 class="mb-1 text-gradient">Email Drafter & Sender</h2>
+                            <p class="text-muted mb-0">Create professional emails with AI and send them to your customers</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-outline-primary btn-floating">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Dashboard
+                </a>
             </div>
-            <a href="{{ url_for('dashboard') }}" class="btn btn-outline-secondary">
-                <i class="fas fa-arrow-left me-1"></i>Back to Dashboard
-            </a>
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="mb-0">Email Configuration</h5>
-            </div>
-            <div class="card-body">
-                <form id="emailForm">
-                    <div class="mb-3">
-                        <label for="emailType" class="form-label">Email Type</label>
-                        <select class="form-select" id="emailType" required>
-                            <option value="">Select type</option>
-                            <option value="marketing">Marketing</option>
-                            <option value="customer_service">Customer Service</option>
-                            <option value="follow_up">Follow Up</option>
-                            <option value="thank_you">Thank You</option>
-                            <option value="announcement">Announcement</option>
-                            <option value="invitation">Invitation</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="recipientType" class="form-label">Recipient Type</label>
-                        <select class="form-select" id="recipientType">
-                            <option value="customer">Existing Customer</option>
-                            <option value="prospect">Potential Customer</option>
-                            <option value="partner">Business Partner</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="emailTone" class="form-label">Tone</label>
-                        <select class="form-select" id="emailTone">
-                            <option value="professional">Professional</option>
-                            <option value="friendly">Friendly</option>
-                            <option value="casual">Casual</option>
-                            <option value="formal">Formal</option>
-                            <option value="urgent">Urgent</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="emailPurpose" class="form-label">Purpose/Subject</label>
-                        <input type="text" class="form-control" id="emailPurpose" 
-                               placeholder="e.g., Product launch announcement">
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="emailContext" class="form-label">Additional Context</label>
-                        <textarea class="form-control" id="emailContext" rows="3" 
-                                  placeholder="Any additional details or context..."></textarea>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <label for="senderName" class="form-label">Sender Name</label>
-                        <input type="text" class="form-control" id="senderName" 
-                               value="Your Name" placeholder="Your name or team name">
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-info" id="generateBtn">
-                            <i class="fas fa-magic me-1"></i>Generate Email
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        
-        <!-- Email Sending Section -->
-        <div class="card mt-3" id="emailSendingCard" style="display: none;">
-            <div class="card-header">
-                <h6 class="mb-0">Send Email</h6>
-            </div>
-            <div class="card-body">
-                <!-- Single Email -->
-                <div class="mb-3">
-                    <h6 class="text-primary">Send Single Email</h6>
-                    <form id="singleEmailForm">
-                        <div class="mb-2">
-                            <input type="email" class="form-control form-control-sm" id="recipientEmail" 
-                                   placeholder="Recipient email" required>
+<!-- Main Content -->
+<div class="container-fluid px-4">
+    <div class="row g-4">
+        <!-- Left Sidebar - Configuration -->
+        <div class="col-lg-4 col-md-5">
+            <!-- Email Configuration Card -->
+            <div class="card modern-card email-config-card">
+                <div class="card-header gradient-header">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-cog me-2"></i>Email Configuration
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <form id="emailForm">
+                        <!-- Email Type -->
+                        <div class="form-group mb-4">
+                            <label for="emailType" class="form-label">
+                                <i class="fas fa-tags me-2 text-info"></i>Email Type
+                            </label>
+                            <select class="form-select modern-select" id="emailType" required>
+                                <option value="">Select email type</option>
+                                <option value="marketing">📢 Marketing Campaign</option>
+                                <option value="customer_service">🎧 Customer Service</option>
+                                <option value="follow_up">📞 Follow Up</option>
+                                <option value="thank_you">🙏 Thank You</option>
+                                <option value="announcement">📣 Announcement</option>
+                                <option value="invitation">🎉 Invitation</option>
+                            </select>
                         </div>
-                        <div class="mb-2">
-                            <input type="text" class="form-control form-control-sm" id="recipientName" 
-                                   placeholder="Recipient name (optional)">
+                        
+                        <!-- Recipient Type -->
+                        <div class="form-group mb-4">
+                            <label for="recipientType" class="form-label">
+                                <i class="fas fa-users me-2 text-info"></i>Target Audience
+                            </label>
+                            <select class="form-select modern-select" id="recipientType">
+                                <option value="customer">🛍️ Existing Customers</option>
+                                <option value="prospect">🎯 Potential Customers</option>
+                                <option value="partner">🤝 Business Partners</option>
+                            </select>
                         </div>
-                        <button type="submit" class="btn btn-success btn-sm w-100">
-                            <i class="fas fa-paper-plane me-1"></i>Send Email
-                        </button>
+                        
+                        <!-- Email Tone -->
+                        <div class="form-group mb-4">
+                            <label for="emailTone" class="form-label">
+                                <i class="fas fa-palette me-2 text-info"></i>Communication Tone
+                            </label>
+                            <select class="form-select modern-select" id="emailTone">
+                                <option value="professional">💼 Professional</option>
+                                <option value="friendly">😊 Friendly</option>
+                                <option value="casual">👋 Casual</option>
+                                <option value="formal">🎩 Formal</option>
+                                <option value="urgent">⚡ Urgent</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Purpose/Subject -->
+                        <div class="form-group mb-4">
+                            <label for="emailPurpose" class="form-label">
+                                <i class="fas fa-bullseye me-2 text-info"></i>Email Purpose/Subject
+                            </label>
+                            <input type="text" class="form-control modern-input" id="emailPurpose" 
+                                   placeholder="e.g., New product launch announcement">
+                        </div>
+                        
+                        <!-- Additional Context -->
+                        <div class="form-group mb-4">
+                            <label for="emailContext" class="form-label">
+                                <i class="fas fa-info-circle me-2 text-info"></i>Additional Context
+                            </label>
+                            <textarea class="form-control modern-textarea" id="emailContext" rows="3" 
+                                      placeholder="Add any specific details, offers, or special information..."></textarea>
+                        </div>
+                        
+                        <!-- Sender Name -->
+                        <div class="form-group mb-4">
+                            <label for="senderName" class="form-label">
+                                <i class="fas fa-signature me-2 text-info"></i>Sender Name
+                            </label>
+                            <input type="text" class="form-control modern-input" id="senderName" 
+                                   value="Your Name" placeholder="Your name or company name">
+                        </div>
+                        
+                        <!-- Generate Button -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-gradient btn-lg" id="generateBtn">
+                                <i class="fas fa-magic me-2"></i>Generate Email
+                                <div class="btn-shine"></div>
+                            </button>
+                        </div>
                     </form>
                 </div>
-                
-                <hr>
-                
-                <!-- Bulk Email -->
-                <div class="mb-3">
-                    <h6 class="text-primary">Send Bulk Emails</h6>
-                    <form id="bulkEmailForm">
-                        <div class="mb-2">
-                            <input type="file" class="form-control form-control-sm" id="csvFile" 
-                                   accept=".csv" required>
-                            <small class="text-muted">CSV format: name,email</small>
+            </div>
+            
+            <!-- Email Sending Card -->
+            <div class="card modern-card mt-4" id="emailSendingCard" style="display: none;">
+                <div class="card-header gradient-header-secondary">
+                    <h6 class="mb-0 text-white">
+                        <i class="fas fa-paper-plane me-2"></i>Send Your Email
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <!-- Single Email Section -->
+                    <div class="send-section mb-4">
+                        <div class="section-header mb-3">
+                            <h6 class="text-primary mb-0">
+                                <i class="fas fa-user me-2"></i>Send to Individual
+                            </h6>
                         </div>
-                        <button type="submit" class="btn btn-primary btn-sm w-100">
-                            <i class="fas fa-users me-1"></i>Send to All
+                        <form id="singleEmailForm">
+                            <div class="form-group mb-3">
+                                <input type="email" class="form-control modern-input" id="recipientEmail" 
+                                       placeholder="📧 Recipient email address" required>
+                            </div>
+                            <div class="form-group mb-3">
+                                <input type="text" class="form-control modern-input" id="recipientName" 
+                                       placeholder="👤 Recipient name (optional)">
+                            </div>
+                            <button type="submit" class="btn btn-success btn-gradient w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Send Email
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="divider-or">
+                        <span>OR</span>
+                    </div>
+                    
+                    <!-- Bulk Email Section -->
+                    <div class="send-section">
+                        <div class="section-header mb-3">
+                            <h6 class="text-primary mb-0">
+                                <i class="fas fa-users me-2"></i>Send to Multiple Recipients
+                            </h6>
+                        </div>
+                        <form id="bulkEmailForm">
+                            <div class="form-group mb-3">
+                                <div class="file-upload-wrapper">
+                                    <input type="file" class="form-control modern-input file-input" 
+                                           id="csvFile" accept=".csv" required>
+                                    <label for="csvFile" class="file-upload-label">
+                                        <i class="fas fa-cloud-upload-alt me-2"></i>
+                                        Choose CSV File
+                                    </label>
+                                </div>
+                                <small class="text-muted mt-1 d-block">
+                                    <i class="fas fa-info-circle me-1"></i>CSV format: name,email
+                                </small>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-gradient w-100">
+                                <i class="fas fa-users me-2"></i>Send to All Recipients
+                            </button>
+                        </form>
+                        
+                        <!-- CSV Example -->
+                        <div class="csv-example mt-3">
+                            <div class="example-card">
+                                <div class="example-header">
+                                    <small class="text-muted fw-bold">
+                                        <i class="fas fa-file-csv me-1"></i>CSV Example:
+                                    </small>
+                                </div>
+                                <div class="example-content">
+                                    <code>
+                                        name,email<br>
+                                        John Smith,john@example.com<br>
+                                        Jane Doe,jane@example.com
+                                    </code>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Right Content Area -->
+        <div class="col-lg-8 col-md-7">
+            <!-- Email Preview Card -->
+            <div class="card modern-card preview-card">
+                <div class="card-header gradient-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 text-white">
+                        <i class="fas fa-eye me-2"></i>Email Preview
+                    </h5>
+                    <div class="header-actions">
+                        <button class="btn btn-outline-light btn-sm me-2" id="copyEmailBtn" style="display: none;">
+                            <i class="fas fa-copy me-1"></i>Copy
                         </button>
-                    </form>
+                        <button class="btn btn-light btn-sm" id="downloadBtn" style="display: none;">
+                            <i class="fas fa-download me-1"></i>Download
+                        </button>
+                    </div>
                 </div>
-                
-                <!-- CSV Example -->
-                <div class="mt-3">
-                    <small class="text-muted">
-                        <strong>CSV Example:</strong><br>
-                        name,email<br>
-                        John Smith,john@example.com<br>
-                        Jane Doe,jane@example.com
-                    </small>
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Generated Email</h5>
-                <div>
-                    <button class="btn btn-sm btn-outline-primary" id="copyEmailBtn" style="display: none;">
-                        <i class="fas fa-copy me-1"></i>Copy
-                    </button>
-                    <button class="btn btn-sm btn-primary" id="downloadBtn" style="display: none;">
-                        <i class="fas fa-download me-1"></i>Download
-                    </button>
-                </div>
-            </div>
-            <div class="card-body">
-                <div id="emailPreview" class="border rounded p-3" style="min-height: 400px; background: #f8f9fa;">
-                    <div class="d-flex align-items-center justify-content-center h-100 text-muted" style="min-height: 400px;">
-                        <div class="text-center">
-                            <i class="fas fa-envelope fa-3x mb-3"></i>
-                            <h5>Email Preview</h5>
-                            <p>Configure your email settings and click "Generate Email" to create your professional email.</p>
+                <div class="card-body p-0">
+                    <div id="emailPreview" class="email-preview-container">
+                        <div class="empty-state">
+                            <div class="empty-state-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <h5 class="empty-state-title">Ready to Create Your Email</h5>
+                            <p class="empty-state-text">
+                                Configure your email settings on the left and click "Generate Email" to create a professional email with AI assistance.
+                            </p>
+                            <div class="empty-state-features">
+                                <div class="feature-item">
+                                    <i class="fas fa-robot text-primary"></i>
+                                    <span>AI-Powered Content</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-palette text-info"></i>
+                                    <span>Professional Design</span>
+                                </div>
+                                <div class="feature-item">
+                                    <i class="fas fa-target text-success"></i>
+                                    <span>Targeted Messaging</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
-        <!-- Email Results -->
-        <div class="card mt-3" id="emailResults" style="display: none;">
-            <div class="card-header">
-                <h6 class="mb-0">Email Results</h6>
+            
+            <!-- Email Results Card -->
+            <div class="card modern-card mt-4" id="emailResults" style="display: none;">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-chart-line me-2"></i>Sending Results
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div id="emailResultsContent"></div>
+                </div>
             </div>
-            <div class="card-body">
-                <div id="emailResultsContent"></div>
-            </div>
-        </div>
-        
-        <div class="card mt-3">
-            <div class="card-header">
-                <h6 class="mb-0">Email Tips & Best Practices</h6>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-6">
-                        <h6 class="text-primary">Subject Line Tips</h6>
-                        <ul class="small">
-                            <li>Keep it under 50 characters</li>
-                            <li>Make it specific and actionable</li>
-                            <li>Avoid spam trigger words</li>
-                            <li>Personalize when possible</li>
-                        </ul>
+            
+            <!-- Tips and Best Practices Card -->
+            <div class="card modern-card tips-card mt-4">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="fas fa-lightbulb me-2"></i>Email Best Practices
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="tip-section">
+                                <h6 class="tip-title">
+                                    <i class="fas fa-envelope-open text-primary me-2"></i>Subject Line Tips
+                                </h6>
+                                <ul class="tip-list">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Keep under 50 characters</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Make it specific and actionable</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Avoid spam trigger words</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Personalize when possible</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="tip-section">
+                                <h6 class="tip-title">
+                                    <i class="fas fa-edit text-info me-2"></i>Content Tips
+                                </h6>
+                                <ul class="tip-list">
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Start with a clear greeting</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Get to the point quickly</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>Include a clear call-to-action</li>
+                                    <li><i class="fas fa-check-circle text-success me-2"></i>End with professional closing</li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-6">
-                        <h6 class="text-success">Content Tips</h6>
-                        <ul class="small">
-                            <li>Start with a clear greeting</li>
-                            <li>Get to the point quickly</li>
-                            <li>Include a clear call-to-action</li>
-                            <li>End with professional closing</li>
-                        </ul>
+                    
+                    <!-- Performance Metrics -->
+                    <div class="metrics-section mt-4">
+                        <div class="row text-center">
+                            <div class="col-md-3 col-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-eye text-primary"></i>
+                                    </div>
+                                    <div class="metric-value">25-30%</div>
+                                    <div class="metric-label">Open Rate Goal</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-mouse-pointer text-info"></i>
+                                    </div>
+                                    <div class="metric-value">3-5%</div>
+                                    <div class="metric-label">Click Rate Goal</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-clock text-warning"></i>
+                                    </div>
+                                    <div class="metric-value">10-11 AM</div>
+                                    <div class="metric-label">Best Send Time</div>
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-6">
+                                <div class="metric-card">
+                                    <div class="metric-icon">
+                                        <i class="fas fa-calendar text-success"></i>
+                                    </div>
+                                    <div class="metric-value">Tue-Thu</div>
+                                    <div class="metric-label">Best Send Days</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Custom Styles -->
+<style>
+/* Color Theme Variables */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --info-gradient: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --hover-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    --border-radius: 15px;
+    --transition: all 0.3s ease;
+}
+
+/* Header Styling */
+.header-content .tool-icon-wrapper {
+    width: 60px;
+    height: 60px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: white;
+    box-shadow: var(--card-shadow);
+}
+
+.text-gradient {
+    background: var(--primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+}
+
+.btn-floating {
+    border-radius: 50px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.btn-floating:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
+}
+
+/* Modern Card Styling */
+.modern-card {
+    border: none;
+    border-radius: var(--border-radius);
+    box-shadow: var(--card-shadow);
+    transition: var(--transition);
+    overflow: hidden;
+}
+
+.modern-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--hover-shadow);
+}
+
+.gradient-header {
+    background: var(--primary-gradient);
+    padding: 20px;
+    border: none;
+}
+
+.gradient-header-secondary {
+    background: var(--secondary-gradient);
+    padding: 15px 20px;
+    border: none;
+}
+
+/* Form Styling */
+.form-group {
+    position: relative;
+}
+
+.form-label {
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+}
+
+.modern-select, .modern-input, .modern-textarea {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: var(--transition);
+    background: #f8fafc;
+}
+
+.modern-select:focus, .modern-input:focus, .modern-textarea:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: white;
+    outline: none;
+}
+
+/* Button Gradients */
+.btn-gradient {
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    transition: var(--transition);
+}
+
+.btn-gradient:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--hover-shadow);
+    color: white;
+}
+
+.btn-success.btn-gradient {
+    background: var(--success-gradient);
+}
+
+.btn-shine {
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s;
+}
+
+.btn-gradient:hover .btn-shine {
+    left: 100%;
+}
+
+/* Email Configuration Card */
+.email-config-card .card-body {
+    padding: 30px;
+}
+
+/* Send Section Styling */
+.send-section {
+    background: #f8fafc;
+    border-radius: 12px;
+    padding: 20px;
+    border: 2px solid #e2e8f0;
+    transition: var(--transition);
+}
+
+.send-section:hover {
+    border-color: #667eea;
+    background: white;
+}
+
+.section-header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 10px;
+}
+
+.divider-or {
+    text-align: center;
+    position: relative;
+    margin: 25px 0;
+}
+
+.divider-or::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: #e2e8f0;
+}
+
+.divider-or span {
+    background: white;
+    padding: 0 15px;
+    color: #a0aec0;
+    font-weight: 600;
+    font-size: 12px;
+}
+
+/* File Upload Styling */
+.file-upload-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input {
+    position: absolute;
+    left: -9999px;
+}
+
+.file-upload-label {
+    display: block;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border: 2px dashed #cbd5e0;
+    border-radius: 12px;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.file-upload-label:hover {
+    border-color: #667eea;
+    background: #edf2f7;
+}
+
+/* CSV Example Styling */
+.example-card {
+    background: #1a202c;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.example-header {
+    background: #2d3748;
+    padding: 8px 12px;
+}
+
+.example-content {
+    padding: 12px;
+}
+
+.example-content code {
+    color: #68d391;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+/* Email Preview Styling */
+.preview-card {
+    min-height: 500px;
+}
+
+.email-preview-container {
+    min-height: 450px;
+    background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+    position: relative;
+}
+
+.empty-state {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 400px;
+    width: 100%;
+    padding: 20px;
+}
+
+.empty-state-icon {
+    width: 80px;
+    height: 80px;
+    background: var(--primary-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    font-size: 32px;
+    color: white;
+    box-shadow: var(--card-shadow);
+}
+
+.empty-state-title {
+    color: #2d3748;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.empty-state-text {
+    color: #718096;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.empty-state-features {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+/* Email Display Styling */
+.email-display {
+    padding: 25px;
+    background: white;
+    height: 100%;
+}
+
+.email-header {
+    background: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.email-body {
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    min-height: 300px;
+}
+
+/* Tips Card Styling */
+.tips-card .card-body {
+    padding: 30px;
+}
+
+.tip-section {
+    margin-bottom: 25px;
+}
+
+.tip-title {
+    color: #2d3748;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.tip-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.tip-list li {
+    padding: 8px 0;
+    display: flex;
+    align-items: center;
+    color: #4a5568;
+    font-size: 14px;
+}
+
+/* Metrics Section */
+.metrics-section {
+    border-top: 2px solid #e2e8f0;
+    padding-top: 25px;
+}
+
+.metric-card {
+    text-align: center;
+    padding: 20px 10px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    transition: var(--transition);
+    height: 100%;
+}
+
+.metric-card:hover {
+    border-color: #667eea;
+    background: white;
+    transform: translateY(-3px);
+}
+
+.metric-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.metric-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: #2d3748;
+    margin-bottom: 5px;
+}
+
+.metric-label {
+    font-size: 12px;
+    color: #718096;
+    font-weight: 500;
+}
+
+/* Results Styling */
+#emailResults .alert {
+    border: none;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 0;
+}
+
+.alert-success {
+    background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+    color: #22543d;
+}
+
+.alert-danger {
+    background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+    color: #742a2a;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    
+    .empty-state-features {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .email-config-card .card-body {
+        padding: 20px;
+    }
+    
+    .send-section {
+        padding: 15px;
+    }
+    
+    .metric-card {
+        margin-bottom: 15px;
+    }
+}
+
+/* Animation for form submission */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.btn-gradient:active {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Loading states */
+.loading-shimmer {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -237,13 +839,16 @@ document.addEventListener('DOMContentLoaded', function() {
         };
         
         if (!formData.emailType) {
-            alert('Please select an email type');
+            showNotification('Please select an email type', 'error');
             return;
         }
         
         // Show loading state
-        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Generating...';
+        generateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Generating Email...';
         generateBtn.disabled = true;
+        
+        // Add loading shimmer to preview
+        emailPreview.innerHTML = '<div class="loading-shimmer" style="height: 450px; border-radius: 12px;"></div>';
         
         try {
             const response = await fetch('/api/draft-email', {
@@ -264,19 +869,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 displayEmail(generatedEmail);
                 
-                // Show action buttons
+                // Show action buttons with animation
                 copyEmailBtn.style.display = 'inline-block';
                 downloadBtn.style.display = 'inline-block';
                 emailSendingCard.style.display = 'block';
                 
+                // Smooth scroll to preview
+                emailPreview.scrollIntoView({ behavior: 'smooth' });
+                
+                showNotification('Email generated successfully!', 'success');
+                
             } else {
-                alert('Failed to generate email: ' + result.message);
+                showNotification('Failed to generate email: ' + result.message, 'error');
+                resetPreview();
             }
         } catch (error) {
             console.error('Error generating email:', error);
-            alert('Failed to generate email');
+            showNotification('Failed to generate email. Please try again.', 'error');
+            resetPreview();
         } finally {
-            generateBtn.innerHTML = '<i class="fas fa-magic me-1"></i>Generate Email';
+            generateBtn.innerHTML = '<i class="fas fa-magic me-2"></i>Generate Email<div class="btn-shine"></div>';
             generateBtn.disabled = false;
         }
     });
@@ -286,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         if (!generatedSubject || !generatedBody) {
-            alert('Please generate an email first');
+            showNotification('Please generate an email first', 'error');
             return;
         }
         
@@ -295,7 +907,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
         submitBtn.disabled = true;
         
         try {
@@ -317,12 +929,16 @@ document.addEventListener('DOMContentLoaded', function() {
             if (result.success) {
                 showResults('success', result.message);
                 singleEmailForm.reset();
+                showNotification('Email sent successfully!', 'success');
             } else {
                 showResults('error', result.message);
+                showNotification('Failed to send email', 'error');
             }
             
         } catch (error) {
-            showResults('error', 'Error sending email: ' + error.message);
+            const errorMsg = 'Error sending email: ' + error.message;
+            showResults('error', errorMsg);
+            showNotification('Failed to send email', 'error');
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
@@ -334,19 +950,19 @@ document.addEventListener('DOMContentLoaded', function() {
         e.preventDefault();
         
         if (!generatedSubject || !generatedBody) {
-            alert('Please generate an email first');
+            showNotification('Please generate an email first', 'error');
             return;
         }
         
         const csvFile = document.getElementById('csvFile').files[0];
         if (!csvFile) {
-            alert('Please select a CSV file');
+            showNotification('Please select a CSV file', 'error');
             return;
         }
         
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalText = submitBtn.innerHTML;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Sending...';
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending to All...';
         submitBtn.disabled = true;
         
         try {
@@ -369,12 +985,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
                 showResults('success', message);
                 bulkEmailForm.reset();
+                showNotification(`Bulk email completed! Sent: ${result.successful || 0}`, 'success');
             } else {
                 showResults('error', result.message);
+                showNotification('Failed to send bulk emails', 'error');
             }
             
         } catch (error) {
-            showResults('error', 'Error sending bulk emails: ' + error.message);
+            const errorMsg = 'Error sending bulk emails: ' + error.message;
+            showResults('error', errorMsg);
+            showNotification('Failed to send bulk emails', 'error');
         } finally {
             submitBtn.innerHTML = originalText;
             submitBtn.disabled = false;
@@ -382,24 +1002,59 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Copy email functionality
-    copyEmailBtn.addEventListener('click', function() {
-        navigator.clipboard.writeText(generatedEmail).then(() => {
+    copyEmailBtn.addEventListener('click', async function() {
+        try {
+            await navigator.clipboard.writeText(generatedEmail);
             this.innerHTML = '<i class="fas fa-check me-1"></i>Copied!';
+            this.classList.remove('btn-outline-light');
+            this.classList.add('btn-success');
+            
             setTimeout(() => {
                 this.innerHTML = '<i class="fas fa-copy me-1"></i>Copy';
+                this.classList.remove('btn-success');
+                this.classList.add('btn-outline-light');
             }, 2000);
-        });
+            
+            showNotification('Email copied to clipboard!', 'success');
+        } catch (error) {
+            showNotification('Failed to copy email', 'error');
+        }
     });
     
     // Download email functionality
     downloadBtn.addEventListener('click', function() {
-        const blob = new Blob([generatedEmail], { type: 'text/plain' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'email.txt';
-        a.click();
-        URL.revokeObjectURL(url);
+        try {
+            const blob = new Blob([generatedEmail], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `email_${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Email downloaded successfully!', 'success');
+        } catch (error) {
+            showNotification('Failed to download email', 'error');
+        }
+    });
+    
+    // File input change handler
+    document.getElementById('csvFile').addEventListener('change', function() {
+        const fileName = this.files[0]?.name || '';
+        const label = this.nextElementSibling;
+        if (fileName) {
+            label.innerHTML = `<i class="fas fa-file-csv me-2"></i>${fileName}`;
+            label.style.color = '#22543d';
+            label.style.borderColor = '#38a169';
+            label.style.backgroundColor = '#c6f6d5';
+        } else {
+            label.innerHTML = '<i class="fas fa-cloud-upload-alt me-2"></i>Choose CSV File';
+            label.style.color = '';
+            label.style.borderColor = '';
+            label.style.backgroundColor = '';
+        }
     });
     
     // Helper functions
@@ -410,16 +1065,79 @@ document.addEventListener('DOMContentLoaded', function() {
         
         emailPreview.innerHTML = `
             <div class="email-display">
-                <div class="email-header mb-3 p-3 bg-white border rounded">
-                    <div class="mb-2"><strong>${subject}</strong></div>
-                    <div class="text-muted small">
-                        <div>From: ${document.getElementById('senderName').value} &lt;your@email.com&gt;</div>
-                        <div>To: [Recipient Email]</div>
-                        <div>Date: ${new Date().toLocaleDateString()}</div>
+                <div class="email-header mb-3 p-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="email-icon me-3">
+                            <i class="fas fa-envelope text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="fw-bold text-dark mb-1">${subject}</div>
+                            <div class="text-muted small">
+                                <div class="mb-1">
+                                    <i class="fas fa-user me-2"></i>
+                                    From: ${document.getElementById('senderName').value} &lt;your@email.com&gt;
+                                </div>
+                                <div class="mb-1">
+                                    <i class="fas fa-users me-2"></i>
+                                    To: [Recipient Email]
+                                </div>
+                                <div>
+                                    <i class="fas fa-calendar me-2"></i>
+                                    Date: ${new Date().toLocaleDateString('en-US', { 
+                                        weekday: 'long', 
+                                        year: 'numeric', 
+                                        month: 'long', 
+                                        day: 'numeric' 
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="email-status">
+                            <span class="badge bg-success">
+                                <i class="fas fa-check me-1"></i>Ready to Send
+                            </span>
+                        </div>
                     </div>
                 </div>
-                <div class="email-body bg-white p-3 border rounded">
-                    <pre style="white-space: pre-wrap; font-family: inherit; margin: 0;">${body}</pre>
+                <div class="email-body p-4">
+                    <pre style="white-space: pre-wrap; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; line-height: 1.6; color: #2d3748;">${body}</pre>
+                </div>
+            </div>
+        `;
+        
+        // Add animation
+        emailPreview.style.opacity = '0';
+        emailPreview.style.transform = 'translateY(20px)';
+        setTimeout(() => {
+            emailPreview.style.transition = 'all 0.5s ease';
+            emailPreview.style.opacity = '1';
+            emailPreview.style.transform = 'translateY(0)';
+        }, 100);
+    }
+    
+    function resetPreview() {
+        emailPreview.innerHTML = `
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h5 class="empty-state-title">Ready to Create Your Email</h5>
+                <p class="empty-state-text">
+                    Configure your email settings on the left and click "Generate Email" to create a professional email with AI assistance.
+                </p>
+                <div class="empty-state-features">
+                    <div class="feature-item">
+                        <i class="fas fa-robot text-primary"></i>
+                        <span>AI-Powered Content</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-palette text-info"></i>
+                        <span>Professional Design</span>
+                    </div>
+                    <div class="feature-item">
+                        <i class="fas fa-target text-success"></i>
+                        <span>Targeted Messaging</span>
+                    </div>
                 </div>
             </div>
         `;
@@ -431,19 +1149,135 @@ document.addEventListener('DOMContentLoaded', function() {
         
         document.getElementById('emailResultsContent').innerHTML = `
             <div class="alert ${alertClass}">
-                <i class="fas ${icon} me-2"></i>
-                <pre style="white-space: pre-wrap; margin: 0; font-family: inherit;">${message}</pre>
+                <div class="d-flex align-items-start">
+                    <div class="me-3">
+                        <i class="fas ${icon} fa-lg"></i>
+                    </div>
+                    <div class="flex-grow-1">
+                        <h6 class="alert-heading mb-2">
+                            ${type === 'success' ? 'Success!' : 'Error Occurred'}
+                        </h6>
+                        <pre style="white-space: pre-wrap; margin: 0; font-family: inherit; font-size: 14px; line-height: 1.5;">${message}</pre>
+                    </div>
+                </div>
             </div>
         `;
         
         emailResults.style.display = 'block';
+        emailResults.scrollIntoView({ behavior: 'smooth' });
         
-        // Auto-hide after 10 seconds for success messages
+        // Auto-hide success messages after 8 seconds
         if (type === 'success') {
             setTimeout(() => {
-                emailResults.style.display = 'none';
-            }, 10000);
+                emailResults.style.opacity = '0';
+                setTimeout(() => {
+                    emailResults.style.display = 'none';
+                    emailResults.style.opacity = '1';
+                }, 300);
+            }, 8000);
         }
+    }
+    
+    function showNotification(message, type = 'info') {
+        // Remove existing notifications
+        const existingNotifications = document.querySelectorAll('.toast-notification');
+        existingNotifications.forEach(n => n.remove());
+        
+        const notification = document.createElement('div');
+        notification.className = `toast-notification toast-${type}`;
+        
+        const colors = {
+            success: { bg: '#10b981', icon: 'fa-check-circle' },
+            error: { bg: '#ef4444', icon: 'fa-exclamation-circle' },
+            info: { bg: '#3b82f6', icon: 'fa-info-circle' },
+            warning: { bg: '#f59e0b', icon: 'fa-exclamation-triangle' }
+        };
+        
+        const color = colors[type] || colors.info;
+        
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${color.bg};
+            color: white;
+            padding: 16px 20px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+            max-width: 350px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        `;
+        
+        notification.innerHTML = `
+            <i class="fas ${color.icon}"></i>
+            <span>${message}</span>
+            <button onclick="this.parentNode.remove()" style="background: none; border: none; color: white; margin-left: auto; cursor: pointer; padding: 0; font-size: 18px;">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.style.transform = 'translateX(0)';
+        }, 100);
+        
+        // Auto remove after 4 seconds
+        setTimeout(() => {
+            notification.style.transform = 'translateX(100%)';
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 4000);
+    }
+    
+    // Add form validation feedback
+    const requiredFields = ['emailType'];
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) {
+            field.addEventListener('change', function() {
+                if (this.value) {
+                    this.style.borderColor = '#10b981';
+                    this.style.backgroundColor = '#f0fdf4';
+                } else {
+                    this.style.borderColor = '#ef4444';
+                    this.style.backgroundColor = '#fef2f2';
+                }
+                
+                setTimeout(() => {
+                    this.style.borderColor = '';
+                    this.style.backgroundColor = '';
+                }, 2000);
+            });
+        }
+    });
+    
+    // Add hover effects for cards
+    const cards = document.querySelectorAll('.modern-card');
+    cards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+        });
+    });
+    
+    // Initialize tooltips if Bootstrap is available
+    if (typeof bootstrap !== 'undefined') {
+        const tooltipElements = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipElements.forEach(el => new bootstrap.Tooltip(el));
     }
 });
 </script>
